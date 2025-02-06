@@ -146,11 +146,11 @@ public final class Constants {
 
     //Everything above applies for the below modules
     
-    public static final int kFrontRightDriveMotorCANID = 7;
-    public static final int kFrontRightTurningMotorCANID = 8;
+    public static final int kFrontRightDriveMotorCANID = 1;
+    public static final int kFrontRightTurningMotorCANID = 2;
     public static final boolean kFrontRightTurningEncoderReversed = false;
     public static final boolean kFrontRightDriveEncoderReversed = false;
-    public static final int kFrontRightDriveAbsoluteEncoderCANID = 2;
+    public static final int kFrontRightDriveAbsoluteEncoderCANID = 3;
     public static final boolean kFrontRightDriveAbsoluteEncoderReversed = true;
     public static final double kFrontRightDriveAbsoluteEncoderOffsetDeg = 72.24;
 
