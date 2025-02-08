@@ -8,25 +8,23 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.SparkRelativeEncoder;
-import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.*;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.SwerveModuleConstants;
@@ -36,13 +34,13 @@ import frc.robot.utils.ShuffleboardRateLimiter;
 
 public class SwerveModule extends SubsystemBase implements SwerveModuleInterface {
   /** Creates a new ExampleSubsystem. */
-  private final CANSparkMax driveMotor;
-  private final CANSparkMax turningMotor;
+  private final SparkMax driveMotor;
+  private final SparkMax turningMotor;
 
   private final RelativeEncoder driveEncoder;
   private final RelativeEncoder turningEncoder;
 
-  private final SparkPIDController turningPidController;
+  private final SparkClosedLoopController turningPidController;
 
   private final CANcoder absoluteEncoder;
   private final boolean absoluteEncoderReversed;
@@ -53,14 +51,37 @@ public class SwerveModule extends SubsystemBase implements SwerveModuleInterface
 
   public SwerveModule(SwerveModuleConstants swerveModuleConstants) {
     //Sets motor controllers
-    driveMotor = new CANSparkMax(swerveModuleConstants.kDriveMotorCANID, MotorType.kBrushless);
-    driveMotor.setIdleMode(IdleMode.kBrake);
-    turningMotor = new CANSparkMax(swerveModuleConstants.kTurningMotorCANID, MotorType.kBrushless);
-    driveMotor.setIdleMode(IdleMode.kBrake);
 
+    driveMotor = new SparkMax(swerveModuleConstants.kDriveMotorCANID, MotorType.kBrushless);
+    turningMotor = new SparkMax(swerveModuleConstants.kTurningMotorCANID, MotorType.kBrushless);
+
+    SparkMaxConfig driveMotorConfig = new SparkMaxConfig();
+    driveMotorConfig
     //Sets motor forward directions
-    driveMotor.setInverted(swerveModuleConstants.kDriveEncoderReversed);
-    turningMotor.setInverted(swerveModuleConstants.kTurningEncoderReversed);
+    .inverted(swerveModuleConstants.kDriveEncoderReversed)
+    .idleMode(IdleMode.kBrake);
+    driveMotorConfig.encoder
+      //Conversion factors to convert from motor rotations to distacne in meters
+      .positionConversionFactor(WheelConstants.kDistancePerWheelRotation*WheelConstants.kDriveMotorGearRatio)
+      //converts to meters per second
+      .velocityConversionFactor((WheelConstants.kDistancePerWheelRotation*WheelConstants.kDriveMotorGearRatio) / 60);
+    driveMotor.configure(driveMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    SparkMaxConfig turnMotorConfig = new SparkMaxConfig();
+    turnMotorConfig
+      //Sets motor forward directions
+      .inverted(swerveModuleConstants.kTurningEncoderReversed)
+      .idleMode(IdleMode.kBrake);
+    turnMotorConfig.encoder
+      //Conversion factors to convert from motor rotations to rotations in radians
+      .positionConversionFactor(WheelConstants.k360DegreesToRadians*WheelConstants.kTurningMotorGearRatio)
+      //converts to radians per second
+      .velocityConversionFactor((WheelConstants.k360DegreesToRadians*WheelConstants.kTurningMotorGearRatio) / 60);
+    turnMotorConfig.closedLoop
+    .pid(WheelConstants.kPTurning, 0, 0)
+    .positionWrappingEnabled(true)
+    .positionWrappingInputRange(-Math.PI, Math.PI);
+    driveMotor.configure(turnMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     //Sets absolute encoder
     this.absoluteEncoderReversed = swerveModuleConstants.kAbsoluteEncoderReversed;
@@ -68,27 +89,11 @@ public class SwerveModule extends SubsystemBase implements SwerveModuleInterface
     configAbsoluteEncoder(swerveModuleConstants.kAbsoluteEncoderOffsetDegrees);
 
     //Sets relative encoders from the NEO Motors
-    driveEncoder = driveMotor.getEncoder(SparkRelativeEncoder.Type.kHallSensor, 42);
-    turningEncoder = turningMotor.getEncoder(SparkRelativeEncoder.Type.kHallSensor, 42);
+    driveEncoder = driveMotor.getEncoder();
+    turningEncoder = turningMotor.getEncoder();
 
     //Sets the turning PID Controller
-    turningPidController = turningMotor.getPIDController();
-    turningPidController.setP(WheelConstants.kPTurning);
-    turningPidController.setI(0);
-    turningPidController.setD(0);
-    turningPidController.setPositionPIDWrappingEnabled(true);
-    turningPidController.setPositionPIDWrappingMaxInput(Math.PI);
-    turningPidController.setPositionPIDWrappingMinInput(-Math.PI);
-
-    //Conversion factors to convert from motor rotations to distacne in meters
-    driveEncoder.setPositionConversionFactor(WheelConstants.kDistancePerWheelRotation*WheelConstants.kDriveMotorGearRatio);
-    //converts to meters per second
-    driveEncoder.setVelocityConversionFactor((WheelConstants.kDistancePerWheelRotation*WheelConstants.kDriveMotorGearRatio) / 60);
-    
-    //Conversion factors to convert from motor rotations to rotations in radians
-    turningEncoder.setPositionConversionFactor(WheelConstants.k360DegreesToRadians*WheelConstants.kTurningMotorGearRatio);
-    //converts to radians per second
-    turningEncoder.setVelocityConversionFactor((WheelConstants.k360DegreesToRadians*WheelConstants.kTurningMotorGearRatio) / 60);
+    turningPidController = turningMotor.getClosedLoopController();
 
     resetEncoders();
 
@@ -103,7 +108,7 @@ public class SwerveModule extends SubsystemBase implements SwerveModuleInterface
 
     absoluteEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
     absoluteEncoderConfig.MagnetSensor.MagnetOffset = -absoluteOffsetDegrees/360;
-    absoluteEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+    absoluteEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
     absoluteEncoder.getConfigurator().apply(absoluteEncoderConfig);
 
   }
@@ -132,8 +137,8 @@ public class SwerveModule extends SubsystemBase implements SwerveModuleInterface
   //Gets and returns the position on the absolute encoder, used to center the wheel with the robot
   private double getAbsoluteEncoderRad() {
     //Uses Status signals since CTRE thinks they are cool
-    StatusSignal<Double> absoluteAngleSignal = absoluteEncoder.getAbsolutePosition();
-    double absoluteAngle = absoluteAngleSignal.getValue()*360;
+    StatusSignal<Angle> absoluteAngleSignal = absoluteEncoder.getAbsolutePosition();
+    double absoluteAngle = absoluteAngleSignal.getValueAsDouble()*360;
     swerveTab.add("Absolute Angle [" + absoluteEncoder.getDeviceID() + "]", absoluteAngle);
     absoluteAngle = absoluteEncoderReversed ? 360-absoluteAngle : absoluteAngle;
 
@@ -163,7 +168,7 @@ public class SwerveModule extends SubsystemBase implements SwerveModuleInterface
       return;
     }
     //Prevents the wheel from taking more than a 90 degree turn
-    state = SwerveModuleState.optimize(state, getState().angle);
+    state.optimize(getState().angle);
     //Sets the wheel speed as a percent of the physical max speed, might change later with a velocity PID controller
     driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
     //driveMotor.set(0);

@@ -4,15 +4,12 @@
 
 package frc.robot.subsystems;
 
-import java.util.Map;
-
-import com.kauailabs.navx.frc.AHRS;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -20,7 +17,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -43,7 +39,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private final SwerveModuleInterface backRight;
 
   //Gets the NavX gyro to tell what direction the robot is facing
-  private AHRS gyro = new AHRS(SPI.Port.kMXP);
+  private final Pigeon2 gyro;
 
   private double simulatedGyroAngle = 0;
   public double simulatedRobotAngle = 0;
@@ -61,6 +57,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
   /** Creates a new SwerveSubsystem. */
   public SwerveSubsystem() {
+
+    gyro = new Pigeon2(DriveConstants.gyroCANID);
+
     //gets the constants for each module
     final SwerveModuleClasses SwerveModuleSettings = new SwerveModuleClasses();
     if (RobotBase.isReal()) {
@@ -129,12 +128,8 @@ public class SwerveSubsystem extends SubsystemBase {
     if (RobotBase.isSimulation()) {
       return simulatedGyroAngle % 360;
     }
-    return (-gyro.getAngle()) % 360;
-  }
-
-  //Used in climber subsystem
-  public double getGyroRoll() {
-    return gyro.getRoll();
+    Rotation2d robotRotation = gyro.getRotation2d();
+    return (-robotRotation.getDegrees()) % 360;
   }
 
   //Gets the rotation of the robot for use by WPILIB systems

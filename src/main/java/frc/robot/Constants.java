@@ -114,19 +114,20 @@ public final class Constants {
     //Max turning speed of the robot specified in degrees but converted to radians (with the "(Math.PI/180)")
     public static final double kTeleMaxTurningSpeedRadiansPerSecond = 360 * (Math.PI/180);
 
-
+    //CAN ID for the gyro needed for swerve drive
+    public static final int gyroCANID = 13;
 
     //ID of the Can Spark Max the propels the swerve module wheel
-    public static final int kFrontLeftDriveMotorCANID = 5;
+    public static final int kFrontLeftDriveMotorCANID = 4;
     //ID of the Can Spark Max that turns the swerve module wheel
-    public static final int kFrontLeftTurningMotorCANID = 6;
+    public static final int kFrontLeftTurningMotorCANID = 5;
     //Whether the turning direction of the wheel is reversed
     public static final boolean kFrontLeftTurningEncoderReversed = false;
     //Whether the propultion direction of the wheel is reversed
     public static final boolean kFrontLeftDriveEncoderReversed = true;
     //ID of the CTRE CANCoder for getting the absolute position of the wheel 
       //(the encoder is the silly little device on top of the module that is wedged bwtween the two motors)
-    public static final int kFrontLeftDriveAbsoluteEncoderCANID = 1;
+    public static final int kFrontLeftDriveAbsoluteEncoderCANID = 6;
     //Whether the CANCoder direction is reversed
     public static final boolean kFrontLeftDriveAbsoluteEncoderReversed = true;
     /* Offset of the absolute encoder relative to the forward direction of the wheel
@@ -139,10 +140,10 @@ public final class Constants {
               - Multiply that number by 360 to convert it to degrees
             4. Take the number and simply just place it below! it will subtract that number from the encoder to make the wheel's forward direction always face forward on the robot
 
-      (make sure the value's units are in degrees, not rotations)
+      (make sure the value's units are in degrees, not rotations or radians )
        Your welcome! -Guy who made this program   
     */
-    public static final double kFrontLeftDriveAbsoluteEncoderOffsetDeg = 75.76;
+    public static final double kFrontLeftDriveAbsoluteEncoderOffsetDeg = 36.91;
 
     //Everything above applies for the below modules
     
@@ -152,24 +153,24 @@ public final class Constants {
     public static final boolean kFrontRightDriveEncoderReversed = false;
     public static final int kFrontRightDriveAbsoluteEncoderCANID = 3;
     public static final boolean kFrontRightDriveAbsoluteEncoderReversed = true;
-    public static final double kFrontRightDriveAbsoluteEncoderOffsetDeg = 72.24;
+    public static final double kFrontRightDriveAbsoluteEncoderOffsetDeg = -10.01;
 
 
-    public static final int kBackRightDriveMotorCANID = 9;
-    public static final int kBackRightTurningMotorCANID = 10;
+    public static final int kBackRightDriveMotorCANID = 10;
+    public static final int kBackRightTurningMotorCANID = 11;
     public static final boolean kBackRightTurningEncoderReversed = false;
     public static final boolean kBackRightDriveEncoderReversed = true;
-    public static final int kBackRightDriveAbsoluteEncoderCANID = 3;
+    public static final int kBackRightDriveAbsoluteEncoderCANID = 12;
     public static final boolean kBackRightDriveAbsoluteEncoderReversed = true;
-    public static final double kBackRightDriveAbsoluteEncoderOffsetDeg = 101.25+180.0;
+    public static final double kBackRightDriveAbsoluteEncoderOffsetDeg = -35.50;
 
-    public static final int kBackLeftDriveMotorCANID = 11;
-    public static final int kBackLeftTurningMotorCANID = 12;
+    public static final int kBackLeftDriveMotorCANID = 7;
+    public static final int kBackLeftTurningMotorCANID = 8;
     public static final boolean kBackLeftTurningEncoderReversed = false;
     public static final boolean kBackLeftDriveEncoderReversed = false;
-    public static final int kBackLeftDriveAbsoluteEncoderCANID = 4;
+    public static final int kBackLeftDriveAbsoluteEncoderCANID = 9;
     public static final boolean kBackLeftDriveAbsoluteEncoderReversed = true;
-    public static final double kBackLeftDriveAbsoluteEncoderOffsetDeg = 121.72+180.0; 
+    public static final double kBackLeftDriveAbsoluteEncoderOffsetDeg = 163.65; 
   }
 
   //Constants related to the autonomous period

@@ -76,7 +76,7 @@ public class SimulatedSwerveModule extends SubsystemBase implements SwerveModule
       return;
     }
 
-    state = SwerveModuleState.optimize(state, getState().angle);
+    state.optimize(getState().angle);
 
     simulatedWheelSpeedMetersPerSecond = state.speedMetersPerSecond;
 
