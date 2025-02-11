@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.utils.ShuffleboardRateLimiter;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -48,6 +49,8 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
 
+    //Runs a method that updates shuffleboard data with information given to it
+    ShuffleboardRateLimiter.periodic();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

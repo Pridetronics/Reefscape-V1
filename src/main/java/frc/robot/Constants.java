@@ -71,9 +71,9 @@ public final class Constants {
 
     
     //Distance between the right and left wheels
-    public static final double kTrackWidth = Units.inchesToMeters(23.5);
+    public static final double kTrackWidth = Units.inchesToMeters(23);
     //DIstance between the front and back wheels
-    public static final double kWheelBaseLength = Units.inchesToMeters(23.5);
+    public static final double kWheelBaseLength = Units.inchesToMeters(23);
 
     //Kinematics system that solves for each wheel's direction based on the given target direction ahd turn velocity
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
@@ -110,7 +110,7 @@ public final class Constants {
     public static final double kTeleMaxTurningAccelerationUnitsPerSecond = 5;
 
     //Max speed of the robot itself
-    public static final double kTeleMaxDriveSpeedMetersPerSecond = 4.5;
+    public static final double kTeleMaxDriveSpeedMetersPerSecond = 3;
     //Max turning speed of the robot specified in degrees but converted to radians (with the "(Math.PI/180)")
     public static final double kTeleMaxTurningSpeedRadiansPerSecond = 360 * (Math.PI/180);
 
@@ -159,7 +159,7 @@ public final class Constants {
     public static final int kBackRightDriveMotorCANID = 10;
     public static final int kBackRightTurningMotorCANID = 11;
     public static final boolean kBackRightTurningEncoderReversed = false;
-    public static final boolean kBackRightDriveEncoderReversed = true;
+    public static final boolean kBackRightDriveEncoderReversed = false;
     public static final int kBackRightDriveAbsoluteEncoderCANID = 12;
     public static final boolean kBackRightDriveAbsoluteEncoderReversed = true;
     public static final double kBackRightDriveAbsoluteEncoderOffsetDeg = -35.50;
@@ -167,7 +167,7 @@ public final class Constants {
     public static final int kBackLeftDriveMotorCANID = 7;
     public static final int kBackLeftTurningMotorCANID = 8;
     public static final boolean kBackLeftTurningEncoderReversed = false;
-    public static final boolean kBackLeftDriveEncoderReversed = false;
+    public static final boolean kBackLeftDriveEncoderReversed = true;
     public static final int kBackLeftDriveAbsoluteEncoderCANID = 9;
     public static final boolean kBackLeftDriveAbsoluteEncoderReversed = true;
     public static final double kBackLeftDriveAbsoluteEncoderOffsetDeg = 163.65; 

@@ -129,7 +129,7 @@ public class SwerveSubsystem extends SubsystemBase {
       return simulatedGyroAngle % 360;
     }
     Rotation2d robotRotation = gyro.getRotation2d();
-    return (-robotRotation.getDegrees()) % 360;
+    return (robotRotation.getDegrees()) % 360;
   }
 
   //Gets the rotation of the robot for use by WPILIB systems

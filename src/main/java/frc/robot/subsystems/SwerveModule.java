@@ -81,7 +81,7 @@ public class SwerveModule extends SubsystemBase implements SwerveModuleInterface
     .pid(WheelConstants.kPTurning, 0, 0)
     .positionWrappingEnabled(true)
     .positionWrappingInputRange(-Math.PI, Math.PI);
-    driveMotor.configure(turnMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    turningMotor.configure(turnMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     //Sets absolute encoder
     this.absoluteEncoderReversed = swerveModuleConstants.kAbsoluteEncoderReversed;
