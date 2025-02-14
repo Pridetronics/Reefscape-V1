@@ -173,6 +173,32 @@ public final class Constants {
     public static final double kBackLeftDriveAbsoluteEncoderOffsetDeg = 163.65; 
   }
 
+  //Constants for our intake
+  public static class IntakeConstants {
+    public static final int kIntakeMotorCanID = 14; 
+    //Set the motor ID for the motor that spins the Intake itself
+    public static final int kIntakeAngleMotorCanID = 15; 
+    //Set the motor ID for the motor that controls the angle of the Intake
+
+    //Proportional, Integral, and Derivitive values for the velocity PID controller
+    public static final double kIntakeAnglePValue = .5;
+    public static final double kIntakeAngleIValue = 1;
+    public static final double kIntakeAngleDValue = 1;
+  }
+
+  //Constants for shooter
+  public static class ShooterConstants {
+    public static final int kShooterMotorID = 16; 
+    //Set the motor ID for the motor that shoots in the shooter
+    public static final int kElevatorMotorID = 17; 
+    //Set the motor ID for the motor that controls the elevator
+
+    //Proportional, Integral, and Derivitive values for the velocity PID controller
+    public static final double kShooterPValue = .5;
+    public static final double kShooterIValue = 1;
+    public static final double kShooterDValue = 1;
+  }
+
   //Constants related to the autonomous period
   public static class AutoConstants {
 
