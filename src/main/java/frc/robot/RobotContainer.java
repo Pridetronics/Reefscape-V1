@@ -24,10 +24,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.WheelConstants;
+import frc.robot.commands.FieldPositionUpdate;
 import frc.robot.commands.SwerveAutoPaths;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.ZeroRobotHeading;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -38,6 +40,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+  private final VisionSubsystem visionSubsystem = new VisionSubsystem();
   private final SendableChooser<Trajectory> autoCommandChooser = new SendableChooser<>();
   private final Joystick driverJoystick = new Joystick(IOConstants.kDriveJoystickID);
 
@@ -47,6 +50,11 @@ public class RobotContainer {
   private final GenericEntry forwardDirectionEntry = teleOpTab.add("Reverse Field Forward", false)
   .withWidget(BuiltInWidgets.kToggleSwitch)
   .getEntry();
+
+  private final FieldPositionUpdate fieldUpdateCommand = new FieldPositionUpdate(
+    visionSubsystem, 
+    swerveSubsystem
+  );
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -72,6 +80,14 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
+  }
+
+  public void disableCameraUpdating() {
+    visionSubsystem.removeDefaultCommand();
+  }
+
+  public void enableCameraUpdating() {
+    visionSubsystem.setDefaultCommand(fieldUpdateCommand);
   }
 
   /**

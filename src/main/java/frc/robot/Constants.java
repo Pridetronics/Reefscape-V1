@@ -4,7 +4,10 @@
  
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -24,6 +27,22 @@ public final class Constants {
 
   public static class shuffleboardConstants {
     public static final double kRateLimitTime = 1;
+  }
+
+  public static class CameraConstants {
+    //The name of the domain to view the webpage when tethered
+    public static final String kHostName = "robotcamera";
+    //The name of the camera for the robot to find and use
+    public static final String kCameraName = "Camera_Module_v1";
+    //3d offset from the robot's position to the camera
+    public static final Transform3d kRobotToCamera = new Transform3d(
+      new Translation3d(
+        Units.inchesToMeters(3.25), 
+        0, 
+        Units.inchesToMeters(25)
+      ), 
+      new Rotation3d(0, Units.degreesToRadians(-27), 0)
+    );
   }
 
   //Constants for features related to user controller input
