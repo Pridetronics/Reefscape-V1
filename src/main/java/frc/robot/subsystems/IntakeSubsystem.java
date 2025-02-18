@@ -37,16 +37,34 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setIntakeAngle() {
-    //Method guts go here
+    /* Steps
+     * 1. Driver input (button or joystick?)
+     * 2. Which direction is the motor going to spin?
+     * 3. How far?
+     * 4. How fast?
+     */
   }
 
-  public boolean startIntake() {
-    //Method guts go here
+  public void startIntake() {
+    /* Steps
+     * 1. Driver input (button or joystick?)
+     * 2. Which direction is the motor going to spin?
+     * 3. How far?
+     * 4. How fast?
+     * 5. What happens after the coral has been intaked?
+     * 6. Source or Floor?
+     */
   }
 
-  public boolean stopIntake() {
-    //Method guts go here
+  public void stopIntake() {
+    /* Steps
+     * 1. How does it stop?
+     * 2. Why does it stop?
+     * 3. When does it stop?
+     */
   }
+
+  //Note: When do the motors stop?
 
   @Override
   public void periodic() {

@@ -33,6 +33,22 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public ShooterSubsystem() {}
 
+  public void setElevatorHeight() {
+    /* Steps
+     * 1. _
+     */
+  }
+
+  public void startShooter() {
+    //Guts go here
+  }
+
+  public void stopShooter() {
+    //Guts go here
+  }
+
+  //Note: When do the motors stop?
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
