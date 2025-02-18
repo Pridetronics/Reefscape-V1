@@ -24,10 +24,13 @@ public class ShooterSubsystem extends SubsystemBase {
   //Set new SparkMax motor
   public final SparkMax elevatorMotor = new SparkMax(ShooterConstants.kElevatorMotorID, MotorType.kBrushless);
 
-  //Encoder for our new motor
-  public final SparkAbsoluteEncoder elevatorAbsoluteEncoder = elevatorMotor.getAbsoluteEncoder();
+  //Set new SparkMax motor
+  public final TalonFX shoulderMotor = new TalonFX(ShooterConstants.kShoulderMotorID);
+
+  //Encoder for our shoulder motor (temporarily commented off)
+  //public final SparkAbsoluteEncoder shoulderAbsoluteEncoder = shoulderMotor.getAbsoluteEncoder();
   
-  //Relative encoder for our motor
+  //Relative encoder for our elevator motor
   public final RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
 
 
@@ -35,16 +38,29 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setElevatorHeight() {
     /* Steps
-     * 1. _
+     * 1. Driver input (button or joystick?)
+     * 2. Which direction and/or what type of motor is spinning?
+     * 3. How tall?
+     * 4. How fast?
      */
   }
 
   public void startShooter() {
-    //Guts go here
+    /* Steps
+     * 1. Driver input (button or joystick?)
+     * 3. Which direction is the motor going to spin?
+     * 4. How long?
+     * 5. How fast?
+     */
   }
 
   public void stopShooter() {
-    //Guts go here
+    /* Steps
+     * 1. How does it stop?
+     * 2. Why does it stop?
+     * 3. When does it stop?
+     * 4. Does it trigger anything after it stopped?
+     */
   }
 
   //Note: When do the motors stop?
