@@ -6,12 +6,16 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.*;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SoftLimitConfig;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkMax;
@@ -47,7 +51,9 @@ public class ManipulatorSubsystem extends SubsystemBase {
     elevatorConfig
     //Set what we are configurating
     .inverted(ManipulatorConstants.kElevatorEncoderReversed)
-    .idleMode(IdleMode.kBrake);
+    .idleMode(IdleMode.kBrake)
+    //Set current limit
+    .smartCurrentLimit(80, 80);
     //Conversion factors to convert from rotations to inches
     elevatorConfig.encoder
     //Conversion for elevator
@@ -76,6 +82,18 @@ public class ManipulatorSubsystem extends SubsystemBase {
 
     //Apply changes
     elevatorMotor.configure(elevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    //Finish configurating elevator
+
+
+    //Configurating Claw
+    TalonFXConfigurator talonFXConfigurator = clawMotor.getConfigurator();
+    CurrentLimitsConfigs limitConfigs = new CurrentLimitsConfigs();
+
+    // enable stator current limit
+    limitConfigs.StatorCurrentLimit = 120;
+    limitConfigs.StatorCurrentLimitEnable = true;
+
+    talonFXConfigurator.apply(limitConfigs);
   }
 
   public void setElevatorHeight() {
