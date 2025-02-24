@@ -10,8 +10,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import frc.robot.Constants;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.WheelConstants;
 
 public final class SwerveAutoPaths {
   /** Example static factory for an autonomous command. */
@@ -19,53 +21,18 @@ public final class SwerveAutoPaths {
   //  return Commands.sequence(subsystem.exampleMethodCommand(), new ExampleCommand(subsystem));
   // }
 
-  //public static Trajectory TestAutoPath() {
-  //   Trajectory trajectory1 = TrajectoryGenerator.generateTrajectory(
-  //     new Pose2d(0, 0, new Rotation2d(0)), 
-  //     List.of(
-  //       new Translation2d(1, 0),
-  //       new Translation2d(1, 1),
-  //       new Translation2d(2, -2),
-  //       new Translation2d(1, -3),
-  //       new Translation2d(0, 0)
-  //     ),
-  //     new Pose2d(0, 0, new Rotation2d(1080)), 
-  //     Constants.kTrajectoryConfig);
+  public static Trajectory TestPath = TrajectoryGenerator.generateTrajectory(
+    List.of(
+      new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
+      new Pose2d(0, 1, Rotation2d.fromDegrees(45)),
+      new Pose2d(1, 0, Rotation2d.fromDegrees(90))
+    ),
+    new TrajectoryConfig(
+      AutoConstants.kMaxSpeedMetersPerSecond, 
+      AutoConstants.kMaxAccelerationMetersPerSecond
+    ).setKinematics(WheelConstants.kDriveKinematics)
+  );
 
-  //   return trajectory1;
-  // }
-
-  // public static Trajectory WeirdPath() {
-  //   Trajectory trajectory1 = TrajectoryGenerator.generateTrajectory(
-  //     new Pose2d(0, 0, new Rotation2d(0)), 
-  //     List.of(
-  //       new Translation2d(2, 0),
-  //       new Translation2d(1, -2),
-  //       new Translation2d(1, 2),
-  //       new Translation2d(0, -2),
-  //       new Translation2d(0, 0)
-  //     ),
-  //     new Pose2d(0, 0, new Rotation2d(1080)), 
-  //     Constants.kTrajectoryConfig);
-
-  //   return trajectory1;
-  // }
-
-  public static Trajectory ForwardRight() {
-    Trajectory trajectory1 = TrajectoryGenerator.generateTrajectory(
-      new Pose2d(0, 0, new Rotation2d(0)), 
-      List.of(
-        new Translation2d(1, 0),
-        new Translation2d(1, 1),
-        new Translation2d(1, -1),
-        new Translation2d(0, -1),
-        new Translation2d(0, 1)
-      ),
-      new Pose2d(0, 0, Rotation2d.fromDegrees(180)), 
-      Constants.kTrajectoryConfig);
-
-    return trajectory1;
-  }
 
   private SwerveAutoPaths() {
     throw new UnsupportedOperationException("This is a utility class!");

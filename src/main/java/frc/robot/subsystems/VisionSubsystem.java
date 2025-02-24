@@ -16,9 +16,11 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.net.PortForwarder;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimeLightHelpers;
 import frc.robot.Constants.CameraConstants;
+import frc.robot.LimeLightHelpers.LimelightResults;
+import frc.robot.LimeLightHelpers.LimelightTarget_Detector;
 
 public class VisionSubsystem extends SubsystemBase {
 
@@ -43,7 +45,6 @@ public class VisionSubsystem extends SubsystemBase {
     //Done so the camera and camera settings can be viewed at "<HOSTNAME>.local:5800" on google when tethered
     //            ^^^replace <HOSTNAME> with the constants variable for the hostname
     PortForwarder.add(5800, CameraConstants.kHostName + ".local", 5800);
-
   }
 
   @Override
@@ -53,6 +54,8 @@ public class VisionSubsystem extends SubsystemBase {
     Optional<EstimatedRobotPose> robotPose = poseEstimator.update(targetData);
     if (robotPose.isPresent()) currentRobotPose = robotPose;
     currentlyLookingAtAprilTag = robotPose.isPresent();
+
+    
   }
 
   public Optional<EstimatedRobotPose> getEstimatedPose() {
@@ -61,5 +64,15 @@ public class VisionSubsystem extends SubsystemBase {
   
   public boolean lookingAtAprilTag() {
     return currentlyLookingAtAprilTag;
+  }
+
+  public Optional<LimelightTarget_Detector[]> getDetectorCameraOffsets() {
+    LimelightResults results = LimeLightHelpers.getLatestResults(CameraConstants.kDetectorCameraName);
+    LimelightTarget_Detector[] detectedResults = results.targets_Detector;
+
+    if (detectedResults.length > 0) 
+      return Optional.of(detectedResults); 
+    else 
+      return Optional.empty();
   }
 }

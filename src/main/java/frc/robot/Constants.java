@@ -43,6 +43,8 @@ public final class Constants {
       ), 
       new Rotation3d(0, Units.degreesToRadians(-27), 0)
     );
+
+    public static final String kDetectorCameraName = "detectorcamera";
   }
 
   //Constants for features related to user controller input
