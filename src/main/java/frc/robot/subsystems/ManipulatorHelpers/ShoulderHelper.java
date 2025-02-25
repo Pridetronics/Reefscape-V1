@@ -15,10 +15,10 @@ import frc.robot.Constants.ManipulatorConstants;
 /** Add your docs here. */
 public class ShoulderHelper {
 
-    //Set new SparkMax motor for the shoulder
+    // Set new SparkMax motor for the shoulder
   public final TalonFX shoulderMotor = new TalonFX(ManipulatorConstants.kShoulderMotorID);
 
-  //CAN Encoder for shoulder motor
+  // CAN Encoder for shoulder motor
   public final CANcoder absoluteEncoder = new CANcoder(ManipulatorConstants.kShoulderEncoderID);
 
   public ShoulderHelper() {
@@ -44,7 +44,9 @@ public class ShoulderHelper {
     // Finish configurating shoulder
   }
 
+  // Gets current position
   public double getPosition() {}
 
+  // Sets current position
   public void setPosition() {}
 }

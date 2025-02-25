@@ -14,13 +14,13 @@ import frc.robot.subsystems.ManipulatorHelpers.ShoulderHelper;
 public class ManipulatorSubsystem extends SubsystemBase {
   /** Creates a new ManipulatorSubsystem. */
 
-  //So we can call upon subsystem ClawHelper
+  // So we can call upon subsystem ClawHelper
   private final ClawHelper clawHelper = new ClawHelper();
 
-  //So we can call upon subsystem ElevatorHelper
+  // So we can call upon subsystem ElevatorHelper
   private final ElevatorHelper elevatorHelper = new ElevatorHelper();
 
-  //So we can call upon subsystem ShoulderHelper
+  // So we can call upon subsystem ShoulderHelper
   private final ShoulderHelper shoulderHelper = new ShoulderHelper();
 
   public ManipulatorSubsystem() {}
@@ -33,7 +33,7 @@ public class ManipulatorSubsystem extends SubsystemBase {
      * 4. How fast?
      */
 
-     //Conversion factor Circumfirance of gear x2
+     // Conversion factor Circumfirance of gear x2
   }
 
   public void startClaw() {
@@ -54,7 +54,7 @@ public class ManipulatorSubsystem extends SubsystemBase {
      */
   }
 
-  //Note: When do the motors stop?
+  // Note: When do the motors stop?
 
   @Override
   public void periodic() {

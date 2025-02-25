@@ -21,16 +21,16 @@ import frc.robot.Constants.IntakeConstants;
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
 
-  //Setting new TalonFX motor
+  // Setting new TalonFX motor
   public final TalonFX intakeMotor = new TalonFX(IntakeConstants.kIntakeMotorCanID);
 
-  //Set new SparkMax motor
+  // Set new SparkMax motor
   public final SparkMax intakeAngleMotor = new SparkMax(IntakeConstants.kIntakeAngleMotorCanID, MotorType.kBrushless);
 
-  //Encoder for our new motor
+  // Encoder for our new motor
   public final SparkAbsoluteEncoder intakeAbsoluteEncoder = intakeAngleMotor.getAbsoluteEncoder();
   
-  //Relative encoder for our motor
+  // Relative encoder for our motor
   public final RelativeEncoder intakeEncoder = intakeAngleMotor.getEncoder();
 
   public IntakeSubsystem() {
@@ -64,7 +64,7 @@ public class IntakeSubsystem extends SubsystemBase {
      */
   }
 
-  //Note: When do the motors stop?
+  // Note: When do the motors stop?
 
   @Override
   public void periodic() {

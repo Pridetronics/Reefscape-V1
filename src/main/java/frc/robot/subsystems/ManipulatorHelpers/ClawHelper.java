@@ -14,7 +14,7 @@ import frc.robot.Constants.ManipulatorConstants;
 /** Add your docs here. */
 public class ClawHelper {
 
-    //Setting new TalonFX motor for the claw
+    // Setting new TalonFX motor for the claw
   public final TalonFX clawMotor = new TalonFX(ManipulatorConstants.kClawMotorID);
 
   public ClawHelper() {
@@ -40,7 +40,9 @@ public class ClawHelper {
     // Finish configuring claw
   }
 
+  // Gets current velocity
   public double getVelocity() {}
 
+  // Sets target velocity
   public void setVelocity() {}
 }
