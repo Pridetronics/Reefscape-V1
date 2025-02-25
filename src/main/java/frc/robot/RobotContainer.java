@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.util.Map;
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -16,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -25,11 +29,12 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.WheelConstants;
 import frc.robot.commands.FieldPositionUpdate;
-import frc.robot.commands.SwerveAutoPaths;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.ZeroRobotHeading;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.utils.Autos;
+import frc.robot.utils.Autos.CommandSelector;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -41,7 +46,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   private final VisionSubsystem visionSubsystem = new VisionSubsystem();
-  private final SendableChooser<Trajectory> autoCommandChooser = new SendableChooser<>();
+  private final SendableChooser<Autos.CommandSelector> autoCommandChooser = new SendableChooser<>();
   private final Joystick driverJoystick = new Joystick(IOConstants.kDriveJoystickID);
 
   //Create a shuffleboard tab for the drivers to see all teleop info
@@ -63,7 +68,7 @@ public class RobotContainer {
     autoCommandChooser.setDefaultOption("Do Nothing", null);
     // autoCommandChooser.addOption("test auto", SwerveAutoPaths.TestAutoPath());
     // autoCommandChooser.addOption("weird path", SwerveAutoPaths.WeirdPath());
-    autoCommandChooser.addOption("Forward Right", SwerveAutoPaths.ForwardRight());
+    autoCommandChooser.addOption("Forward Right", null);
 
     SmartDashboard.putData("Autonomous Mode", autoCommandChooser);
 
@@ -114,30 +119,29 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     //Get the trajectory selected in the drop down on the shuffleboard
-    Trajectory chosenTrajectory = autoCommandChooser.getSelected();
-    if (chosenTrajectory == null) return null;
-    //Controllers to keep the robot on the main path since it will not follow it too well without it
-    PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
-    PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
-    ProfiledPIDController thetaController = new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-    
-    //Creates a command that will run the robot along the path
-    SwerveControllerCommand swerveAutoCommand = new SwerveControllerCommand(
-    chosenTrajectory, 
-    swerveSubsystem::getPose, 
-    WheelConstants.kDriveKinematics,
-    xController,
-    yController,
-    thetaController,
-    swerveSubsystem::setModuleStates,
-    swerveSubsystem);
 
-    //A series of commands that will reset the odometer (aka the position predictor) so the forward direction of the trajectory is the forward direction of the robot, run the command, and stop all the wheels; in that order
-    return new SequentialCommandGroup(
-      new InstantCommand(() -> swerveSubsystem.resetOdometry(chosenTrajectory.getInitialPose())),
-      swerveAutoCommand,
-      new InstantCommand(() -> swerveSubsystem.stopModules())
-    );
+    // if (chosenTrajectory == null) return null;
+    // //Controllers to keep the robot on the main path since it will not follow it too well without it
+    // PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
+    // PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
+    // ProfiledPIDController thetaController = new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+    // thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    
+    // //Creates a command that will run the robot along the path
+    // SwerveControllerCommand swerveAutoCommand = new SwerveControllerCommand(
+    // chosenTrajectory, 
+    // swerveSubsystem::getPose, 
+    // WheelConstants.kDriveKinematics,
+    // xController,
+    // yController,
+    // thetaController,
+    // swerveSubsystem::setModuleStates,
+    // swerveSubsystem);
+
+    Autos.setSwerveSubsystem(swerveSubsystem);
+    CommandSelector commandSeleted = autoCommandChooser.getSelected();
+
+    Supplier<Command> autoCommandSupplier = Autos.commandHashMap.get(commandSeleted);
+    return autoCommandSupplier.get();
   }
 }
