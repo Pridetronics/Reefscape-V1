@@ -9,6 +9,8 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Joystick;
@@ -33,6 +35,7 @@ import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.ZeroRobotHeading;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.utils.AutoPosePosition;
 import frc.robot.utils.Autos;
 import frc.robot.utils.Autos.CommandSelector;
 
@@ -46,7 +49,11 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   private final VisionSubsystem visionSubsystem = new VisionSubsystem();
+
   private final SendableChooser<Autos.CommandSelector> autoCommandChooser = new SendableChooser<>();
+  private final SendableChooser<AutoPosePosition> emergencyStartingPoseChooser = new SendableChooser<>();
+  private final SendableChooser<Boolean> sideOfFieldChooser = new SendableChooser<>();
+
   private final Joystick driverJoystick = new Joystick(IOConstants.kDriveJoystickID);
 
   //Create a shuffleboard tab for the drivers to see all teleop info
@@ -72,6 +79,33 @@ public class RobotContainer {
 
     SmartDashboard.putData("Autonomous Mode", autoCommandChooser);
 
+    emergencyStartingPoseChooser.setDefaultOption("Scoring side", new AutoPosePosition(
+      new Pose2d(
+        0, 
+        0, 
+        Rotation2d.fromDegrees(180)
+      )
+    ));
+    emergencyStartingPoseChooser.setDefaultOption("Center side", new AutoPosePosition(
+      new Pose2d(
+        0, 
+        0, 
+        Rotation2d.fromDegrees(180)
+      )
+    ));
+    emergencyStartingPoseChooser.setDefaultOption("Audience side", new AutoPosePosition(
+      new Pose2d(
+        0, 
+        0, 
+        Rotation2d.fromDegrees(180)
+      )
+    ));
+    SmartDashboard.putData("Emergency Starting Pose", emergencyStartingPoseChooser);
+
+    sideOfFieldChooser.setDefaultOption("Scoring table side", true);
+    sideOfFieldChooser.addOption("Audience side", false);
+    SmartDashboard.putData("Side of field scoring", sideOfFieldChooser);
+    
     //Command set to run periodicly to register joystick inputs
     //It uses suppliers/mini methods to give up to date info easily
     swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
