@@ -4,14 +4,11 @@
 
 package frc.robot;
 
-import java.util.Map;
-import java.util.function.Supplier;
+import java.util.ArrayList;
+import java.util.function.Function;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -20,16 +17,10 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SelectCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IOConstants;
-import frc.robot.Constants.WheelConstants;
 import frc.robot.commands.FieldPositionUpdate;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.ZeroRobotHeading;
@@ -50,18 +41,19 @@ public class RobotContainer {
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   private final VisionSubsystem visionSubsystem = new VisionSubsystem();
 
-  private final SendableChooser<Autos.CommandSelector> autoCommandChooser = new SendableChooser<>();
-  private final SendableChooser<AutoPosePosition> emergencyStartingPoseChooser = new SendableChooser<>();
-  private final SendableChooser<Boolean> sideOfFieldChooser = new SendableChooser<>();
-
   private final Joystick driverJoystick = new Joystick(IOConstants.kDriveJoystickID);
 
   //Create a shuffleboard tab for the drivers to see all teleop info
   private static final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
+  private static final ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous");
+
+  private static final SendableChooser<CommandSelector> autoCommandChooser = new SendableChooser<>();
+  public static final SendableChooser<AutoPosePosition> emergencyStartingPoseChooser = new SendableChooser<>();
+  public static final SendableChooser<Boolean> sideOfFieldChooser = new SendableChooser<>();
 
   private final GenericEntry forwardDirectionEntry = teleOpTab.add("Reverse Field Forward", false)
-  .withWidget(BuiltInWidgets.kToggleSwitch)
-  .getEntry();
+    .withWidget(BuiltInWidgets.kToggleSwitch)
+    .getEntry();
 
   private final FieldPositionUpdate fieldUpdateCommand = new FieldPositionUpdate(
     visionSubsystem, 
@@ -73,12 +65,20 @@ public class RobotContainer {
 
     //Create your auto paths here (By which the trajectories are made in SwerveAutoPaths)
     autoCommandChooser.setDefaultOption("Do Nothing", null);
-    // autoCommandChooser.addOption("test auto", SwerveAutoPaths.TestAutoPath());
-    // autoCommandChooser.addOption("weird path", SwerveAutoPaths.WeirdPath());
     autoCommandChooser.addOption("Forward Right", null);
+    autoTab.add("Auto mode", autoCommandChooser)
+      .withWidget(BuiltInWidgets.kComboBoxChooser);
 
-    SmartDashboard.putData("Autonomous Mode", autoCommandChooser);
-
+    Boolean firstStartingPositionAdded = false;
+    for (String optionName : Autos.startingPositions.keySet()) {
+      AutoPosePosition position = Autos.startingPositions.get(optionName);
+      if (firstStartingPositionAdded) {
+        emergencyStartingPoseChooser.addOption(optionName, position);
+      } else {
+        emergencyStartingPoseChooser.setDefaultOption(optionName, position);
+        firstStartingPositionAdded = true;
+      }
+    }
     emergencyStartingPoseChooser.setDefaultOption("Scoring side", new AutoPosePosition(
       new Pose2d(
         0, 
@@ -119,6 +119,8 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
+
+    enableCameraUpdating();
   }
 
   public void disableCameraUpdating() {
@@ -172,10 +174,30 @@ public class RobotContainer {
     // swerveSubsystem::setModuleStates,
     // swerveSubsystem);
 
-    Autos.setSwerveSubsystem(swerveSubsystem);
+    if (!visionSubsystem.lookingAtAprilTag()) {
+      swerveSubsystem.resetOdometry(emergencyStartingPoseChooser.getSelected().getPose());
+      if ( emergencyStartingPoseChooser.getSelected().getPose().equals(Autos.startingPositions.get("Scoring side").getPose()) ) {
+        AutoPosePosition.setFieldSideSwap(true);
+      } else if ( emergencyStartingPoseChooser.getSelected().getPose().equals(Autos.startingPositions.get("Center side").getPose()) ) {
+        AutoPosePosition.setFieldSideSwap(sideOfFieldChooser.getSelected());
+      }
+    } else {
+      ArrayList<Pose2d> startingPoses = new ArrayList<>();
+      for (AutoPosePosition posePosition : Autos.startingPositions.values()) {
+        startingPoses.add(posePosition.getPose());
+      }
+      Pose2d nearestStartingPose = swerveSubsystem.getPose().nearest(startingPoses);
+
+      if ( nearestStartingPose.equals(Autos.startingPositions.get("Scoring side").getPose()) ) {
+        AutoPosePosition.setFieldSideSwap(true);
+      } else if ( nearestStartingPose.equals(Autos.startingPositions.get("Center side").getPose()) ) {
+        AutoPosePosition.setFieldSideSwap(sideOfFieldChooser.getSelected());
+      }
+    }
+
     CommandSelector commandSeleted = autoCommandChooser.getSelected();
 
-    Supplier<Command> autoCommandSupplier = Autos.commandHashMap.get(commandSeleted);
-    return autoCommandSupplier.get();
+    Function<Pose2d, Command> autoCommandSupplier = Autos.commandHashMap.get(commandSeleted);
+    return autoCommandSupplier.apply(swerveSubsystem.getPose());
   }
 }

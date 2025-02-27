@@ -5,22 +5,13 @@
 package frc.robot.utils;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.WheelConstants;
-import frc.robot.subsystems.SwerveSubsystem;
 
 public final class Autos {
   /** Example static factory for an autonomous command. */
@@ -28,30 +19,56 @@ public final class Autos {
   //  return Commands.sequence(subsystem.exampleMethodCommand(), new ExampleCommand(subsystem));
   // }
 
-  public enum CommandSelector {
+  public static enum CommandSelector {
     centerL1Auto,
     centerL4Auto,
   }
 
-  public static HashMap<CommandSelector, Supplier<Command>> commandHashMap = new HashMap<>(
+  public static final HashMap<String, AutoPosePosition> startingPositions = new HashMap<>(
     Map.of(
-      CommandSelector.centerL1Auto, () -> Coral1Auto(),
-      CommandSelector.centerL4Auto, () -> Coral4Auto()
+      "Scoring side", new AutoPosePosition(
+        new Pose2d(
+          0, 
+          0, 
+          Rotation2d.fromDegrees(180)
+        ),
+        true
+      ),
+      "Center side", new AutoPosePosition(
+        new Pose2d(
+          0, 
+          0, 
+          Rotation2d.fromDegrees(180)
+        ),
+        true
+      ),
+      "Audience side", new AutoPosePosition(
+        new Pose2d(
+          0, 
+          0, 
+          Rotation2d.fromDegrees(180)
+        ),
+        true
+      )
+    ) 
+  );
+
+  public static final HashMap<CommandSelector, Function<Pose2d, Command>> commandHashMap = new HashMap<>(
+    Map.of(
+      CommandSelector.centerL1Auto, Autos::Coral1Auto,
+      CommandSelector.centerL4Auto, Autos::Coral4Auto
     )
   );
 
-  public static SwerveSubsystem robotSwerveSubsystem;
-  public static void setSwerveSubsystem(SwerveSubsystem subsystem) {
-    robotSwerveSubsystem = subsystem;
-  }
 
-  public static Command Coral1Auto() {
+
+  private static Command Coral1Auto(Pose2d initialPose) {
     return new SequentialCommandGroup(
       
     );
   }
 
-  public static Command Coral4Auto() {
+  private static Command Coral4Auto(Pose2d initialPose) {
     return new SequentialCommandGroup(
       
     );

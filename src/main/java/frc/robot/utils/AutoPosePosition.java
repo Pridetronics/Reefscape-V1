@@ -7,29 +7,52 @@ package frc.robot.utils;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Add your docs here. */
 public class AutoPosePosition {
-    private final Pose2d kPosition;
+
+    private static Boolean swapFieldSides = false;
+    public static void setFieldSideSwap(Boolean value) {
+      swapFieldSides = value;
+    }
+
+    private final Pose2d position;
+    private final Boolean ignoreFieldSideSwapValue;
     
     public AutoPosePosition(Pose2d pose) {
-        kPosition = pose;
+        position = pose;
+        ignoreFieldSideSwapValue = false;
+    }
+
+    public AutoPosePosition(Pose2d pose, Boolean ignoreFieldSideSwap) {
+        position = pose;
+        ignoreFieldSideSwapValue = ignoreFieldSideSwap;
     }
 
     public Pose2d getPose() {
-        SendableChooser<Boolean> chooser = SmartDashboard.getData("Side of field scoring");
-        //Pose2d teamOrientedPose = TrajectoryHelper.
-        return kPosition;
+        Pose2d teamOrientedPose = TrajectoryHelper.toAllianceRelativePosition(position);
+        if (ignoreFieldSideSwapValue) {
+            return teamOrientedPose;
+        }
+        Pose2d fieldSideOrientedPose = TrajectoryHelper.setFieldSidePosition(teamOrientedPose, swapFieldSides);
+        return fieldSideOrientedPose;
     }
 
     public Translation2d getPosition() {
-        return kPosition.getTranslation();
+        Translation2d teamOrientedPosition = TrajectoryHelper.toAllianceRelativePosition(position.getTranslation());
+        if (ignoreFieldSideSwapValue) {
+            return teamOrientedPosition;
+        }
+        Translation2d fieldSideOrientedPosition = TrajectoryHelper.setFieldSidePosition(teamOrientedPosition, swapFieldSides);
+        return fieldSideOrientedPosition;
     }
 
     public Rotation2d getRotation() {
-        return kPosition.getRotation();
+        Pose2d teamOrientedPose = TrajectoryHelper.toAllianceRelativePosition(position);
+        if (ignoreFieldSideSwapValue) {
+            return teamOrientedPose.getRotation();
+        }
+        Pose2d fieldSideOrientedPose = TrajectoryHelper.setFieldSidePosition(teamOrientedPose, swapFieldSides);
+        return fieldSideOrientedPose.getRotation();
     }
 }

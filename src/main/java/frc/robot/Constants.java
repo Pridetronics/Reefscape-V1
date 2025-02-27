@@ -109,7 +109,8 @@ public final class Constants {
   //Constants for the movement of the robot
   public static class DriveConstants {
 
-    public static final double kFieldWidthMeters = Units.inchesToMeters(653.2);
+    public static final double kFieldWidthMeters = Units.inchesToMeters(649);
+    public static final double kFieldHeightMeters = Units.inchesToMeters(319);
 
 
     //The literal max speed each wheel is allowed to go
