@@ -65,7 +65,9 @@ public class RobotContainer {
 
     //Create your auto paths here (By which the trajectories are made in SwerveAutoPaths)
     autoCommandChooser.setDefaultOption("Do Nothing", null);
-    autoCommandChooser.addOption("Forward Right", null);
+    for (CommandSelector autoCommand : Autos.commandHashMap.keySet()) {
+      autoCommandChooser.addOption(autoCommand.toString(), autoCommand);
+    }
     autoTab.add("Auto mode", autoCommandChooser)
       .withWidget(BuiltInWidgets.kComboBoxChooser);
 
@@ -196,6 +198,10 @@ public class RobotContainer {
     }
 
     CommandSelector commandSeleted = autoCommandChooser.getSelected();
+
+    if (commandSeleted == null) {
+      return null;
+    }
 
     Function<Pose2d, Command> autoCommandSupplier = Autos.commandHashMap.get(commandSeleted);
     return autoCommandSupplier.apply(swerveSubsystem.getPose());
