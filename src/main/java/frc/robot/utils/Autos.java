@@ -5,13 +5,32 @@
 package frc.robot.utils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import edu.wpi.first.units.Units.*;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.DistanceUnit;
+import edu.wpi.first.units.LinearVelocityUnit;
+import edu.wpi.first.units.Unit;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.Units.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import frc.robot.Constants;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.WheelConstants;
+import frc.robot.subsystems.SwerveSubsystem;
 
 public final class Autos {
   /** Example static factory for an autonomous command. */
@@ -22,6 +41,39 @@ public final class Autos {
   public static enum CommandSelector {
     centerL1Auto,
     centerL4Auto,
+  }
+
+  public static class coralPositions {
+    public static final AutoPosePosition bargeSide1 = new AutoPosePosition(new Pose2d(
+      5.89,
+      4.17,
+      Rotation2d.fromDegrees(180)
+    ));
+    public static final AutoPosePosition bargeSide2 = new AutoPosePosition(new Pose2d(
+      5.36,
+      5.19,
+      Rotation2d.fromDegrees(-120)
+    ));
+    public static final AutoPosePosition bargeSide3 = new AutoPosePosition(new Pose2d(
+      5.05,
+      5.32,
+      Rotation2d.fromDegrees(-120)
+    ));
+    public static final AutoPosePosition stationSide3 = new AutoPosePosition(new Pose2d(
+      3.94,
+      5.34,
+      Rotation2d.fromDegrees(-60)
+    ));
+    public static final AutoPosePosition stationSide2 = new AutoPosePosition(new Pose2d(
+      3.65,
+      5.14,
+      Rotation2d.fromDegrees(-60)
+    ));
+    public static final AutoPosePosition stationSide1 = new AutoPosePosition(new Pose2d(
+      3.10,
+      4.19,
+      Rotation2d.fromDegrees(0)
+    ));
   }
 
   public static final HashMap<String, AutoPosePosition> startingPositions = new HashMap<>(
@@ -53,7 +105,7 @@ public final class Autos {
     ) 
   );
 
-  public static final HashMap<CommandSelector, Function<Pose2d, Command>> commandHashMap = new HashMap<>(
+  public static final HashMap<CommandSelector, BiFunction<Pose2d, SwerveSubsystem, Command>> commandHashMap = new HashMap<>(
     Map.of(
       CommandSelector.centerL1Auto, Autos::Coral1Auto,
       CommandSelector.centerL4Auto, Autos::Coral4Auto
@@ -62,13 +114,45 @@ public final class Autos {
 
 
 
-  private static Command Coral1Auto(Pose2d initialPose) {
+  private static Command Coral1Auto(Pose2d initialPose, SwerveSubsystem swerveSubsystem) {
+    // //Controllers to keep the robot on the main path since it will not follow it too well without it
+    PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
+    PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
+    ProfiledPIDController thetaController = new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+
+    Trajectory startToReefTrajectory = TrajectoryGenerator.generateTrajectory(
+      List.of(
+        initialPose,
+        coralPositions.bargeSide1.getPose()
+      ), 
+      Constants.kTrajectoryConfig.setEndVelocity(AutoConstants.kMaxSpeedMetersPerSecond*5)
+    );
+
+    SwerveControllerCommand startToReef = new SwerveControllerCommand(
+      startToReefTrajectory, 
+      swerveSubsystem::getPose, 
+      WheelConstants.kDriveKinematics,
+      xController,
+      yController,
+      thetaController,
+      swerveSubsystem::setModuleStates,
+      swerveSubsystem
+    );
+
     return new SequentialCommandGroup(
-      
+      //Drive to reef,
+      startToReef
+      //place coral
+      //drive to coral station
+      //pick up with AI
+      //drive to reef
+      //place coral
     );
   }
 
-  private static Command Coral4Auto(Pose2d initialPose) {
+  private static Command Coral4Auto(Pose2d initialPose, SwerveSubsystem swerveSubsystem) {
     return new SequentialCommandGroup(
       
     );

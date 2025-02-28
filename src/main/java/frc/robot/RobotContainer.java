@@ -5,6 +5,7 @@
 package frc.robot;
 
 import java.util.ArrayList;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -63,7 +64,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    //Create your auto paths here (By which the trajectories are made in SwerveAutoPaths)
+    //Adds a dropdown list of auto commands
     autoCommandChooser.setDefaultOption("Do Nothing", null);
     for (CommandSelector autoCommand : Autos.commandHashMap.keySet()) {
       autoCommandChooser.addOption(autoCommand.toString(), autoCommand);
@@ -71,6 +72,7 @@ public class RobotContainer {
     autoTab.add("Auto mode", autoCommandChooser)
       .withWidget(BuiltInWidgets.kComboBoxChooser);
 
+    //Sets emergency starting pose dropdown
     Boolean firstStartingPositionAdded = false;
     for (String optionName : Autos.startingPositions.keySet()) {
       AutoPosePosition position = Autos.startingPositions.get(optionName);
@@ -88,25 +90,27 @@ public class RobotContainer {
         Rotation2d.fromDegrees(180)
       )
     ));
-    emergencyStartingPoseChooser.setDefaultOption("Center side", new AutoPosePosition(
+    emergencyStartingPoseChooser.addOption("Center side", new AutoPosePosition(
       new Pose2d(
         0, 
         0, 
         Rotation2d.fromDegrees(180)
       )
     ));
-    emergencyStartingPoseChooser.setDefaultOption("Audience side", new AutoPosePosition(
+    emergencyStartingPoseChooser.addOption("Audience side", new AutoPosePosition(
       new Pose2d(
         0, 
         0, 
         Rotation2d.fromDegrees(180)
       )
     ));
-    SmartDashboard.putData("Emergency Starting Pose", emergencyStartingPoseChooser);
+    autoTab.add("Emergency Starting Pose", emergencyStartingPoseChooser)
+      .withWidget(BuiltInWidgets.kComboBoxChooser);
 
     sideOfFieldChooser.setDefaultOption("Scoring table side", true);
     sideOfFieldChooser.addOption("Audience side", false);
-    SmartDashboard.putData("Side of field scoring", sideOfFieldChooser);
+    autoTab.add("Side of field scoring", sideOfFieldChooser)
+    .withWidget(BuiltInWidgets.kComboBoxChooser);
     
     //Command set to run periodicly to register joystick inputs
     //It uses suppliers/mini methods to give up to date info easily
@@ -177,33 +181,46 @@ public class RobotContainer {
     // swerveSubsystem);
 
     if (!visionSubsystem.lookingAtAprilTag()) {
+      //If camera is not used
       swerveSubsystem.resetOdometry(emergencyStartingPoseChooser.getSelected().getPose());
+      //Set robot position to emergency starting pose
       if ( emergencyStartingPoseChooser.getSelected().getPose().equals(Autos.startingPositions.get("Scoring side").getPose()) ) {
+        //Swap field side if on scoring side
         AutoPosePosition.setFieldSideSwap(true);
       } else if ( emergencyStartingPoseChooser.getSelected().getPose().equals(Autos.startingPositions.get("Center side").getPose()) ) {
+        //Use field side option if in center
         AutoPosePosition.setFieldSideSwap(sideOfFieldChooser.getSelected());
       }
     } else {
+      //If camera is used
+
+      //Get starting poses as Pose2d objects
       ArrayList<Pose2d> startingPoses = new ArrayList<>();
       for (AutoPosePosition posePosition : Autos.startingPositions.values()) {
         startingPoses.add(posePosition.getPose());
       }
+      //Get closest pose to robot
       Pose2d nearestStartingPose = swerveSubsystem.getPose().nearest(startingPoses);
 
       if ( nearestStartingPose.equals(Autos.startingPositions.get("Scoring side").getPose()) ) {
+        //Swap field side if on scoring side
         AutoPosePosition.setFieldSideSwap(true);
       } else if ( nearestStartingPose.equals(Autos.startingPositions.get("Center side").getPose()) ) {
+        //Use field side option if in center
         AutoPosePosition.setFieldSideSwap(sideOfFieldChooser.getSelected());
       }
     }
 
+    //Get selected command enum
     CommandSelector commandSeleted = autoCommandChooser.getSelected();
 
     if (commandSeleted == null) {
       return null;
     }
 
-    Function<Pose2d, Command> autoCommandSupplier = Autos.commandHashMap.get(commandSeleted);
-    return autoCommandSupplier.apply(swerveSubsystem.getPose());
+    //Get command supplier
+    BiFunction<Pose2d, SwerveSubsystem, Command> autoCommandSupplier = Autos.commandHashMap.get(commandSeleted);
+    //return the command supplied
+    return autoCommandSupplier.apply(swerveSubsystem.getPose(), swerveSubsystem);
   }
 }
