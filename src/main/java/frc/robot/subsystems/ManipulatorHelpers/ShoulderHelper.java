@@ -4,49 +4,84 @@
 
 package frc.robot.subsystems.ManipulatorHelpers;
 
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.spark.SparkBase.*;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SoftLimitConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import frc.robot.Constants.ManipulatorConstants;
 
 /** Add your docs here. */
 public class ShoulderHelper {
 
-    // Set new SparkMax motor for the shoulder
-  public final TalonFX shoulderMotor = new TalonFX(ManipulatorConstants.kShoulderMotorID);
+// Set new SparkMax motor for the elevator
+  public final SparkMax shoulderMotor = new SparkMax(ManipulatorConstants.kShoulderMotorID, MotorType.kBrushless);
 
   // CAN Encoder for shoulder motor
   public final CANcoder absoluteEncoder = new CANcoder(ManipulatorConstants.kShoulderEncoderID);
 
+// Relative encoder for the elevator motor
+  public final RelativeEncoder shoulderEncoder = shoulderMotor.getEncoder();
+
+// Set PID controller
+  public final SparkClosedLoopController shoulderPIDController = shoulderMotor.getClosedLoopController();
+
   public ShoulderHelper() {
 
-    // Configurating shoulder motor
-    TalonFXConfigurator talonFXShoulderConfigurator = shoulderMotor.getConfigurator();
-    CurrentLimitsConfigs shoulderLimitConfigs = new CurrentLimitsConfigs();
+    // Configurating elevator
+    SparkMaxConfig shoulderConfig = new SparkMaxConfig();
+    
+    shoulderConfig
+    // Set what we are configurating
+    .inverted(ManipulatorConstants.kShoulderEncoderReversed)
+    .idleMode(IdleMode.kBrake)
+    // Set current limit
+    .smartCurrentLimit(80, 80);
+    // Conversion factors to convert from rotations to inches
+    shoulderConfig.encoder
+    // Conversion for elevator
+    .positionConversionFactor(ManipulatorConstants.kShoulderGearRatio)
+    // Converts to inches per second
+    .velocityConversionFactor(ManipulatorConstants.kShoulderGearRatio /60 );
+    
+    shoulderConfig.closedLoop
+    .pid(ManipulatorConstants.kShoulderPValue, ManipulatorConstants.kShoulderIValue, ManipulatorConstants.kShoulderDValue);
+    
+    // Elevator limit config
+    SoftLimitConfig softConfig = new SoftLimitConfig();
+    
+    // Maximum limit
+    softConfig
+    // The limit itself
+    .forwardSoftLimit(ManipulatorConstants.kShoulderLowerLimitDegrees)
+    // Is the limit enabled
+    .forwardSoftLimitEnabled(true);
+    // Minimum limit
+    softConfig
+    // The limit itself
+    .reverseSoftLimit(ManipulatorConstants.kShoulderHigherLimitDegrees)
+    // Is the limit enabled
+    .reverseSoftLimitEnabled(true);
+    
+    // Apply changes
+    shoulderMotor.configure(shoulderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // Finish configurating elevator
+    }
 
-    // enable stator current limit
-    shoulderLimitConfigs.StatorCurrentLimit = 120;
-    shoulderLimitConfigs.StatorCurrentLimitEnable = true;
-
-    talonFXShoulderConfigurator.apply(shoulderLimitConfigs);
-
-    // PID
-    Slot0Configs PIDShoulderConfigs = new Slot0Configs();
-
-    PIDShoulderConfigs.kP = ManipulatorConstants.kShoulderPValue;
-    PIDShoulderConfigs.kI = ManipulatorConstants.kShoulderIValue;
-    PIDShoulderConfigs.kD = ManipulatorConstants.kShoulderDValue;
-
-    talonFXShoulderConfigurator.apply(PIDShoulderConfigs);
-    // Finish configurating shoulder
+    // Gets current position
+    public double getPosition() {
+      return shoulderEncoder.getPosition();
   }
 
-  // Gets current position
-  public double getPosition() {}
+    // Sets target position
+    public void setPosition(double position) {
 
-  // Sets current position
-  public void setPosition() {}
+        // Set our goal for PID
+        shoulderPIDController.setReference(position, ControlType.kPosition);
+  }
 }

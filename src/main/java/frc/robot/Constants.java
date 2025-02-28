@@ -173,57 +173,70 @@ public final class Constants {
     public static final double kBackLeftDriveAbsoluteEncoderOffsetDeg = 163.65; 
   }
 
-  //Constants for our intake
+  // Constants for our intake
   public static class IntakeConstants {
-    //Set the motor ID for the motor that spins the Intake itself
+    // Set the motor ID for the motor that spins the Intake itself
     public static final int kIntakeMotorCanID = 14; 
-    //Set the motor ID for the motor that controls the angle of the Intake
+    // Set the motor ID for the motor that controls the angle of the Intake
     public static final int kIntakeAngleMotorCanID = 15; 
 
-    //Proportional, Integral, and Derivitive values for the velocity PID controller
+    // Proportional, Integral, and Derivitive values for the velocity PID controller
     public static final double kIntakeAnglePValue = .5;
     public static final double kIntakeAngleIValue = 1;
     public static final double kIntakeAngleDValue = 1;
   }
 
-  //Constants for manipulators (not including intake)
+  // Constants for manipulators (not including intake)
   public static class ManipulatorConstants {
-    //Set the motor ID for the motor that shoots in the claw
+    // Set the motor ID for the motor that shoots in the claw
     public static final int kClawMotorID = 16; 
-    //Set the motor ID for the motor that controls the elevator
+    // Set the motor ID for the motor that controls the elevator
     public static final int kElevatorMotorID = 17; 
-    //Set the motor ID for our shoulder motor
+    // Set the motor ID for our shoulder motor
     public static final int kShoulderMotorID = 18;
-    //Set the shoulder CAN encoder ID
+    // Set the shoulder CAN encoder ID
     public static final int kShoulderEncoderID = 19;
 
-    //Inverted elevator
-    public static final boolean kElevatorEncoderReversed = true;
-    //Value for position and velocity conversion for elevator
-    public static final double kDistancePerElevatorGearRotation = 1.37500*Math.PI;
+    // Inverted elevator
+    public static final boolean kShoulderEncoderReversed = true;
+    // Value for position and velocity conversion for shoulder
+    public static final double kShoulderGearRatio = 1/25;
+    // Value for position and velocity conversion for elevator
+    public static final double kElevatorGearRatio = 1.37500*Math.PI/20*2;
 
-    //Proportional, Integral, and Derivitive values for the velocity PID controller
+    // Proportional, Integral, and Derivitive values for the velocity PID controller
     public static final double kClawPValue = 0;
     public static final double kClawIValue = 0;
     public static final double kClawDValue = 0;
-    //Proportional, Integral, and Derivitive values for the velocity PID controller
+    // Proportional, Integral, and Derivitive values for the velocity PID controller
     public static final double kElevatorPValue = 0;
     public static final double kElevatorIValue = 0;
     public static final double kElevatorDValue = 0;
+    // Proportional, Integral, and Derivitive values for the velocity PID controller
+    public static final double kShoulderPValue = 0;
+    public static final double kShoulderIValue = 0;
+    public static final double kShoulderDValue = 0;
 
-    //Elevator Heights
-    
-    //Trough (L1) Height
+    // Shoulder Soft Limits
+
+    // Shoulder +
+    public static final int kShoulderLowerLimitDegrees = -100;
+    // Shoulder -
+    public static final int kShoulderHigherLimitDegrees = 55;
+
+    // Elevator Heights
+
+    // Trough (L1) Height
     public static final int kElevatorHeightL1Inches = 24;
-    //L2 Height
+    // L2 Height
     public static final int kElevatorHeightL2Inches = 36;
-    //L3 Height
+    // L3 Height
     public static final int kElevatorHeightL3Inches = 48;
-    //L4 Height
+    // L4 Height
     public static final int kElevatorHeightL4Inches = 60;
-    //Max Height
+    // Max Height
     public static final int kElevatorMaxHeightInches = 80;
-    //Homing Height
+    // Homing Height
     public static final int kElevatorHomingHeightInches = 12;
   }
 

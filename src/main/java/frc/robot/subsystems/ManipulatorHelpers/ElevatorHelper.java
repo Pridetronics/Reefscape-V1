@@ -4,84 +4,52 @@
 
 package frc.robot.subsystems.ManipulatorHelpers;
 
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.config.BaseConfig;
-import com.revrobotics.spark.SparkBase.*;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SoftLimitConfig;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
-import edu.wpi.first.math.controller.PIDController;
-
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.Constants.ManipulatorConstants;
 
 /** Add your docs here. */
 public class ElevatorHelper {
 
-// Set new SparkMax motor for the elevator
-  public final SparkMax elevatorMotor = new SparkMax(ManipulatorConstants.kElevatorMotorID, MotorType.kBrushless);
-
-// Relative encoder for the elevator motor
-  public final RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
-
-// Set PID controller
-  public final SparkClosedLoopController elevatorPIDController = elevatorMotor.getClosedLoopController();
+// Set new TalonFX motor for the elevator
+  public final TalonFX elevatorMotor = new TalonFX(ManipulatorConstants.kElevatorMotorID);
 
   public ElevatorHelper() {
 
-    // Configurating elevator
-    SparkMaxConfig elevatorConfig = new SparkMaxConfig();
-    
-    elevatorConfig
-    // Set what we are configurating
-    .inverted(ManipulatorConstants.kElevatorEncoderReversed)
-    .idleMode(IdleMode.kBrake)
-    // Set current limit
-    .smartCurrentLimit(80, 80);
-    // Conversion factors to convert from rotations to inches
-    elevatorConfig.encoder
-    // Conversion for elevator
-    .positionConversionFactor(ManipulatorConstants.kDistancePerElevatorGearRotation*2)
-    // Converts to inches per second
-    .velocityConversionFactor((ManipulatorConstants.kDistancePerElevatorGearRotation*2) /60 );
-    
-    elevatorConfig.closedLoop
-    .pid(ManipulatorConstants.kElevatorPValue, ManipulatorConstants.kElevatorIValue, ManipulatorConstants.kElevatorDValue);
-    
-    // Elevator limit config
-    SoftLimitConfig softConfig = new SoftLimitConfig();
-    
-    // Maximum limit
-    softConfig
-    // The limit itself
-    .forwardSoftLimit(ManipulatorConstants.kElevatorMaxHeightInches)
-    // Is the limit enabled
-    .forwardSoftLimitEnabled(true);
-    // Minimum limit
-    softConfig
-    // The limit itself
-    .reverseSoftLimit(ManipulatorConstants.kElevatorHomingHeightInches)
-    // Is the limit enabled
-    .reverseSoftLimitEnabled(true);
-    
-    // Apply changes
-    elevatorMotor.configure(elevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    // Finish configurating elevator
-    }
+
+    // Configurating Elevator
+    TalonFXConfigurator talonFXElevatorConfigurator = elevatorMotor.getConfigurator();
+    CurrentLimitsConfigs elevatorLimitConfigs = new CurrentLimitsConfigs();
+
+    // enable stator current limit
+    elevatorLimitConfigs.StatorCurrentLimit = 120;
+    elevatorLimitConfigs.StatorCurrentLimitEnable = true;
+
+    talonFXElevatorConfigurator.apply(elevatorLimitConfigs);
+
+    // PID
+    Slot0Configs PIDElevatorConfigs = new Slot0Configs();
+
+    PIDElevatorConfigs.kP = ManipulatorConstants.kElevatorPValue;
+    PIDElevatorConfigs.kI = ManipulatorConstants.kElevatorIValue;
+    PIDElevatorConfigs.kD = ManipulatorConstants.kElevatorDValue;
+
+    talonFXElevatorConfigurator.apply(PIDElevatorConfigs);
+    // Finish Configurating Elevator
+  }
 
     // Gets current position
-    public double getPosition() {
-        return elevatorEncoder.getPosition();
-    }
+   public double getPosition() {}
 
-    // Sets target position
-    public void setPosition(double position) {
+    // Sets current position
+    public void setPosition() {}
 
-        // Set our goal for PID
-        elevatorPIDController.setReference(position, ControlType.kPosition);
-    }
+    // Brings elevator back to start
+    public void beginHoming() {}
+
+    // Is the homing finished?
+    public boolean isFinishedHoming() {}
 }
