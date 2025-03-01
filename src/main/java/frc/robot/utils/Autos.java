@@ -35,13 +35,12 @@ import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.WheelConstants;
-import frc.robot.commands.TrackCoralWithCamera;
 import frc.robot.commands.UnstowIntake;
+import frc.robot.commands.AutoTrackCoralWithCamera;
 import frc.robot.commands.PlaceCoral;
 import frc.robot.commands.PositionClawAtHeight;
 import frc.robot.commands.RetrieveCoral;
 import frc.robot.subsystems.ManipulatorSubsystem;
-import frc.robot.subsystems.SwerveSubsystem;
 
 public final class Autos {
   /** Example static factory for an autonomous command. */
@@ -170,7 +169,7 @@ public final class Autos {
         aroundReefManuverPosition.getPose(),
         coralStationPosition.getPose()
       ), 
-      Constants.kTrajectoryConfig.setEndVelocity(DriveConstants.kCameraCoralTrackingSpeedMetersPerSecond)
+      Constants.kTrajectoryConfig.setEndVelocity(DriveConstants.kCameraCoralTrackingDriveSpeedMetersPerMeter*1)
     );
 
     SwerveControllerCommand firstReefToStation = new SwerveControllerCommand(
@@ -227,7 +226,7 @@ public final class Autos {
       new ParallelDeadlineGroup(
         new RetrieveCoral(),
         new UnstowIntake(),
-        new TrackCoralWithCamera(robotContainer.swerveSubsystem, robotContainer.visionSubsystem)
+        new AutoTrackCoralWithCamera(robotContainer.swerveSubsystem, robotContainer.visionSubsystem)
       ),
       //drive to reef
       new ParallelCommandGroup(
@@ -239,7 +238,7 @@ public final class Autos {
         )
       ),
       //place coral
-      new PlaceCoral(robotContainer.manipulatorSubsystem),
+      new PlaceCoral(robotContainer.manipulatorSubsystem)
     );
   }
 

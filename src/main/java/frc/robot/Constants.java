@@ -46,8 +46,12 @@ public final class Constants {
 
     public static final String kDetectorCameraName = "detectorcamera";
     public static final Translation2d kDetectorCameraFOVDegrees = new Translation2d(62.5, 48.9);
-    public static final Translation3d kDetectorRobotToCamera = new Translation3d(-3, 10, 40);
-    public static final double kDetectorYaw = 20;
+    public static final Translation3d kDetectorRobotToCamera = new Translation3d(
+      Units.inchesToMeters(-3), 
+      Units.inchesToMeters(10), 
+      Units.inchesToMeters(40)
+    );
+    public static final double kDetectorYawDegrees = 20;
     public static final double kConfidenceThreshold = 0.5;
     
   }
@@ -142,7 +146,8 @@ public final class Constants {
     public static final double kTeleMaxTurningSpeedRadiansPerSecond = 360 * (Math.PI/180);
 
     //Max speed of the robot when tracking coral pieces
-    public static final double kCameraCoralTrackingSpeedMetersPerSecond = 1;
+    public static final double kCameraCoralTrackingDriveSpeedMetersPerMeter = 1;
+    public static final double kCameraCoralTrackingTurnignSpeedRadiansPerRadian = 1;
 
     //CAN ID for the gyro needed for swerve drive
     public static final int gyroCANID = 13;
@@ -205,7 +210,6 @@ public final class Constants {
 
   //Constants related to the autonomous period
   public static class AutoConstants {
-
 
     //Max speed during autonomous
     public static final double kMaxSpeedMetersPerSecond = 4;

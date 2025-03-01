@@ -92,7 +92,7 @@ public class VisionSubsystem extends SubsystemBase {
       if (detectedResult.confidence < CameraConstants.kConfidenceThreshold) continue;
 
       double angleXDegrees = detectedResult.tx;
-      double angleYDegrees = -detectedResult.ty;
+      double angleYDegrees = -detectedResult.ty-CameraConstants.kDetectorYawDegrees;
 
       //Parametric equation resulting in the final position
       Translation3d cameraToCoral = new Translation3d(
