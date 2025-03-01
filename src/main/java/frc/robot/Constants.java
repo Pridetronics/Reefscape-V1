@@ -126,10 +126,10 @@ public final class Constants {
     these values influence the rate of change in a number in such a way that the number being influenced 
     is multiplied by the max speed of the robot so that the influeced number being 0 means no speed, 1 means 
     100% speed, and -1 mean -100% speed
-      -A value of 1 means the 0 to max time is 1 second
-      -A value of 3 means the 0 to max time is 0.333333 seconds
-      -A value of 0.5 means the 0 to max time is 2 seconds
-      -A value 0f 0.2 means the 0 to max time is 5 seconds
+      -A value of 1 means the 0 to max speed time is 1 second
+      -A value of 3 means the 0 to max speed time is 0.333333 seconds
+      -A value of 0.5 means the 0 to max speed time is 2 seconds
+      -A value 0f 0.2 means the 0 to max speed time is 5 seconds
     You get the idea, the number is the max change in velocity, as a percent of the robot's full speed
     That means that the number is inversley related t0 the 0 to max time
    */
@@ -140,6 +140,9 @@ public final class Constants {
     public static final double kTeleMaxDriveSpeedMetersPerSecond = 3;
     //Max turning speed of the robot specified in degrees but converted to radians (with the "(Math.PI/180)")
     public static final double kTeleMaxTurningSpeedRadiansPerSecond = 360 * (Math.PI/180);
+
+    //Max speed of the robot when tracking coral pieces
+    public static final double kCameraCoralTrackingSpeedMetersPerSecond = 1;
 
     //CAN ID for the gyro needed for swerve drive
     public static final int gyroCANID = 13;

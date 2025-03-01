@@ -17,46 +17,34 @@ import frc.robot.utils.RunIfTrueCommand;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PositionClawAtHeight extends SequentialCommandGroup {
-  private InterruptionBehavior m_interruptBehavior = InterruptionBehavior.kCancelIncoming;
   /** Creates a new PositionClawAtHeight. */
   public PositionClawAtHeight(ClawHeightLevel targetHeight, IntakeSubsystem m_IntakeSubsystem, ManipulatorSubsystem m_ManipulatorSubsystem) {
 
-    
+    addRequirements(m_IntakeSubsystem, m_ManipulatorSubsystem);
     
 
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
 
+    new RunIfTrueCommand(new UnstowIntake(), () -> m_IntakeSubsystem.getStowedState() && m_ManipulatorSubsystem.getStowedState()),
+  
+    new ParallelCommandGroup(
+      new SetClawTargetState(targetHeight, m_ManipulatorSubsystem),
+      
+      new WaitUntilCommand(() -> m_ManipulatorSubsystem.isClawAtPositionalHeight(targetHeight)),
+      
       new SequentialCommandGroup(
-        new InstantCommand(() -> {
-          m_interruptBehavior = InterruptionBehavior.kCancelIncoming;
-        }),
-  
-        new RunIfTrueCommand(new UnstowIntake(), () -> m_IntakeSubsystem.getStowedState() && m_ManipulatorSubsystem.getStowedState()),
-  
-        new ParallelCommandGroup(
-          new InstantCommand(() -> {
-            m_interruptBehavior = InterruptionBehavior.kCancelSelf;
-          }),
-          new SetClawTargetHeight(targetHeight, m_ManipulatorSubsystem),
-          new WaitUntilCommand(() -> m_ManipulatorSubsystem.isClawAtPositionalHeight(targetHeight)),
-          new SequentialCommandGroup(
-            new WaitUntilCommand(() -> m_ManipulatorSubsystem.isClawOutOfWay()),
-            new StowIntake(m_IntakeSubsystem)
-          )
-        )
-      ).finallyDo((boolean interrupted) -> {
-        if (interrupted) {
-
-        }
-      })
+        new WaitUntilCommand(() -> m_ManipulatorSubsystem.isClawOutOfWay()),
+        new StowIntake(m_IntakeSubsystem)
+      )
+    )
 
     );
   }
 
   @Override
   public InterruptionBehavior getInterruptionBehavior() {
-    return m_interruptBehavior;
+    return InterruptionBehavior.kCancelIncoming;
   }
 }

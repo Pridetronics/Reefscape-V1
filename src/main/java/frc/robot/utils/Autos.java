@@ -26,13 +26,21 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.Units.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.WheelConstants;
+import frc.robot.commands.TrackCoralWithCamera;
+import frc.robot.commands.UnstowIntake;
+import frc.robot.commands.PlaceCoral;
 import frc.robot.commands.PositionClawAtHeight;
+import frc.robot.commands.RetrieveCoral;
+import frc.robot.subsystems.ManipulatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public final class Autos {
@@ -45,6 +53,18 @@ public final class Autos {
     centerL1Auto,
     centerL4Auto,
   }
+
+  public static final AutoPosePosition coralStationPosition = new AutoPosePosition(new Pose2d(
+    2.71,
+    6.59,
+    Rotation2d.fromDegrees(156)
+  ));
+
+  public static final AutoPosePosition aroundReefManuverPosition = new AutoPosePosition(new Pose2d(
+    6.11,
+    5.32,
+    Rotation2d.fromDegrees(180)
+  ));
 
   public static class coralPositions {
     public static final AutoPosePosition bargeSide1 = new AutoPosePosition(new Pose2d(
@@ -129,8 +149,8 @@ public final class Autos {
       List.of(
         initialPose,
         coralPositions.bargeSide1.getPose()
-      ), 
-      Constants.kTrajectoryConfig.setEndVelocity(AutoConstants.kMaxSpeedMetersPerSecond*5)
+      ),
+      Constants.kTrajectoryConfig
     );
 
     SwerveControllerCommand startToReef = new SwerveControllerCommand(
@@ -144,17 +164,82 @@ public final class Autos {
       robotContainer.swerveSubsystem
     );
 
+    Trajectory firstReefToStationTrajectory = TrajectoryGenerator.generateTrajectory(
+      List.of(
+        coralPositions.bargeSide1.getPose(),
+        aroundReefManuverPosition.getPose(),
+        coralStationPosition.getPose()
+      ), 
+      Constants.kTrajectoryConfig.setEndVelocity(DriveConstants.kCameraCoralTrackingSpeedMetersPerSecond)
+    );
+
+    SwerveControllerCommand firstReefToStation = new SwerveControllerCommand(
+      firstReefToStationTrajectory, 
+      robotContainer.swerveSubsystem::getPose, 
+      WheelConstants.kDriveKinematics,
+      xController,
+      yController,
+      thetaController,
+      robotContainer.swerveSubsystem::setModuleStates,
+      robotContainer.swerveSubsystem
+    );
+
+    Trajectory firstStationToReefTrajectory = TrajectoryGenerator.generateTrajectory(
+      List.of(
+        coralStationPosition.getPose(),
+        coralPositions.stationSide2.getPose()
+      ), 
+      Constants.kTrajectoryConfig
+    );
+
+    SwerveControllerCommand firstStationToReef = new SwerveControllerCommand(
+      firstStationToReefTrajectory, 
+      robotContainer.swerveSubsystem::getPose, 
+      WheelConstants.kDriveKinematics,
+      xController,
+      yController,
+      thetaController,
+      robotContainer.swerveSubsystem::setModuleStates,
+      robotContainer.swerveSubsystem
+    );
+
     return new SequentialCommandGroup(
       //Drive to reef,
-      startToReef,
-      //place coral
       new ParallelCommandGroup(
-        
-      )
-      //drive to coral station
-      //pick up with AI
-      //drive to reef
+        startToReef,
+        new PositionClawAtHeight(
+          ManipulatorSubsystem.ClawHeightLevel.Level3, 
+          robotContainer.intakeSubsystem, 
+          robotContainer.manipulatorSubsystem
+        )
+      ),
       //place coral
+      new PlaceCoral(robotContainer.manipulatorSubsystem),
+      //drive to coral station
+      new ParallelCommandGroup(
+        firstReefToStation,
+        new SequentialCommandGroup(
+          new WaitCommand(1),
+          new UnstowIntake()
+        )
+      ),
+      //pick up with AI
+      new ParallelDeadlineGroup(
+        new RetrieveCoral(),
+        new UnstowIntake(),
+        new TrackCoralWithCamera(robotContainer.swerveSubsystem, robotContainer.visionSubsystem)
+      ),
+      //drive to reef
+      new ParallelCommandGroup(
+        firstStationToReef,
+        new PositionClawAtHeight(
+          ManipulatorSubsystem.ClawHeightLevel.Level3, 
+          robotContainer.intakeSubsystem, 
+          robotContainer.manipulatorSubsystem
+        )
+      ),
+      //place coral
+      new PlaceCoral(robotContainer.manipulatorSubsystem),
     );
   }
 

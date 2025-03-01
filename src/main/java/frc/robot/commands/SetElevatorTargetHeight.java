@@ -11,11 +11,11 @@ import frc.robot.subsystems.ManipulatorSubsystem.ClawHeightLevel;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class SetClawTargetHeight extends InstantCommand {
+public class SetElevatorTargetHeight extends InstantCommand {
   private ClawHeightLevel targetHeight;
   private ManipulatorSubsystem m_ManipulatorSubsystem;
 
-  public SetClawTargetHeight(ClawHeightLevel heightLevel, ManipulatorSubsystem manipulatorSubsystem) {
+  public SetElevatorTargetHeight(ClawHeightLevel heightLevel, ManipulatorSubsystem manipulatorSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     targetHeight = heightLevel;
     m_ManipulatorSubsystem = manipulatorSubsystem;
