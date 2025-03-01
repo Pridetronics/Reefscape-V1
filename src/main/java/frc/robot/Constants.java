@@ -45,6 +45,11 @@ public final class Constants {
     );
 
     public static final String kDetectorCameraName = "detectorcamera";
+    public static final Translation2d kDetectorCameraFOVDegrees = new Translation2d(62.5, 48.9);
+    public static final Translation3d kDetectorRobotToCamera = new Translation3d(-3, 10, 40);
+    public static final double kDetectorYaw = 20;
+    public static final double kConfidenceThreshold = 0.5;
+    
   }
 
   //Constants for features related to user controller input
