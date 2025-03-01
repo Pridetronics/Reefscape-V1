@@ -25,11 +25,14 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.Units.*;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.WheelConstants;
+import frc.robot.commands.PositionClawAtHeight;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public final class Autos {
@@ -105,7 +108,7 @@ public final class Autos {
     ) 
   );
 
-  public static final HashMap<CommandSelector, BiFunction<Pose2d, SwerveSubsystem, Command>> commandHashMap = new HashMap<>(
+  public static final HashMap<CommandSelector, BiFunction<Pose2d, RobotContainer, Command>> commandHashMap = new HashMap<>(
     Map.of(
       CommandSelector.centerL1Auto, Autos::Coral1Auto,
       CommandSelector.centerL4Auto, Autos::Coral4Auto
@@ -114,7 +117,7 @@ public final class Autos {
 
 
 
-  private static Command Coral1Auto(Pose2d initialPose, SwerveSubsystem swerveSubsystem) {
+  private static Command Coral1Auto(Pose2d initialPose, RobotContainer robotContainer) {
     // //Controllers to keep the robot on the main path since it will not follow it too well without it
     PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
     PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
@@ -132,19 +135,22 @@ public final class Autos {
 
     SwerveControllerCommand startToReef = new SwerveControllerCommand(
       startToReefTrajectory, 
-      swerveSubsystem::getPose, 
+      robotContainer.swerveSubsystem::getPose, 
       WheelConstants.kDriveKinematics,
       xController,
       yController,
       thetaController,
-      swerveSubsystem::setModuleStates,
-      swerveSubsystem
+      robotContainer.swerveSubsystem::setModuleStates,
+      robotContainer.swerveSubsystem
     );
 
     return new SequentialCommandGroup(
       //Drive to reef,
-      startToReef
+      startToReef,
       //place coral
+      new ParallelCommandGroup(
+        
+      )
       //drive to coral station
       //pick up with AI
       //drive to reef
@@ -152,7 +158,7 @@ public final class Autos {
     );
   }
 
-  private static Command Coral4Auto(Pose2d initialPose, SwerveSubsystem swerveSubsystem) {
+  private static Command Coral4Auto(Pose2d initialPose, RobotContainer robotContainer) {
     return new SequentialCommandGroup(
       
     );

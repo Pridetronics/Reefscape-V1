@@ -9,7 +9,6 @@ import java.util.Timer;
 
 import org.photonvision.EstimatedRobotPose;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;

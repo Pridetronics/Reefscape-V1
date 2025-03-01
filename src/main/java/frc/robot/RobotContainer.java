@@ -25,6 +25,8 @@ import frc.robot.Constants.IOConstants;
 import frc.robot.commands.FieldPositionUpdate;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.ZeroRobotHeading;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ManipulatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.utils.AutoPosePosition;
@@ -39,8 +41,10 @@ import frc.robot.utils.Autos.CommandSelector;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-  private final VisionSubsystem visionSubsystem = new VisionSubsystem();
+  public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+  public final VisionSubsystem visionSubsystem = new VisionSubsystem();
+  public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  public final ManipulatorSubsystem manipulatorSubsystem = new ManipulatorSubsystem();
 
   private final Joystick driverJoystick = new Joystick(IOConstants.kDriveJoystickID);
 
@@ -219,8 +223,8 @@ public class RobotContainer {
     }
 
     //Get command supplier
-    BiFunction<Pose2d, SwerveSubsystem, Command> autoCommandSupplier = Autos.commandHashMap.get(commandSeleted);
+    BiFunction<Pose2d, RobotContainer, Command> autoCommandSupplier = Autos.commandHashMap.get(commandSeleted);
     //return the command supplied
-    return autoCommandSupplier.apply(swerveSubsystem.getPose(), swerveSubsystem);
+    return autoCommandSupplier.apply(swerveSubsystem.getPose(), this);
   }
 }
