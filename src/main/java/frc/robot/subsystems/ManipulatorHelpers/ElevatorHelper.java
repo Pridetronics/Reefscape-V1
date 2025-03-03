@@ -4,11 +4,14 @@
 
 package frc.robot.subsystems.ManipulatorHelpers;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.units.measure.Angle;
 import frc.robot.Constants.ManipulatorConstants;
 
 /** Add your docs here. */
@@ -22,13 +25,13 @@ public class ElevatorHelper {
 
     // Configurating Elevator
     TalonFXConfigurator talonFXElevatorConfigurator = elevatorMotor.getConfigurator();
-    CurrentLimitsConfigs elevatorLimitConfigs = new CurrentLimitsConfigs();
+    CurrentLimitsConfigs elevatorCurrentLimitConfigs = new CurrentLimitsConfigs();
 
     // enable stator current limit
-    elevatorLimitConfigs.StatorCurrentLimit = 120;
-    elevatorLimitConfigs.StatorCurrentLimitEnable = true;
+    elevatorCurrentLimitConfigs.StatorCurrentLimit = 120;
+    elevatorCurrentLimitConfigs.StatorCurrentLimitEnable = true;
 
-    talonFXElevatorConfigurator.apply(elevatorLimitConfigs);
+    talonFXElevatorConfigurator.apply(elevatorCurrentLimitConfigs);
 
     // PID
     Slot0Configs PIDElevatorConfigs = new Slot0Configs();
@@ -38,14 +41,27 @@ public class ElevatorHelper {
     PIDElevatorConfigs.kD = ManipulatorConstants.kElevatorDValue;
 
     talonFXElevatorConfigurator.apply(PIDElevatorConfigs);
+
+    SoftwareLimitSwitchConfigs elevatorLimitConfigs = new SoftwareLimitSwitchConfigs();
+    elevatorLimitConfigs.ForwardSoftLimitEnable = true;
+    elevatorLimitConfigs.ForwardSoftLimitThreshold = ManipulatorConstants.kElevatorMaxHeightInches/ManipulatorConstants.kElevatorGearRatio;
+    elevatorLimitConfigs.ReverseSoftLimitEnable = false;
+    elevatorLimitConfigs.ReverseSoftLimitThreshold = ManipulatorConstants.kElevatorHomingHeightInches/ManipulatorConstants.kElevatorGearRatio;
+    talonFXElevatorConfigurator.apply(elevatorLimitConfigs);
     // Finish Configurating Elevator
   }
 
     // Gets current position
-   public double getPosition() {}
+   public double getPosition() {
+    StatusSignal<Angle> angleSignal = elevatorMotor.getPosition();
+    double angleRotations = angleSignal.getValueAsDouble();
+    return angleRotations * ManipulatorConstants.kElevatorGearRatio;
+   }
 
     // Sets current position
-    public void setPosition() {}
+    public void setPosition(double height) {
+      elevatorMotor.setPosition(height / ManipulatorConstants.)
+    }
 
     // Brings elevator back to start
     public void beginHoming() {}
