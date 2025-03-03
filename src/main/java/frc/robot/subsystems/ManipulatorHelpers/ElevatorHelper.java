@@ -6,10 +6,12 @@ package frc.robot.subsystems.ManipulatorHelpers;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.Constants.ManipulatorConstants;
@@ -17,8 +19,11 @@ import frc.robot.Constants.ManipulatorConstants;
 /** Add your docs here. */
 public class ElevatorHelper {
 
-// Set new TalonFX motor for the elevator
-  public final TalonFX elevatorMotor = new TalonFX(ManipulatorConstants.kElevatorMotorID);
+  // Set new class
+  private final boolean hasHomed = false;
+
+  // Set new TalonFX motor for the elevator
+  private final TalonFX elevatorMotor = new TalonFX(ManipulatorConstants.kElevatorMotorID);
 
   public ElevatorHelper() {
 
@@ -45,9 +50,16 @@ public class ElevatorHelper {
     SoftwareLimitSwitchConfigs elevatorLimitConfigs = new SoftwareLimitSwitchConfigs();
     elevatorLimitConfigs.ForwardSoftLimitEnable = true;
     elevatorLimitConfigs.ForwardSoftLimitThreshold = ManipulatorConstants.kElevatorMaxHeightInches/ManipulatorConstants.kElevatorGearRatio;
-    elevatorLimitConfigs.ReverseSoftLimitEnable = false;
+    elevatorLimitConfigs.ReverseSoftLimitEnable = true;
     elevatorLimitConfigs.ReverseSoftLimitThreshold = ManipulatorConstants.kElevatorHomingHeightInches/ManipulatorConstants.kElevatorGearRatio;
     talonFXElevatorConfigurator.apply(elevatorLimitConfigs);
+
+    MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
+    if (ManipulatorConstants.kElevatorMotorReversed) {
+      motorConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    }
+    talonFXElevatorConfigurator.apply(motorConfigs);
+
     // Finish Configurating Elevator
   }
 
@@ -60,12 +72,16 @@ public class ElevatorHelper {
 
     // Sets current position
     public void setPosition(double height) {
-      elevatorMotor.setPosition(height / ManipulatorConstants.)
+      elevatorMotor.setPosition(height / ManipulatorConstants.kElevatorGearRatio);
     }
 
     // Brings elevator back to start
-    public void beginHoming() {}
+    public void beginHoming() {
+      elevatorMotor.set(-0.05);
+    }
 
     // Is the homing finished?
-    public boolean isFinishedHoming() {}
+    public boolean isFinishedHoming() {
+      return hasHomed;
+    }
 }

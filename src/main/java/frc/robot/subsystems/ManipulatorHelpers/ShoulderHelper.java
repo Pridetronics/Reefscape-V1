@@ -45,9 +45,9 @@ public class ShoulderHelper {
     // Conversion factors to convert from rotations to inches
     shoulderConfig.encoder
     // Conversion for elevator
-    .positionConversionFactor(ManipulatorConstants.kShoulderGearRatio)
+    .positionConversionFactor(ManipulatorConstants.kShoulderGearRatio * 360)
     // Converts to inches per second
-    .velocityConversionFactor(ManipulatorConstants.kShoulderGearRatio /60 );
+    .velocityConversionFactor(ManipulatorConstants.kShoulderGearRatio * 360 / 60 );
     
     shoulderConfig.closedLoop
     .pid(ManipulatorConstants.kShoulderPValue, ManipulatorConstants.kShoulderIValue, ManipulatorConstants.kShoulderDValue);
@@ -71,17 +71,17 @@ public class ShoulderHelper {
     // Apply changes
     shoulderMotor.configure(shoulderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     // Finish configurating elevator
-    }
+  }
 
     // Gets current position
-    public double getPosition() {
-      return shoulderEncoder.getPosition();
+  public double getPosition() {
+    return shoulderEncoder.getPosition();
   }
 
     // Sets target position
-    public void setPosition(double position) {
+  public void setPosition(double position) {
 
-        // Set our goal for PID
-        shoulderPIDController.setReference(position, ControlType.kPosition);
+    // Set our goal for PID
+    shoulderPIDController.setReference(position, ControlType.kPosition);
   }
 }
