@@ -10,6 +10,8 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 
@@ -61,27 +63,24 @@ public class ElevatorHelper {
     talonFXElevatorConfigurator.apply(motorConfigs);
 
     // Finish Configurating Elevator
+
+    //Set the robot starting height
+    elevatorMotor.setPosition(ManipulatorConstants.kElevatorHomingHeightInches / ManipulatorConstants.kElevatorGearRatio);
   }
 
     // Gets current position
-   public double getPosition() {
+  public double getPosition() {
     StatusSignal<Angle> angleSignal = elevatorMotor.getPosition();
     double angleRotations = angleSignal.getValueAsDouble();
     return angleRotations * ManipulatorConstants.kElevatorGearRatio;
-   }
+  }
 
     // Sets current position
     public void setPosition(double height) {
-      elevatorMotor.setPosition(height / ManipulatorConstants.kElevatorGearRatio);
-    }
 
-    // Brings elevator back to start
-    public void beginHoming() {
-      elevatorMotor.set(-0.05);
-    }
+      PositionDutyCycle positionTargetRequest = new PositionDutyCycle(height/ManipulatorConstants.kElevatorGearRatio);
+      
+      elevatorMotor.setControl(positionTargetRequest);
 
-    // Is the homing finished?
-    public boolean isFinishedHoming() {
-      return hasHomed;
     }
 }

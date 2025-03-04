@@ -76,7 +76,7 @@ public class ShoulderHelper {
 
     StatusSignal<Angle> absolutePos = absoluteEncoder.getAbsolutePosition();
     double absolutePosDegrees = -45-absolutePos.getValueAsDouble()-ManipulatorConstants.kShoulderEncoderOffsetDegrees;
-    shoulderEncoder.setPosition()
+    shoulderEncoder.setPosition(absolutePosDegrees);
   }
 
     // Gets current position
