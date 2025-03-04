@@ -4,11 +4,14 @@
 
 package frc.robot.subsystems.ManipulatorHelpers;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants.ManipulatorConstants;
 
 /** Add your docs here. */
@@ -41,8 +44,16 @@ public class ClawHelper {
   }
 
   // Gets current velocity
-  public double getVelocity() {}
+  public double getVelocity() {
+    StatusSignal<AngularVelocity> velocitySignal = clawMotor.getVelocity();
+    double velocity = velocitySignal.getValueAsDouble();
+    return velocity * ManipulatorConstants.kClawGearRatio;
+  }
 
   // Sets target velocity
-  public void setVelocity() {}
+  public void setVelocity(double velocityRPM) {
+    VelocityDutyCycle velocityTargetRequest = new VelocityDutyCycle(velocityRPM/ManipulatorConstants.kClawGearRatio);
+    
+    clawMotor.setControl(velocityTargetRequest);
+  }
 }

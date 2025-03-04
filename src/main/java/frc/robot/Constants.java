@@ -202,10 +202,16 @@ public final class Constants {
     // Value for position and velocity conversion for shoulder
     public static final double kShoulderGearRatio = 1/25;
 
+    public static final double kShoulderEncoderOffsetDegrees = 0;
+
     // Value for position and velocity conversion for elevator
     public static final double kElevatorGearRatio = 1.37500*Math.PI/20*2;
 
     public static final boolean kElevatorMotorReversed = false;
+
+    public static final double kClawGearRatio = 1/12;
+
+    public static final boolean kClawMotorReversed = false;
 
     // Proportional, Integral, and Derivitive values for the velocity PID controller
     public static final double kClawPValue = 0;

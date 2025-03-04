@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.ManipulatorHelpers;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.spark.SparkBase.*;
 import com.revrobotics.RelativeEncoder;
@@ -14,6 +15,7 @@ import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.units.measure.Angle;
 import frc.robot.Constants.ManipulatorConstants;
 
 /** Add your docs here. */
@@ -71,6 +73,10 @@ public class ShoulderHelper {
     // Apply changes
     shoulderMotor.configure(shoulderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     // Finish configurating elevator
+
+    StatusSignal<Angle> absolutePos = absoluteEncoder.getAbsolutePosition();
+    double absolutePosDegrees = -45-absolutePos.getValueAsDouble()-ManipulatorConstants.kShoulderEncoderOffsetDegrees;
+    shoulderEncoder.setPosition()
   }
 
     // Gets current position
