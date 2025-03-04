@@ -7,12 +7,22 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ManipulatorConstants;
 import frc.robot.subsystems.ManipulatorHelpers.ClawHelper;
 import frc.robot.subsystems.ManipulatorHelpers.ElevatorHelper;
 import frc.robot.subsystems.ManipulatorHelpers.ShoulderHelper;
 
 public class ManipulatorSubsystem extends SubsystemBase {
   /** Creates a new ManipulatorSubsystem. */
+
+  public static enum ClawHeightLevel {
+    Stow,
+    Level1,
+    Level2,
+    Level3,
+    Level4,
+    Barge
+  }
 
   // So we can call upon subsystem ClawHelper
   private final ClawHelper clawHelper = new ClawHelper();
@@ -24,6 +34,52 @@ public class ManipulatorSubsystem extends SubsystemBase {
   private final ShoulderHelper shoulderHelper = new ShoulderHelper();
 
   public ManipulatorSubsystem() {}
+
+  private double getElevatorHeightFromEnum(ClawHeightLevel heightLevel) {
+    switch (heightLevel) {
+      case Level1:
+        return ManipulatorConstants.kElevatorHeightL1Inches;
+      case Level2:
+        return ManipulatorConstants.kElevatorHeightL2Inches;
+      case Level3:
+        return ManipulatorConstants.kElevatorHeightL3Inches;
+      case Level4:
+        return ManipulatorConstants.kElevatorHeightL4Inches;
+      case Barge:
+        return ManipulatorConstants.kElevatorMaxHeightInches;
+      default:
+        return ManipulatorConstants.kElevatorHomingHeightInches;
+    }
+  }
+
+  private double getShoulderAngleFromEnum(ClawHeightLevel heightLevel) {
+    switch (heightLevel) {
+      case Level1:
+        return ManipulatorConstants.kShoulderAngleL1Degrees;
+      case Level2:
+        return ManipulatorConstants.kShoulderAngleL2Degrees;
+      case Level3:
+        return ManipulatorConstants.kShoulderAngleL3Degrees;
+      case Level4:
+        return ManipulatorConstants.kShoulderAngleL4Degrees;
+      case Barge:
+        return ManipulatorConstants.kShoulderAngleL4Degrees;
+      default:
+        return ManipulatorConstants.kShoulderLowerLimitDegrees;
+    }
+  }
+
+  public Boolean getStowedState() {
+    return shoulderHelper.shoulderStowed;
+  }
+
+  public Boolean isClawOutOfWay() {
+    return null;
+  }
+
+  public Boolean isClawAtPositionalHeight(ClawHeightLevel heightLevel) {
+    return Math.abs(elevatorHelper.getPosition() - getElevatorHeightFromEnum(heightLevel)) < ManipulatorConstants.kElevatorFuzzyEqInches;
+  }
 
   public void setElevatorHeight() {
     /* Steps
