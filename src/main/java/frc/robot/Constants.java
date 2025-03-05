@@ -180,10 +180,23 @@ public final class Constants {
     // Set the motor ID for the motor that controls the angle of the Intake
     public static final int kIntakeAngleMotorCanID = 15; 
 
-    // Proportional, Integral, and Derivitive values for the velocity PID controller
+    public static final int kIntakeRPM = 50;
+    public static final double kIntakeGearRatio = 1/9;
+    public static final boolean kIntakeReversed = false;
+
+
+    public static final double kIntakeAngleGearRatio = 1/36;
+    public static final boolean kIntakeAngleMotorReversed = true;
+
+    // Proportional, Integral, and Derivitive values for the angle PID controller
     public static final double kIntakeAnglePValue = .5;
     public static final double kIntakeAngleIValue = 1;
     public static final double kIntakeAngleDValue = 1;
+
+    // Proportional, Integral, and Derivitive values for the velocity PID controller
+    public static final double kIntakePValue = .5;
+    public static final double kIntakeIValue = 1;
+    public static final double kIntakeDValue = 1;
   }
 
   // Constants for manipulators (not including intake)
@@ -200,14 +213,14 @@ public final class Constants {
     // Inverted elevator
     public static final boolean kShoulderEncoderReversed = false;
     // Value for position and velocity conversion for shoulder
-    public static final double kShoulderGearRatio = 1/25;
+    public static final double kShoulderGearRatio = 1/25*54/12;
 
     public static final double kShoulderEncoderOffsetDegrees = 0;
 
     // Value for position and velocity conversion for elevator
     public static final double kElevatorGearRatio = 1.37500*Math.PI/20*2;
 
-    public static final boolean kElevatorMotorReversed = false;
+    public static final boolean kElevatorMotorReversed = true;
 
     public static final double kClawGearRatio = 1/12;
 

@@ -50,7 +50,7 @@ public class ShoulderHelper {
     shoulderConfig.encoder
     // Conversion for elevator
     .positionConversionFactor(ManipulatorConstants.kShoulderGearRatio * 360)
-    // Converts to inches per second
+    // Converts to degrees per second
     .velocityConversionFactor(ManipulatorConstants.kShoulderGearRatio * 360 / 60 );
     
     shoulderConfig.closedLoop
