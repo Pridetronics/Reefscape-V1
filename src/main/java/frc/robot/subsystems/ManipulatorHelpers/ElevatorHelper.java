@@ -14,6 +14,7 @@ import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.Constants.ManipulatorConstants;
@@ -57,6 +58,7 @@ public class ElevatorHelper {
     talonFXElevatorConfigurator.apply(elevatorLimitConfigs);
 
     MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
+    motorConfigs.NeutralMode = NeutralModeValue.Brake;
     if (ManipulatorConstants.kElevatorMotorReversed) {
       motorConfigs.Inverted = InvertedValue.Clockwise_Positive;
     }
@@ -79,6 +81,7 @@ public class ElevatorHelper {
     public void setPosition(double height) {
 
       PositionDutyCycle positionTargetRequest = new PositionDutyCycle(height/ManipulatorConstants.kElevatorGearRatio);
+      positionTargetRequest.Velocity = ManipulatorConstants.kElevatorSpeedInchesPerSecond/ManipulatorConstants.kElevatorGearRatio;
       
       elevatorMotor.setControl(positionTargetRequest);
 

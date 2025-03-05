@@ -194,9 +194,9 @@ public final class Constants {
     public static final double kIntakeAngleDValue = 1;
 
     // Proportional, Integral, and Derivitive values for the velocity PID controller
-    public static final double kIntakePValue = .5;
-    public static final double kIntakeIValue = 1;
-    public static final double kIntakeDValue = 1;
+    public static final double kIntakePValue = 0.037;
+    public static final double kIntakeIValue = 0;
+    public static final double kIntakeDValue = 0;
   }
 
   // Constants for manipulators (not including intake)
@@ -227,11 +227,11 @@ public final class Constants {
     public static final boolean kClawMotorReversed = false;
 
     // Proportional, Integral, and Derivitive values for the velocity PID controller
-    public static final double kClawPValue = 0;
+    public static final double kClawPValue = 0.038;
     public static final double kClawIValue = 0;
     public static final double kClawDValue = 0;
     // Proportional, Integral, and Derivitive values for the velocity PID controller
-    public static final double kElevatorPValue = 0;
+    public static final double kElevatorPValue = 0.04;
     public static final double kElevatorIValue = 0;
     public static final double kElevatorDValue = 0;
     // Proportional, Integral, and Derivitive values for the velocity PID controller
@@ -242,8 +242,9 @@ public final class Constants {
     //The threshold/region that the elevator will be considered at its target height
     public static final double kElevatorFuzzyEqInches = 2;
 
-    // Elevator Heights
+    public static final double kElevatorSpeedInchesPerSecond = 12;
 
+    // Elevator Heights
     // Trough (L1) Height
     public static final int kElevatorHeightL1Inches = 24;
     public static final int kShoulderAngleL1Degrees = 0;
