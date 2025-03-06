@@ -258,23 +258,23 @@ public final class Constants {
 
     // Elevator Heights
     // Trough (L1) Height
-    public static final int kElevatorHeightL1Inches = 24;
-    public static final int kShoulderAngleL1Degrees = 0;
+    public static final int kElevatorHeightL1Inches = 12;
+    public static final int kShoulderAngleL1Degrees = -45;
     // L2 Height
-    public static final int kElevatorHeightL2Inches = 36;
-    public static final int kShoulderAngleL2Degrees = 0;
+    public static final int kElevatorHeightL2Inches = 12;
+    public static final int kShoulderAngleL2Degrees = -10;
     // L3 Height
-    public static final int kElevatorHeightL3Inches = 48;
+    public static final int kElevatorHeightL3Inches = 36;
     public static final int kShoulderAngleL3Degrees = 0;
     // L4 Height
     public static final int kElevatorHeightL4Inches = 60;
     public static final int kShoulderAngleL4Degrees = 0;
     // Max Height
-    public static final int kElevatorMaxHeightInches = 80;
+    public static final int kElevatorMaxHeightInches = 60;
     public static final int kShoulderHigherLimitDegrees = -80;
     // Homing Height
-    public static final int kElevatorHomingHeightInches = 60;
-    public static final int kShoulderLowerLimitDegrees = 80;
+    public static final int kElevatorHomingHeightInches = 0;
+    public static final int kShoulderLowerLimitDegrees = -90;
   }
 
   //Constants related to the autonomous period
