@@ -51,7 +51,7 @@ public class ManipulatorJoystickControl extends Command {
 
     ShuffleboardRateLimiter.queueDataForShuffleboard(elevatorHeightEntry, manipulatorSubsystem.elevatorHelper.getPosition());
     ShuffleboardRateLimiter.queueDataForShuffleboard(shoulderAngleEntry, manipulatorSubsystem.shoulderHelper.getPosition());
-    ShuffleboardRateLimiter.queueDataForShuffleboard(shoulderAbsoluteAngleEntry, manipulatorSubsystem.shoulderHelper.getAbsolutePosition()*360);
+    ShuffleboardRateLimiter.queueDataForShuffleboard(shoulderAbsoluteAngleEntry, manipulatorSubsystem.shoulderHelper.getAbsolutePosition());
   }
 
   // Called once the command ends or is interrupted.

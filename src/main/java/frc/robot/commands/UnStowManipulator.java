@@ -19,12 +19,14 @@ public class UnStowManipulator extends SequentialCommandGroup {
 
     addRequirements(manipulatorSubsystem, intakeSubsystem);
 
-    //Move Intake
+    //Move Intake (Only if stowed)
     //Move elevator to safe height
     //Parallel:
       //Move shoulder
       //Move Intake back
     //Adjust elevator  
+
+
 
     addCommands();
   }

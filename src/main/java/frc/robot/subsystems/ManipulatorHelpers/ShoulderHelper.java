@@ -7,6 +7,7 @@ package frc.robot.subsystems.ManipulatorHelpers;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.spark.SparkBase.*;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -79,8 +80,9 @@ public class ShoulderHelper {
     // Finish configurating elevator
 
     CANcoderConfiguration absoluteEncoderConfigs = new CANcoderConfiguration();
+    absoluteEncoderConfigs.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
     absoluteEncoderConfigs.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
-    absoluteEncoderConfigs.MagnetSensor.MagnetOffset = ManipulatorConstants.kShoulderEncoderOffsetDegrees;
+    absoluteEncoderConfigs.MagnetSensor.MagnetOffset = ManipulatorConstants.kShoulderEncoderOffsetDegrees/360;
     absoluteEncoder.getConfigurator().apply(absoluteEncoderConfigs);
     
 
@@ -102,8 +104,7 @@ public class ShoulderHelper {
 
   public double getAbsolutePosition() {
     StatusSignal<Angle> absolutePos = absoluteEncoder.getAbsolutePosition();
-    double encoderReadingDegrees = absolutePos.getValueAsDouble()*360;
-    double absolutePosDegrees = -45-encoderReadingDegrees;
+    double absolutePosDegrees = absolutePos.getValueAsDouble()*360;
     return absolutePosDegrees;
   }
 }

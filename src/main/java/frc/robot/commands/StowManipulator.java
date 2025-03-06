@@ -27,6 +27,8 @@ public class StowManipulator extends SequentialCommandGroup {
     //Move elevator down
     //Move intake back
 
+    //OnlyIf not stowed
+
     addCommands();
   }
 }
