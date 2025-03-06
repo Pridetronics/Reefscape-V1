@@ -21,7 +21,8 @@ public class ManipulatorSubsystem extends SubsystemBase {
     Level2,
     Level3,
     Level4,
-    Barge
+    Barge,
+    ElevatorSafeHeight
   }
 
   //TODO make helpers private later
@@ -49,6 +50,10 @@ public class ManipulatorSubsystem extends SubsystemBase {
         return ManipulatorConstants.kElevatorHeightL4Inches;
       case Barge:
         return ManipulatorConstants.kElevatorMaxHeightInches;
+      case Stow:
+        return ManipulatorConstants.kElevatorStowHeightInches;
+      case ElevatorSafeHeight:
+        return ManipulatorConstants.kElevatorSafeFromIntakeHeightInches;
       default:
         return ManipulatorConstants.kElevatorHomingHeightInches;
     }
@@ -66,25 +71,36 @@ public class ManipulatorSubsystem extends SubsystemBase {
         return ManipulatorConstants.kShoulderAngleL4Degrees;
       case Barge:
         return ManipulatorConstants.kShoulderAngleL4Degrees;
+      case Stow:
+        return ManipulatorConstants.kShoulderStowAngleDegrees;
+      case ElevatorSafeHeight:
+        throw new RuntimeException("ElevatorSafeHeight is not availiable for the shoulder");
       default:
         return ManipulatorConstants.kShoulderLowerLimitDegrees;
     }
   }
 
   public Boolean getStowedState() {
-    return shoulderHelper.shoulderStowed;
+    return shoulderHelper.getPosition() < ManipulatorConstants.kShoulderStowAngleDegrees + 15 && elevatorHelper.getPosition() < ManipulatorConstants.kElevatorStowHeightInches + 6;
   }
 
   public Boolean isClawOutOfWay() {
-    return null;
+    return shoulderHelper.getPosition() > ManipulatorConstants.kElevatorSafeFromIntakeHeightInches - ManipulatorConstants.kElevatorFuzzyEqInches;
   }
 
-  public Boolean isClawAtPositionalHeight(ClawHeightLevel heightLevel) {
+  public Boolean isElevatorAtHeight(ClawHeightLevel heightLevel) {
     return Math.abs(elevatorHelper.getPosition() - getElevatorHeightFromEnum(heightLevel)) < ManipulatorConstants.kElevatorFuzzyEqInches;
   }
 
-  public void setManipulatorPositionalState(ClawHeightLevel heightLevel) {
+  public Boolean isShoulderAtAngle(ClawHeightLevel heightLevel) {
+    return Math.abs(shoulderHelper.getPosition() - getShoulderAngleFromEnum(heightLevel)) < ManipulatorConstants.kShoulderFuzzyEqDegrees;
+  }
+
+  public void setElevatorPositionalState(ClawHeightLevel heightLevel) {
     elevatorHelper.setPosition(getElevatorHeightFromEnum(heightLevel));
+  }
+
+  public void setShoulderPositionalState(ClawHeightLevel heightLevel) {
     shoulderHelper.setPosition(getShoulderAngleFromEnum(heightLevel));
   }
 

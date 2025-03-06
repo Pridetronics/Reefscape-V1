@@ -14,7 +14,8 @@ import frc.robot.utils.ShuffleboardRateLimiter;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ManipulatorJoystickControl extends Command {
-  ManipulatorSubsystem manipulatorSubsystem;
+ 
+  private final ManipulatorSubsystem manipulatorSubsystem;
   Supplier<Double> elevatorJoystickSupplier;
   Supplier<Double> shoulderJoystickSupplier;
 

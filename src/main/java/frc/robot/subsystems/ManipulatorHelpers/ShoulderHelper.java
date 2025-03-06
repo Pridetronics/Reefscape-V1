@@ -31,8 +31,6 @@ public class ShoulderHelper {
 // Relative encoder for the elevator motor
   public final RelativeEncoder shoulderEncoder = shoulderMotor.getEncoder();
 
-  public Boolean shoulderStowed = false;
-
 // Set PID controller
   public final SparkClosedLoopController shoulderPIDController = shoulderMotor.getClosedLoopController();
 

@@ -89,17 +89,15 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setIntakeAngle(double angleDegrees) {
-    /* Steps
-     * 1. Driver input (button or joystick?)
-     * 2. Which direction is the motor going to spin?
-     * 3. How far?
-     * 4. How fast?
-     */
     intakeAnglePIDController.setReference(angleDegrees, ControlType.kMAXMotionPositionControl);
   }
 
   public double getIntakeAngle() {
     return intakeEncoder.getPosition();
+  }
+
+  public boolean isIntakeAtAngle(double targetAngle) {
+    return Math.abs(getIntakeAngle() - targetAngle) <= IntakeConstants.kIntakeAngleFuzzyEqDegrees;
   }
 
   public double getIntakeAbsoluteAngle() {

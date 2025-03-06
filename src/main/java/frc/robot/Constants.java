@@ -201,6 +201,14 @@ public final class Constants {
 
     public static final double kIntakeAngleMaxVelocityDegreesPerSecond = 90;
     public static final double kIntakeAngleMaxAccelerationDegreesPerSecondSquared = 180;
+
+    public static final double kIntakeUnStowAngle = -30;
+    public static final double kIntakeUsageAngle = -60;
+    public static final double kIntakeStowAngle = -15;
+
+    
+    public static final double kIntakeAngleFuzzyEqDegrees = 5;
+
   }
 
   // Constants for manipulators (not including intake)
@@ -217,7 +225,7 @@ public final class Constants {
     // Inverted elevator
     public static final boolean kShoulderEncoderReversed = false;
     // Value for position and velocity conversion for shoulder
-    public static final double kShoulderGearRatio = 1/25*54/12;
+    public static final double kShoulderGearRatio = 1/25*(12/54);
 
     public static final double kShoulderEncoderOffsetDegrees = 0;
 
@@ -252,6 +260,7 @@ public final class Constants {
 
     //The threshold/region that the elevator will be considered at its target height
     public static final double kElevatorFuzzyEqInches = 2;
+    public static final double kShoulderFuzzyEqDegrees = 5;
 
     public static final double kElevatorSpeedInchesPerSecond = 12;
     public static final double kElevatorAccelerationInchesPerSecondSquared = 24;
@@ -275,6 +284,10 @@ public final class Constants {
     // Homing Height
     public static final int kElevatorHomingHeightInches = 0;
     public static final int kShoulderLowerLimitDegrees = -90;
+
+    public static final int kElevatorStowHeightInches = 0;
+    public static final int kElevatorSafeFromIntakeHeightInches = 12;
+    public static final int kShoulderStowAngleDegrees = -100;
   }
 
   //Constants related to the autonomous period
