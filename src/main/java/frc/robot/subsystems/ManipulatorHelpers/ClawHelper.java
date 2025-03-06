@@ -7,6 +7,7 @@ package frc.robot.subsystems.ManipulatorHelpers;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -23,24 +24,20 @@ public class ClawHelper {
   public ClawHelper() {
 
 // Configurating Claw
-    TalonFXConfigurator talonFXClawConfigurator = clawMotor.getConfigurator();
-    CurrentLimitsConfigs clawLimitConfigs = new CurrentLimitsConfigs();
+    TalonFXConfiguration talonFXClawConfiguration = new TalonFXConfiguration();
 
     // enable stator current limit
-    clawLimitConfigs.StatorCurrentLimit = 120;
-    clawLimitConfigs.StatorCurrentLimitEnable = true;
-
-    talonFXClawConfigurator.apply(clawLimitConfigs);
+    talonFXClawConfiguration.CurrentLimits.StatorCurrentLimit = 120;
+    talonFXClawConfiguration.CurrentLimits.StatorCurrentLimitEnable = true;
 
     // PID
-    Slot0Configs PIDClawConfigs = new Slot0Configs();
+    talonFXClawConfiguration.Slot0.kP = ManipulatorConstants.kClawPValue;
+    talonFXClawConfiguration.Slot0.kI = ManipulatorConstants.kClawIValue;
+    talonFXClawConfiguration.Slot0.kD = ManipulatorConstants.kClawDValue;
 
-    PIDClawConfigs.kP = ManipulatorConstants.kClawPValue;
-    PIDClawConfigs.kI = ManipulatorConstants.kClawIValue;
-    PIDClawConfigs.kD = ManipulatorConstants.kClawDValue;
-
-    talonFXClawConfigurator.apply(PIDClawConfigs);
     // Finish configuring claw
+    clawMotor.getConfigurator().apply(talonFXClawConfiguration);
+
   }
 
   // Gets current velocity

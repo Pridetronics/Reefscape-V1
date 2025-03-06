@@ -216,6 +216,8 @@ public final class Constants {
     public static final double kShoulderGearRatio = 1/25*54/12;
 
     public static final double kShoulderEncoderOffsetDegrees = 0;
+    public static final double kShoulderMaxVelocityDegreesPerSecond = 90;
+    public static final double kShoulderMaxAccelerationDegreesPerSecondSquared = 180;
 
     // Value for position and velocity conversion for elevator
     public static final double kElevatorGearRatio = 1.37500*Math.PI/20*2;
@@ -234,6 +236,8 @@ public final class Constants {
     public static final double kElevatorPValue = 0.04;
     public static final double kElevatorIValue = 0;
     public static final double kElevatorDValue = 0;
+    public static final double kElevatorGValue = 0;
+    public static final double kElevatorSValue = 0;
     // Proportional, Integral, and Derivitive values for the velocity PID controller
     public static final double kShoulderPValue = 0;
     public static final double kShoulderIValue = 0;
@@ -243,6 +247,7 @@ public final class Constants {
     public static final double kElevatorFuzzyEqInches = 2;
 
     public static final double kElevatorSpeedInchesPerSecond = 12;
+    public static final double kElevatorAccelerationInchesPerSecondSquared = 24;
 
     // Elevator Heights
     // Trough (L1) Height

@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -63,37 +64,28 @@ public class IntakeSubsystem extends SubsystemBase {
     .positionConversionFactor(IntakeConstants.kIntakeAngleGearRatio * 360)
     // Converts to degrees per second
     .velocityConversionFactor(IntakeConstants.kIntakeAngleGearRatio * 360 / 60 );
-    
+    //PID config
     intakeAngleConfig.closedLoop
     .pid(IntakeConstants.kIntakeAnglePValue, IntakeConstants.kIntakeAngleIValue, IntakeConstants.kIntakeAngleDValue);
 
     intakeAngleConfig.apply(intakeAngleConfig);
 
 
-    // Configurating Claw
-    TalonFXConfigurator talonFXIntakeConfigurator = intakeMotor.getConfigurator();
+    // Configurating intake motor
+    TalonFXConfiguration talonFXIntakeConfiguration = new TalonFXConfiguration();
 
-    MotorOutputConfigs outputConfigs = new MotorOutputConfigs();
-    if (IntakeConstants.kIntakeReversed) {
-      outputConfigs.Inverted = InvertedValue.Clockwise_Positive;
-    }
-
-    CurrentLimitsConfigs intakeMotorLimitConfigs = new CurrentLimitsConfigs();
+    talonFXIntakeConfiguration.MotorOutput.Inverted = IntakeConstants.kIntakeReversed ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
 
     // enable stator current limit
-    intakeMotorLimitConfigs.StatorCurrentLimit = 120;
-    intakeMotorLimitConfigs.StatorCurrentLimitEnable = true;
-
-    talonFXIntakeConfigurator.apply(intakeMotorLimitConfigs);
+    talonFXIntakeConfiguration.CurrentLimits.StatorCurrentLimit = 120;
+    talonFXIntakeConfiguration.CurrentLimits.StatorCurrentLimitEnable = true;
 
     // PID
-    Slot0Configs PIDClawConfigs = new Slot0Configs();
+    talonFXIntakeConfiguration.Slot0.kP = IntakeConstants.kIntakePValue;
+    talonFXIntakeConfiguration.Slot0.kI = IntakeConstants.kIntakeIValue;
+    talonFXIntakeConfiguration.Slot0.kD = IntakeConstants.kIntakeDValue;
 
-    PIDClawConfigs.kP = IntakeConstants.kIntakePValue;
-    PIDClawConfigs.kI = IntakeConstants.kIntakeIValue;
-    PIDClawConfigs.kD = IntakeConstants.kIntakeDValue;
-
-    talonFXIntakeConfigurator.apply(PIDClawConfigs);
+    intakeMotor.getConfigurator().apply(talonFXIntakeConfiguration);
   }
 
   public void setIntakeAngle(double angleDegrees) {

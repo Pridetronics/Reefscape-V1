@@ -5,12 +5,14 @@
 package frc.robot.subsystems.ManipulatorHelpers;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.spark.SparkBase.*;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SmartMotionConfig;
 import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -55,6 +57,9 @@ public class ShoulderHelper {
     
     shoulderConfig.closedLoop
     .pid(ManipulatorConstants.kShoulderPValue, ManipulatorConstants.kShoulderIValue, ManipulatorConstants.kShoulderDValue);
+    shoulderConfig.closedLoop.maxMotion
+    .maxVelocity(ManipulatorConstants.kShoulderMaxVelocityDegreesPerSecond)
+    .maxAcceleration(ManipulatorConstants.kShoulderMaxAccelerationDegreesPerSecondSquared);
     
     // Elevator limit config
     SoftLimitConfig softConfig = new SoftLimitConfig();
@@ -76,9 +81,14 @@ public class ShoulderHelper {
     shoulderMotor.configure(shoulderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     // Finish configurating elevator
 
-    StatusSignal<Angle> absolutePos = absoluteEncoder.getAbsolutePosition();
-    double absolutePosDegrees = -45-absolutePos.getValueAsDouble()-ManipulatorConstants.kShoulderEncoderOffsetDegrees;
-    shoulderEncoder.setPosition(absolutePosDegrees);
+    CANcoderConfiguration absoluteEncoderConfigs = new CANcoderConfiguration();
+    absoluteEncoderConfigs.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
+    absoluteEncoderConfigs.MagnetSensor.MagnetOffset = ManipulatorConstants.kShoulderEncoderOffsetDegrees;
+    absoluteEncoder.getConfigurator().apply(absoluteEncoderConfigs);
+    
+
+    //Zeros the shoulder encoder
+    shoulderEncoder.setPosition(getAbsolutePosition());
   }
 
     // Gets current position
@@ -91,5 +101,12 @@ public class ShoulderHelper {
 
     // Set our goal for PID
     shoulderPIDController.setReference(position, ControlType.kPosition);
+  }
+
+  public double getAbsolutePosition() {
+    StatusSignal<Angle> absolutePos = absoluteEncoder.getAbsolutePosition();
+    double encoderReadingDegrees = absolutePos.getValueAsDouble()*360;
+    double absolutePosDegrees = -45-encoderReadingDegrees;
+    return absolutePosDegrees;
   }
 }

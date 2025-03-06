@@ -6,10 +6,13 @@ package frc.robot.subsystems.ManipulatorHelpers;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -32,39 +35,32 @@ public class ElevatorHelper {
 
 
     // Configurating Elevator
-    TalonFXConfigurator talonFXElevatorConfigurator = elevatorMotor.getConfigurator();
-    CurrentLimitsConfigs elevatorCurrentLimitConfigs = new CurrentLimitsConfigs();
-
+    TalonFXConfiguration talonFXElevatorConfig = new TalonFXConfiguration();
     // enable stator current limit
-    elevatorCurrentLimitConfigs.StatorCurrentLimit = 120;
-    elevatorCurrentLimitConfigs.StatorCurrentLimitEnable = true;
-
-    talonFXElevatorConfigurator.apply(elevatorCurrentLimitConfigs);
+    talonFXElevatorConfig.CurrentLimits.StatorCurrentLimit = 120;
+    talonFXElevatorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
     // PID
-    Slot0Configs PIDElevatorConfigs = new Slot0Configs();
+    talonFXElevatorConfig.Slot0.kP = ManipulatorConstants.kElevatorPValue;
+    talonFXElevatorConfig.Slot0.kI = ManipulatorConstants.kElevatorIValue;
+    talonFXElevatorConfig.Slot0.kD = ManipulatorConstants.kElevatorDValue;
+    talonFXElevatorConfig.Slot0.kG = ManipulatorConstants.kElevatorGValue;
+    talonFXElevatorConfig.Slot0.kS = ManipulatorConstants.kElevatorSValue;
 
-    PIDElevatorConfigs.kP = ManipulatorConstants.kElevatorPValue;
-    PIDElevatorConfigs.kI = ManipulatorConstants.kElevatorIValue;
-    PIDElevatorConfigs.kD = ManipulatorConstants.kElevatorDValue;
+    //More PID Configs for max velocity & Acceleration
+    talonFXElevatorConfig.MotionMagic.MotionMagicCruiseVelocity = ManipulatorConstants.kElevatorSpeedInchesPerSecond/ManipulatorConstants.kElevatorGearRatio;
+    talonFXElevatorConfig.MotionMagic.MotionMagicAcceleration = ManipulatorConstants.kElevatorAccelerationInchesPerSecondSquared/ManipulatorConstants.kElevatorGearRatio;
 
-    talonFXElevatorConfigurator.apply(PIDElevatorConfigs);
+    talonFXElevatorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    talonFXElevatorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ManipulatorConstants.kElevatorMaxHeightInches/ManipulatorConstants.kElevatorGearRatio;
+    talonFXElevatorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    talonFXElevatorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ManipulatorConstants.kElevatorHomingHeightInches/ManipulatorConstants.kElevatorGearRatio;
 
-    SoftwareLimitSwitchConfigs elevatorLimitConfigs = new SoftwareLimitSwitchConfigs();
-    elevatorLimitConfigs.ForwardSoftLimitEnable = true;
-    elevatorLimitConfigs.ForwardSoftLimitThreshold = ManipulatorConstants.kElevatorMaxHeightInches/ManipulatorConstants.kElevatorGearRatio;
-    elevatorLimitConfigs.ReverseSoftLimitEnable = true;
-    elevatorLimitConfigs.ReverseSoftLimitThreshold = ManipulatorConstants.kElevatorHomingHeightInches/ManipulatorConstants.kElevatorGearRatio;
-    talonFXElevatorConfigurator.apply(elevatorLimitConfigs);
-
-    MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
-    motorConfigs.NeutralMode = NeutralModeValue.Brake;
-    if (ManipulatorConstants.kElevatorMotorReversed) {
-      motorConfigs.Inverted = InvertedValue.Clockwise_Positive;
-    }
-    talonFXElevatorConfigurator.apply(motorConfigs);
+    talonFXElevatorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    talonFXElevatorConfig.MotorOutput.Inverted = ManipulatorConstants.kElevatorMotorReversed ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
 
     // Finish Configurating Elevator
+    elevatorMotor.getConfigurator().apply(talonFXElevatorConfig);
 
     //Set the robot starting height
     elevatorMotor.setPosition(ManipulatorConstants.kElevatorHomingHeightInches / ManipulatorConstants.kElevatorGearRatio);
@@ -80,8 +76,7 @@ public class ElevatorHelper {
     // Sets current position
     public void setPosition(double height) {
 
-      PositionDutyCycle positionTargetRequest = new PositionDutyCycle(height/ManipulatorConstants.kElevatorGearRatio);
-      positionTargetRequest.Velocity = ManipulatorConstants.kElevatorSpeedInchesPerSecond/ManipulatorConstants.kElevatorGearRatio;
+      MotionMagicDutyCycle positionTargetRequest = new MotionMagicDutyCycle(height/ManipulatorConstants.kElevatorGearRatio);
       
       elevatorMotor.setControl(positionTargetRequest);
 
