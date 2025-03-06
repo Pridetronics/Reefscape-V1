@@ -24,14 +24,16 @@ public class ManipulatorSubsystem extends SubsystemBase {
     Barge
   }
 
+  //TODO make helpers private later
+
   // So we can call upon subsystem ClawHelper
-  private final ClawHelper clawHelper = new ClawHelper();
+  public final ClawHelper clawHelper = new ClawHelper();
 
   // So we can call upon subsystem ElevatorHelper
-  private final ElevatorHelper elevatorHelper = new ElevatorHelper();
+  public final ElevatorHelper elevatorHelper = new ElevatorHelper();
 
   // So we can call upon subsystem ShoulderHelper
-  private final ShoulderHelper shoulderHelper = new ShoulderHelper();
+  public final ShoulderHelper shoulderHelper = new ShoulderHelper();
 
   public ManipulatorSubsystem() {}
 
@@ -81,33 +83,21 @@ public class ManipulatorSubsystem extends SubsystemBase {
     return Math.abs(elevatorHelper.getPosition() - getElevatorHeightFromEnum(heightLevel)) < ManipulatorConstants.kElevatorFuzzyEqInches;
   }
 
-  public void setElevatorHeight() {
-    /* Steps
-     * 1. Driver input (button or joystick?)
-     * 2. Which direction and/or what type of motor is spinning?
-     * 3. How tall?
-     * 4. How fast?
-     */
-
-     // Conversion factor Circumfirance of gear x2
+  public void setManipulatorPositionalState(ClawHeightLevel heightLevel) {
+    elevatorHelper.setPosition(getElevatorHeightFromEnum(heightLevel));
+    shoulderHelper.setPosition(getShoulderAngleFromEnum(heightLevel));
   }
 
-  public void startClaw() {
-    /* Steps
-     * 1. Driver input (button or joystick?)
-     * 3. Which direction is the motor going to spin?
-     * 4. How long?
-     * 5. How fast?
-     */
+  public void clawGrab() {
+    clawHelper.setVelocity(ManipulatorConstants.kClawSpeedRPM);
+  }
+
+  public void clawRemove() {
+    clawHelper.setVelocity(-ManipulatorConstants.kClawSpeedRPM);
   }
 
   public void stopClaw() {
-    /* Steps
-     * 1. How does it stop?
-     * 2. Why does it stop?
-     * 3. When does it stop?
-     * 4. Does it trigger anything after it stopped?
-     */
+    clawHelper.stop();
   }
 
   // Note: When do the motors stop?

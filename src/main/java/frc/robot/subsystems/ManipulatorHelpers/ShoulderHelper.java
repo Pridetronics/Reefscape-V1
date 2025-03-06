@@ -12,7 +12,6 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SmartMotionConfig;
 import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -100,7 +99,7 @@ public class ShoulderHelper {
   public void setPosition(double position) {
 
     // Set our goal for PID
-    shoulderPIDController.setReference(position, ControlType.kPosition);
+    shoulderPIDController.setReference(position, ControlType.kMAXMotionPositionControl);
   }
 
   public double getAbsolutePosition() {

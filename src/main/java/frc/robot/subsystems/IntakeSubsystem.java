@@ -6,21 +6,15 @@
 
 package frc.robot.subsystems;
 
-import java.lang.reflect.Method;
-
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -28,7 +22,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.ManipulatorConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
@@ -68,6 +61,10 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeAngleConfig.closedLoop
     .pid(IntakeConstants.kIntakeAnglePValue, IntakeConstants.kIntakeAngleIValue, IntakeConstants.kIntakeAngleDValue);
 
+    intakeAngleConfig.closedLoop.maxMotion
+    .maxVelocity(IntakeConstants.kIntakeAngleMaxVelocityDegreesPerSecond)
+    .maxAcceleration(IntakeConstants.kIntakeAngleMaxAccelerationDegreesPerSecondSquared);
+
     intakeAngleConfig.apply(intakeAngleConfig);
 
 
@@ -75,6 +72,7 @@ public class IntakeSubsystem extends SubsystemBase {
     TalonFXConfiguration talonFXIntakeConfiguration = new TalonFXConfiguration();
 
     talonFXIntakeConfiguration.MotorOutput.Inverted = IntakeConstants.kIntakeReversed ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+    talonFXIntakeConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     // enable stator current limit
     talonFXIntakeConfiguration.CurrentLimits.StatorCurrentLimit = 120;
@@ -86,6 +84,8 @@ public class IntakeSubsystem extends SubsystemBase {
     talonFXIntakeConfiguration.Slot0.kD = IntakeConstants.kIntakeDValue;
 
     intakeMotor.getConfigurator().apply(talonFXIntakeConfiguration);
+
+    intakeEncoder.setPosition(getIntakeAbsoluteAngle());
   }
 
   public void setIntakeAngle(double angleDegrees) {
@@ -95,22 +95,29 @@ public class IntakeSubsystem extends SubsystemBase {
      * 3. How far?
      * 4. How fast?
      */
-    intakeAnglePIDController.setReference(angleDegrees, ControlType.kPosition);
+    intakeAnglePIDController.setReference(angleDegrees, ControlType.kMAXMotionPositionControl);
+  }
+
+  public double getIntakeAngle() {
+    return intakeEncoder.getPosition();
+  }
+
+  public double getIntakeAbsoluteAngle() {
+    return intakeAbsoluteEncoder.getPosition()-IntakeConstants.kIntakeAbsoluteEncoderOffsetDegrees;
   }
 
   public void startIntake() {
-    /* Steps
-     * 1. Driver input (button or joystick?)
-     * 2. Which direction is the motor going to spin?
-     * 3. How far?
-     * 4. How fast?
-     * 5. What happens after the coral has been intaked?
-     * 6. Source or Floor?
-     */
 
     VelocityDutyCycle velocityRequest = new VelocityDutyCycle(IntakeConstants.kIntakeRPM / IntakeConstants.kIntakeGearRatio);
 
      intakeMotor.setControl(velocityRequest);
+  }
+
+  public void startOuttake() {
+
+    VelocityDutyCycle velocityRequest = new VelocityDutyCycle(-IntakeConstants.kIntakeRPM / IntakeConstants.kIntakeGearRatio);
+
+    intakeMotor.setControl(velocityRequest);
   }
 
   public void stopIntake() {

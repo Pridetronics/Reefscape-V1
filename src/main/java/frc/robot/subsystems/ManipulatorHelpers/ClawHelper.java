@@ -5,12 +5,11 @@
 package frc.robot.subsystems.ManipulatorHelpers;
 
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants.ManipulatorConstants;
@@ -25,6 +24,9 @@ public class ClawHelper {
 
 // Configurating Claw
     TalonFXConfiguration talonFXClawConfiguration = new TalonFXConfiguration();
+
+    talonFXClawConfiguration.MotorOutput.Inverted = ManipulatorConstants.kClawMotorReversed ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+    talonFXClawConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     // enable stator current limit
     talonFXClawConfiguration.CurrentLimits.StatorCurrentLimit = 120;
@@ -50,6 +52,12 @@ public class ClawHelper {
   // Sets target velocity
   public void setVelocity(double velocityRPM) {
     VelocityDutyCycle velocityTargetRequest = new VelocityDutyCycle(velocityRPM/ManipulatorConstants.kClawGearRatio);
+    
+    clawMotor.setControl(velocityTargetRequest);
+  }
+
+  public void stop() {
+    VelocityDutyCycle velocityTargetRequest = new VelocityDutyCycle(0);
     
     clawMotor.setControl(velocityTargetRequest);
   }

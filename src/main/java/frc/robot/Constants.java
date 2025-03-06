@@ -187,6 +187,7 @@ public final class Constants {
 
     public static final double kIntakeAngleGearRatio = 1/36;
     public static final boolean kIntakeAngleMotorReversed = true;
+    public static final double kIntakeAbsoluteEncoderOffsetDegrees = 0.00;
 
     // Proportional, Integral, and Derivitive values for the angle PID controller
     public static final double kIntakeAnglePValue = .5;
@@ -197,6 +198,9 @@ public final class Constants {
     public static final double kIntakePValue = 0.037;
     public static final double kIntakeIValue = 0;
     public static final double kIntakeDValue = 0;
+
+    public static final double kIntakeAngleMaxVelocityDegreesPerSecond = 90;
+    public static final double kIntakeAngleMaxAccelerationDegreesPerSecondSquared = 180;
   }
 
   // Constants for manipulators (not including intake)
@@ -216,6 +220,7 @@ public final class Constants {
     public static final double kShoulderGearRatio = 1/25*54/12;
 
     public static final double kShoulderEncoderOffsetDegrees = 0;
+
     public static final double kShoulderMaxVelocityDegreesPerSecond = 90;
     public static final double kShoulderMaxAccelerationDegreesPerSecondSquared = 180;
 
@@ -225,6 +230,8 @@ public final class Constants {
     public static final boolean kElevatorMotorReversed = true;
 
     public static final double kClawGearRatio = 1/12;
+
+    public static final double kClawSpeedRPM = 5;
 
     public static final boolean kClawMotorReversed = false;
 

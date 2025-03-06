@@ -5,16 +5,8 @@
 package frc.robot.subsystems.ManipulatorHelpers;
 
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
-import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -24,9 +16,6 @@ import frc.robot.Constants.ManipulatorConstants;
 
 /** Add your docs here. */
 public class ElevatorHelper {
-
-  // Set new class
-  private final boolean hasHomed = false;
 
   // Set new TalonFX motor for the elevator
   private final TalonFX elevatorMotor = new TalonFX(ManipulatorConstants.kElevatorMotorID);
@@ -73,12 +62,12 @@ public class ElevatorHelper {
     return angleRotations * ManipulatorConstants.kElevatorGearRatio;
   }
 
-    // Sets current position
-    public void setPosition(double height) {
+  // Sets current position
+  public void setPosition(double height) {
 
-      MotionMagicDutyCycle positionTargetRequest = new MotionMagicDutyCycle(height/ManipulatorConstants.kElevatorGearRatio);
-      
-      elevatorMotor.setControl(positionTargetRequest);
+    MotionMagicDutyCycle positionTargetRequest = new MotionMagicDutyCycle(height/ManipulatorConstants.kElevatorGearRatio);
+    
+    elevatorMotor.setControl(positionTargetRequest);
 
-    }
+  }
 }

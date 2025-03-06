@@ -24,9 +24,13 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.WheelConstants;
+import frc.robot.commands.IntakeJoystickControl;
+import frc.robot.commands.ManipulatorJoystickControl;
 import frc.robot.commands.SwerveAutoPaths;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.ZeroRobotHeading;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ManipulatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /**
@@ -38,8 +42,13 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  private final ManipulatorSubsystem manipulatorSubsystem = new ManipulatorSubsystem();
+
   private final SendableChooser<Trajectory> autoCommandChooser = new SendableChooser<>();
+
   private final Joystick driverJoystick = new Joystick(IOConstants.kDriveJoystickID);
+  private final Joystick manipulatorJoystick = new Joystick(IOConstants.kManipulatorJoystickID);
 
   //Create a shuffleboard tab for the drivers to see all teleop info
   private static final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
@@ -70,6 +79,21 @@ public class RobotContainer {
       )
     );
 
+    intakeSubsystem.setDefaultCommand(
+      new IntakeJoystickControl(
+        intakeSubsystem, 
+        () -> manipulatorJoystick.getRawAxis(2) - manipulatorJoystick.getRawAxis(3)
+      )
+    );
+
+    manipulatorSubsystem.setDefaultCommand(
+      new ManipulatorJoystickControl(
+        manipulatorSubsystem, 
+        () -> manipulatorJoystick.getRawAxis(1),
+        () -> manipulatorJoystick.getRawAxis(5)
+      )
+    );
+
     // Configure the trigger bindings
     configureBindings();
   }
@@ -88,6 +112,18 @@ public class RobotContainer {
     //Activates an Instant Command to reset field direction when button is pressed down
     new JoystickButton(driverJoystick, IOConstants.kZeroHeadingBtnID)
     .onTrue(new ZeroRobotHeading(swerveSubsystem));
+
+    new JoystickButton(manipulatorJoystick, 3)
+    .onTrue(new InstantCommand(manipulatorSubsystem::clawGrab))
+    .onFalse(new InstantCommand(manipulatorSubsystem::stopClaw));
+
+    new JoystickButton(manipulatorJoystick, 1)
+    .onTrue(new InstantCommand(manipulatorSubsystem::clawRemove))
+    .onFalse(new InstantCommand(manipulatorSubsystem::stopClaw));
+
+    new JoystickButton(manipulatorJoystick, 4)
+    .onTrue(new InstantCommand(intakeSubsystem::startIntake))
+    .onFalse(new InstantCommand(intakeSubsystem::stopIntake));
 
   }
 
