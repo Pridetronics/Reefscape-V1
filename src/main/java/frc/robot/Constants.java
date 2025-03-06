@@ -223,7 +223,7 @@ public final class Constants {
     public static final int kShoulderEncoderID = 19;
 
     // Inverted elevator
-    public static final boolean kShoulderEncoderReversed = false;
+    public static final boolean kShoulderEncoderReversed = true;
     // Value for position and velocity conversion for shoulder
     public static final double kShoulderGearRatio = 1/25*(12/54);
 
@@ -233,7 +233,7 @@ public final class Constants {
     public static final double kShoulderMaxAccelerationDegreesPerSecondSquared = 180;
 
     // Value for position and velocity conversion for elevator
-    public static final double kElevatorGearRatio = 1.37500*Math.PI/20*2;
+    public static final double kElevatorGearRatio = 1.37500*Math.PI/25*2;
 
     public static final boolean kElevatorMotorReversed = true;
 
@@ -251,10 +251,10 @@ public final class Constants {
     public static final double kElevatorPValue = 0.04;
     public static final double kElevatorIValue = 0;
     public static final double kElevatorDValue = 0;
-    public static final double kElevatorGValue = 0;
-    public static final double kElevatorSValue = 0;
+    public static final double kElevatorGValue = 0.027;
+    public static final double kElevatorSValue = 0.05;
     // Proportional, Integral, and Derivitive values for the velocity PID controller
-    public static final double kShoulderPValue = 0;
+    public static final double kShoulderPValue = 0.05;
     public static final double kShoulderIValue = 0;
     public static final double kShoulderDValue = 0;
 
@@ -262,8 +262,8 @@ public final class Constants {
     public static final double kElevatorFuzzyEqInches = 2;
     public static final double kShoulderFuzzyEqDegrees = 5;
 
-    public static final double kElevatorSpeedInchesPerSecond = 12;
-    public static final double kElevatorAccelerationInchesPerSecondSquared = 24;
+    public static final double kElevatorSpeedInchesPerSecond = 42;
+    public static final double kElevatorAccelerationInchesPerSecondSquared = 66;
 
     // Elevator Heights
     // Trough (L1) Height
