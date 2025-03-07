@@ -185,7 +185,7 @@ public final class Constants {
     public static final boolean kIntakeReversed = false;
 
 
-    public static final double kIntakeAngleGearRatio = 1/36;
+    public static final double kIntakeAngleGearRatio = 1.0/36;
     public static final boolean kIntakeAngleMotorReversed = true;
     public static final double kIntakeAbsoluteEncoderOffsetDegrees = 0.00;
 
@@ -225,19 +225,16 @@ public final class Constants {
     // Inverted elevator
     public static final boolean kShoulderEncoderReversed = true;
     // Value for position and velocity conversion for shoulder
-    public static final double kShoulderGearRatio = 1/25*(12/54);
+    public static final double kShoulderGearRatio = 1.0/25 * 12/54;
+    public static final double kShoulderEncoderOffsetDegrees = 0.222*360 - 45;
 
-    public static final double kShoulderEncoderOffsetDegrees = 0.097 - 45;
-
-    public static final double kShoulderMaxVelocityDegreesPerSecond = 90;
-    public static final double kShoulderMaxAccelerationDegreesPerSecondSquared = 180;
 
     // Value for position and velocity conversion for elevator
-    public static final double kElevatorGearRatio = 1.37500*Math.PI/25*2;
+    public static final double kElevatorGearRatio = 1.0/25 * 0.375*13 * 2;
 
     public static final boolean kElevatorMotorReversed = true;
 
-    public static final double kClawGearRatio = 1/12;
+    public static final double kClawGearRatio = 1.0/12;
 
     public static final double kClawSpeedRPM = 5;
 
@@ -257,6 +254,8 @@ public final class Constants {
     public static final double kShoulderPValue = 0.05;
     public static final double kShoulderIValue = 0;
     public static final double kShoulderDValue = 0;
+    public static final double kShoulderMaxVelocityDegreesPerSecond = 90;
+    public static final double kShoulderMaxAccelerationDegreesPerSecondSquared = 180;
 
     //The threshold/region that the elevator will be considered at its target height
     public static final double kElevatorFuzzyEqInches = 2;

@@ -4,9 +4,15 @@
 
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ManipulatorSubsystem;
+import frc.robot.subsystems.ManipulatorSubsystem.ClawHeightLevel;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -29,6 +35,19 @@ public class StowManipulator extends SequentialCommandGroup {
 
     //OnlyIf not stowed
 
-    addCommands();
+    addCommands(
+      new ParallelCommandGroup(
+        new UnstowIntake(intakeSubsystem),
+        new SequentialCommandGroup(
+          new ParallelRaceGroup(
+            new MoveElevatorToTargetPosition(manipulatorSubsystem, ClawHeightLevel.ElevatorSafeHeight),
+            new WaitUntilCommand(manipulatorSubsystem::isClawOutOfWay)
+          ),
+          new MoveShoulderToTargetPosition(manipulatorSubsystem, ClawHeightLevel.Stow)
+        )
+      ).onlyIf(() -> !manipulatorSubsystem.getStowedState()),
+      new MoveElevatorToTargetPosition(manipulatorSubsystem, ClawHeightLevel.Stow),
+      new StowIntake(intakeSubsystem)
+    );
   }
 }

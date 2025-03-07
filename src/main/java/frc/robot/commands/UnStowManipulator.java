@@ -4,16 +4,20 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ManipulatorSubsystem;
+import frc.robot.subsystems.ManipulatorSubsystem.ClawHeightLevel;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class UnStowManipulator extends SequentialCommandGroup {
   /** Creates a new UnStowManipulator. */
-  public UnStowManipulator(ManipulatorSubsystem manipulatorSubsystem, IntakeSubsystem intakeSubsystem) {
+  public UnStowManipulator(ManipulatorSubsystem manipulatorSubsystem, IntakeSubsystem intakeSubsystem, ClawHeightLevel targetState) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
@@ -25,9 +29,36 @@ public class UnStowManipulator extends SequentialCommandGroup {
       //Move shoulder
       //Move Intake back
     //Adjust elevator  
+    addCommands(
+      new SequentialCommandGroup(
 
+        new UnstowIntake(intakeSubsystem).onlyIf(manipulatorSubsystem::getStowedState),
 
+        new ConditionalCommand(
+  
+          new ParallelCommandGroup(
+            new MoveElevatorToTargetPosition(manipulatorSubsystem, targetState),
+            new SequentialCommandGroup(
+              new WaitUntilCommand(manipulatorSubsystem::isClawOutOfWay),
+              new ParallelCommandGroup(
+                new MoveShoulderToTargetPosition(manipulatorSubsystem, targetState),
+                new StowIntake(intakeSubsystem)
+              )
+            )
+          ),
+          new SequentialCommandGroup(
+            new MoveElevatorToTargetPosition(manipulatorSubsystem, ClawHeightLevel.ElevatorSafeHeight),
+            new ParallelCommandGroup(
+              new MoveShoulderToTargetPosition(manipulatorSubsystem, targetState),
+              new StowIntake(intakeSubsystem)
+            ),
+            new MoveElevatorToTargetPosition(manipulatorSubsystem, targetState)
+          ), 
+          () -> manipulatorSubsystem.getElevatorHeightFromEnum(targetState) > manipulatorSubsystem.getElevatorHeightFromEnum(ClawHeightLevel.ElevatorSafeHeight)
+  
+        )
 
-    addCommands();
+      )
+    );
   }
 }

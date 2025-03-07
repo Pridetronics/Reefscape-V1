@@ -38,7 +38,7 @@ public class ManipulatorSubsystem extends SubsystemBase {
 
   public ManipulatorSubsystem() {}
 
-  private double getElevatorHeightFromEnum(ClawHeightLevel heightLevel) {
+  public double getElevatorHeightFromEnum(ClawHeightLevel heightLevel) {
     switch (heightLevel) {
       case Level1:
         return ManipulatorConstants.kElevatorHeightL1Inches;
@@ -59,7 +59,7 @@ public class ManipulatorSubsystem extends SubsystemBase {
     }
   }
 
-  private double getShoulderAngleFromEnum(ClawHeightLevel heightLevel) {
+  public double getShoulderAngleFromEnum(ClawHeightLevel heightLevel) {
     switch (heightLevel) {
       case Level1:
         return ManipulatorConstants.kShoulderAngleL1Degrees;
@@ -81,7 +81,12 @@ public class ManipulatorSubsystem extends SubsystemBase {
   }
 
   public Boolean getStowedState() {
-    return shoulderHelper.getPosition() < ManipulatorConstants.kShoulderStowAngleDegrees + 15 && elevatorHelper.getPosition() < ManipulatorConstants.kElevatorStowHeightInches + 6;
+    return ( shoulderHelper.getPosition() < ManipulatorConstants.kShoulderStowAngleDegrees + 15 
+    && elevatorHelper.getPosition() < ManipulatorConstants.kElevatorStowHeightInches + ManipulatorConstants.kElevatorFuzzyEqInches );
+  }
+
+  public double getElevatorHeight() {
+    return elevatorHelper.getPosition();
   }
 
   public Boolean isClawOutOfWay() {
