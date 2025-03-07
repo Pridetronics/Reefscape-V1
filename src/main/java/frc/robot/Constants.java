@@ -227,7 +227,7 @@ public final class Constants {
     // Value for position and velocity conversion for shoulder
     public static final double kShoulderGearRatio = 1/25*(12/54);
 
-    public static final double kShoulderEncoderOffsetDegrees = 0.222 - 45;
+    public static final double kShoulderEncoderOffsetDegrees = 0.097 - 45;
 
     public static final double kShoulderMaxVelocityDegreesPerSecond = 90;
     public static final double kShoulderMaxAccelerationDegreesPerSecondSquared = 180;
