@@ -26,6 +26,7 @@ import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.WheelConstants;
 import frc.robot.commands.IntakeJoystickControl;
 import frc.robot.commands.ManipulatorJoystickControl;
+import frc.robot.commands.ShoulderTargetCmd;
 import frc.robot.commands.SwerveAutoPaths;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.ZeroRobotHeading;
@@ -79,20 +80,22 @@ public class RobotContainer {
       )
     );
 
-    intakeSubsystem.setDefaultCommand(
-      new IntakeJoystickControl(
-        intakeSubsystem, 
-        () -> manipulatorJoystick.getRawAxis(2) - manipulatorJoystick.getRawAxis(3)
-      )
-    );
+    // intakeSubsystem.setDefaultCommand(
+    //   new IntakeJoystickControl(
+    //     intakeSubsystem, 
+    //     () -> manipulatorJoystick.getRawAxis(2) - manipulatorJoystick.getRawAxis(3)
+    //   )
+    // );
 
-    manipulatorSubsystem.setDefaultCommand(
-      new ManipulatorJoystickControl(
-        manipulatorSubsystem, 
-        () -> manipulatorJoystick.getRawAxis(1),
-        () -> manipulatorJoystick.getRawAxis(5)
-      )
-    );
+    // manipulatorSubsystem.setDefaultCommand(
+    //   new ManipulatorJoystickControl(
+    //     manipulatorSubsystem, 
+    //     () -> manipulatorJoystick.getRawAxis(1),
+    //     () -> manipulatorJoystick.getRawAxis(5)
+    //   )
+    // );
+
+    manipulatorSubsystem.setDefaultCommand(new ShoulderTargetCmd(manipulatorSubsystem));
 
     // Configure the trigger bindings
     configureBindings();

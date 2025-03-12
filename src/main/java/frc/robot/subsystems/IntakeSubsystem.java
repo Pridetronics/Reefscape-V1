@@ -89,7 +89,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setIntakeAngle(double angleDegrees) {
-    intakeAnglePIDController.setReference(angleDegrees, ControlType.kMAXMotionPositionControl);
+    //intakeAnglePIDController.setReference(angleDegrees, ControlType.kMAXMotionPositionControl);
   }
 
   public double getIntakeAngle() {
@@ -108,14 +108,14 @@ public class IntakeSubsystem extends SubsystemBase {
 
     VelocityDutyCycle velocityRequest = new VelocityDutyCycle(IntakeConstants.kIntakeRPM / IntakeConstants.kIntakeGearRatio);
 
-     intakeMotor.setControl(velocityRequest);
+    //intakeMotor.setControl(velocityRequest);
   }
 
   public void startOuttake() {
 
     VelocityDutyCycle velocityRequest = new VelocityDutyCycle(-IntakeConstants.kIntakeRPM / IntakeConstants.kIntakeGearRatio);
 
-    intakeMotor.setControl(velocityRequest);
+    //intakeMotor.setControl(velocityRequest);
   }
 
   public void stopIntake() {
@@ -127,7 +127,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
      VelocityDutyCycle velocityRequest = new VelocityDutyCycle(0);
 
-     intakeMotor.setControl(velocityRequest);
+     //intakeMotor.setControl(velocityRequest);
   }
 
   // Note: When do the motors stop?

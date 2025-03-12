@@ -67,7 +67,7 @@ public class ElevatorHelper {
 
     MotionMagicDutyCycle positionTargetRequest = new MotionMagicDutyCycle(height/ManipulatorConstants.kElevatorGearRatio);
     
-    elevatorMotor.setControl(positionTargetRequest);
+    //elevatorMotor.setControl(positionTargetRequest);
 
   }
 }

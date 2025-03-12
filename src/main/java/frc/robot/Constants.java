@@ -225,8 +225,8 @@ public final class Constants {
     // Inverted elevator
     public static final boolean kShoulderEncoderReversed = true;
     // Value for position and velocity conversion for shoulder
-    public static final double kShoulderGearRatio = 1.0/25 * 12/54;
-    public static final double kShoulderEncoderOffsetDegrees = 0.222*360 - 45;
+    public static final double kShoulderGearRatio = 1.0/25 * 15.00/54;
+    public static final double kShoulderEncoderOffsetDegrees = -0.260742*360 - 54.462;
 
 
     // Value for position and velocity conversion for elevator
@@ -251,11 +251,12 @@ public final class Constants {
     public static final double kElevatorGValue = 0.027;
     public static final double kElevatorSValue = 0.05;
     // Proportional, Integral, and Derivitive values for the velocity PID controller
-    public static final double kShoulderPValue = 0.05;
-    public static final double kShoulderIValue = 0;
+    public static final double kShoulderPValue = 0.03;
+    public static final double kShoulderIValue = 0.0;
     public static final double kShoulderDValue = 0;
-    public static final double kShoulderMaxVelocityDegreesPerSecond = 90;
-    public static final double kShoulderMaxAccelerationDegreesPerSecondSquared = 180;
+    public static final double kShoulderFFValue = 0.005;
+    public static final double kShoulderMaxVelocityDegreesPerSecond = 1440;
+    public static final double kShoulderMaxAccelerationDegreesPerSecondSquared = 8888;
 
     //The threshold/region that the elevator will be considered at its target height
     public static final double kElevatorFuzzyEqInches = 2;
@@ -279,10 +280,10 @@ public final class Constants {
     public static final int kShoulderAngleL4Degrees = 0;
     // Max Height
     public static final int kElevatorMaxHeightInches = 60;
-    public static final int kShoulderHigherLimitDegrees = -80;
+    public static final int kShoulderHigherLimitDegrees = 35;
     // Homing Height
     public static final int kElevatorHomingHeightInches = 0;
-    public static final int kShoulderLowerLimitDegrees = -90;
+    public static final int kShoulderLowerLimitDegrees = -70;
 
     public static final int kElevatorStowHeightInches = 0;
     public static final int kElevatorSafeFromIntakeHeightInches = 12;

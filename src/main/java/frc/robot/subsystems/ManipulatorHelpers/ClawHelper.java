@@ -53,12 +53,12 @@ public class ClawHelper {
   public void setVelocity(double velocityRPM) {
     VelocityDutyCycle velocityTargetRequest = new VelocityDutyCycle(velocityRPM/ManipulatorConstants.kClawGearRatio);
     
-    clawMotor.setControl(velocityTargetRequest);
+    //clawMotor.setControl(velocityTargetRequest);
   }
 
   public void stop() {
     VelocityDutyCycle velocityTargetRequest = new VelocityDutyCycle(0);
     
-    clawMotor.setControl(velocityTargetRequest);
+    //clawMotor.setControl(velocityTargetRequest);
   }
 }

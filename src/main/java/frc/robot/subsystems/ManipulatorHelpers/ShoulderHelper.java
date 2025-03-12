@@ -9,7 +9,9 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.spark.SparkBase.*;
+import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -35,6 +37,9 @@ public class ShoulderHelper {
 // Set PID controller
   public final SparkClosedLoopController shoulderPIDController = shoulderMotor.getClosedLoopController();
 
+  private double targetAngle;
+  private boolean targetAngleSet = false;
+
   public ShoulderHelper() {
 
     // Configurating elevator
@@ -59,19 +64,14 @@ public class ShoulderHelper {
     .maxVelocity(ManipulatorConstants.kShoulderMaxVelocityDegreesPerSecond)
     .maxAcceleration(ManipulatorConstants.kShoulderMaxAccelerationDegreesPerSecondSquared);
     
-    // Elevator limit config
-    SoftLimitConfig softConfig = new SoftLimitConfig();
-    
-    // Maximum limit
-    softConfig
+
+    shoulderConfig.softLimit
     // The limit itself
-    .forwardSoftLimit(ManipulatorConstants.kShoulderLowerLimitDegrees)
+    .forwardSoftLimit(ManipulatorConstants.kShoulderHigherLimitDegrees)
     // Is the limit enabled
-    .forwardSoftLimitEnabled(true);
-    // Minimum limit
-    softConfig
+    .forwardSoftLimitEnabled(true)
     // The limit itself
-    .reverseSoftLimit(ManipulatorConstants.kShoulderHigherLimitDegrees)
+    .reverseSoftLimit(ManipulatorConstants.kShoulderLowerLimitDegrees)
     // Is the limit enabled
     .reverseSoftLimitEnabled(true);
     
@@ -90,6 +90,19 @@ public class ShoulderHelper {
     shoulderEncoder.setPosition(getAbsolutePosition());
   }
 
+  public void periodic() {
+    if (targetAngleSet) {
+      System.out.println(getAbsolutePosition());
+      shoulderPIDController.setReference(
+        targetAngle, 
+        ControlType.kMAXMotionPositionControl, 
+        ClosedLoopSlot.kSlot0, 
+        ManipulatorConstants.kShoulderFFValue*Math.cos(Math.toRadians(getAbsolutePosition())), 
+        ArbFFUnits.kPercentOut
+      );
+    }
+  }
+
     // Gets current position
   public double getPosition() {
     return shoulderEncoder.getPosition();
@@ -97,9 +110,10 @@ public class ShoulderHelper {
 
     // Sets target position
   public void setPosition(double position) {
-
+    targetAngleSet = true;
     // Set our goal for PID
-    shoulderPIDController.setReference(position, ControlType.kMAXMotionPositionControl);
+    targetAngle = position;
+    //shoulderPIDController.setReference(position, ControlType.kMAXMotionPositionControl);
   }
 
   public double getAbsolutePosition() {

@@ -47,7 +47,7 @@ public class ManipulatorJoystickControl extends Command {
     double shoulderJoystickValue = shoulderJoystickSupplier.get();
     if (Math.abs(shoulderJoystickValue) < 0.01) shoulderJoystickValue = 0.000;
     double shoulderTargetIncrement = shoulderJoystickValue * 30;
-    manipulatorSubsystem.shoulderHelper.setPosition(manipulatorSubsystem.shoulderHelper.getPosition() + shoulderTargetIncrement);
+    //manipulatorSubsystem.shoulderHelper.setPosition(manipulatorSubsystem.shoulderHelper.getPosition() + shoulderTargetIncrement);
 
     ShuffleboardRateLimiter.queueDataForShuffleboard(elevatorHeightEntry, manipulatorSubsystem.elevatorHelper.getPosition());
     ShuffleboardRateLimiter.queueDataForShuffleboard(shoulderAngleEntry, manipulatorSubsystem.shoulderHelper.getPosition());
@@ -62,5 +62,10 @@ public class ManipulatorJoystickControl extends Command {
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
   }
 }
