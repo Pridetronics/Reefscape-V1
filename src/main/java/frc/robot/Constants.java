@@ -190,9 +190,9 @@ public final class Constants {
     public static final double kIntakeAbsoluteEncoderOffsetDegrees = 0.00;
 
     // Proportional, Integral, and Derivitive values for the angle PID controller
-    public static final double kIntakeAnglePValue = .5;
-    public static final double kIntakeAngleIValue = 1;
-    public static final double kIntakeAngleDValue = 1;
+    public static final double kIntakeAnglePValue = .001;
+    public static final double kIntakeAngleIValue = 0;
+    public static final double kIntakeAngleDValue = 0;
 
     // Proportional, Integral, and Derivitive values for the velocity PID controller
     public static final double kIntakePValue = 0.037;
@@ -255,8 +255,8 @@ public final class Constants {
     public static final double kShoulderIValue = 0.0;
     public static final double kShoulderDValue = 0;
     public static final double kShoulderFFValue = 0.005;
-    public static final double kShoulderMaxVelocityDegreesPerSecond = 1440;
-    public static final double kShoulderMaxAccelerationDegreesPerSecondSquared = 8888;
+    public static final double kShoulderMaxVelocityDegreesPerSecond = 90;
+    public static final double kShoulderMaxAccelerationDegreesPerSecondSquared = 180;
 
     //The threshold/region that the elevator will be considered at its target height
     public static final double kElevatorFuzzyEqInches = 2;
@@ -280,10 +280,10 @@ public final class Constants {
     public static final int kShoulderAngleL4Degrees = 0;
     // Max Height
     public static final int kElevatorMaxHeightInches = 60;
-    public static final int kShoulderHigherLimitDegrees = 35;
+    public static final int kShoulderHigherLimitDegrees = 55;
     // Homing Height
     public static final int kElevatorHomingHeightInches = 0;
-    public static final int kShoulderLowerLimitDegrees = -70;
+    public static final int kShoulderLowerLimitDegrees = -90;
 
     public static final int kElevatorStowHeightInches = 0;
     public static final int kElevatorSafeFromIntakeHeightInches = 12;

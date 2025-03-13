@@ -15,9 +15,10 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -62,10 +63,10 @@ public class IntakeSubsystem extends SubsystemBase {
     .pid(IntakeConstants.kIntakeAnglePValue, IntakeConstants.kIntakeAngleIValue, IntakeConstants.kIntakeAngleDValue);
 
     intakeAngleConfig.closedLoop.maxMotion
-    .maxVelocity(IntakeConstants.kIntakeAngleMaxVelocityDegreesPerSecond)
-    .maxAcceleration(IntakeConstants.kIntakeAngleMaxAccelerationDegreesPerSecondSquared);
+    .maxVelocity(IntakeConstants.kIntakeAngleMaxVelocityDegreesPerSecond / IntakeConstants.kIntakeGearRatio / 360 * 60)
+    .maxAcceleration(IntakeConstants.kIntakeAngleMaxAccelerationDegreesPerSecondSquared / IntakeConstants.kIntakeGearRatio / 360 * 60);
 
-    intakeAngleConfig.apply(intakeAngleConfig);
+    intakeAngleMotor.configure(intakeAngleConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 
     // Configurating intake motor

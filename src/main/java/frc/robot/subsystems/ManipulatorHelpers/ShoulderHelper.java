@@ -17,6 +17,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.units.measure.Angle;
@@ -61,8 +62,8 @@ public class ShoulderHelper {
     shoulderConfig.closedLoop
     .pid(ManipulatorConstants.kShoulderPValue, ManipulatorConstants.kShoulderIValue, ManipulatorConstants.kShoulderDValue);
     shoulderConfig.closedLoop.maxMotion
-    .maxVelocity(ManipulatorConstants.kShoulderMaxVelocityDegreesPerSecond)
-    .maxAcceleration(ManipulatorConstants.kShoulderMaxAccelerationDegreesPerSecondSquared);
+    .maxVelocity(ManipulatorConstants.kShoulderMaxVelocityDegreesPerSecond / ManipulatorConstants.kShoulderGearRatio / 360 * 60)
+    .maxAcceleration(ManipulatorConstants.kShoulderMaxAccelerationDegreesPerSecondSquared / ManipulatorConstants.kShoulderGearRatio / 360 * 60);
     
 
     shoulderConfig.softLimit
