@@ -10,6 +10,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.utils.ShuffleboardRateLimiter;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeJoystickControl extends Command {
@@ -38,7 +39,11 @@ public class IntakeJoystickControl extends Command {
     double intakeJoystickValue = intakeAngleJoystick.get();
     if (Math.abs(intakeJoystickValue) <= 0.01) intakeJoystickValue = 0.000;
     double intakeTargetIncrement = intakeJoystickValue * 30;
-    intakeSubsystem.setIntakeAngle(intakeSubsystem.getIntakeAngle() + intakeTargetIncrement);
+    //intakeSubsystem.setIntakeAngle(intakeSubsystem.getIntakeAngle() + intakeTargetIncrement);
+
+    ShuffleboardRateLimiter.queueDataForShuffleboard(intakeRelativeEntry, intakeSubsystem.getIntakeAngle());
+    ShuffleboardRateLimiter.queueDataForShuffleboard(intakeAbsoluteEntry, intakeSubsystem.getIntakeAbsoluteAngle());
+    System.out.println("INTAKE ANGLE: " + intakeSubsystem.getIntakeAbsoluteAngle());
   }
 
   // Called once the command ends or is interrupted.

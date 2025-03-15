@@ -11,6 +11,7 @@ import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -21,7 +22,10 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -34,8 +38,10 @@ public class IntakeSubsystem extends SubsystemBase {
   private final SparkMax intakeAngleMotor = new SparkMax(IntakeConstants.kIntakeAngleMotorCanID, MotorType.kBrushless);
 
   // Encoder for our new motor
-  private final SparkAbsoluteEncoder intakeAbsoluteEncoder = intakeAngleMotor.getAbsoluteEncoder();
-  
+  private final AnalogInput intakeAbsoluteEncoder = new AnalogInput(1);
+  private double accumAbsValue = 0;
+  private int accumAbsKeys = 0;
+  double currentAverageIntakeAngleAbsoluteValue = 0;
   // Relative encoder for our motor
   private final RelativeEncoder intakeEncoder = intakeAngleMotor.getEncoder();
 
@@ -50,6 +56,7 @@ public class IntakeSubsystem extends SubsystemBase {
     // Set what we are configurating
     .inverted(IntakeConstants.kIntakeAngleMotorReversed)
     .idleMode(IdleMode.kBrake)
+
     // Set current limit
     .smartCurrentLimit(80, 80);
     // Conversion factors to convert from rotations to inches
@@ -61,10 +68,10 @@ public class IntakeSubsystem extends SubsystemBase {
     //PID config
     intakeAngleConfig.closedLoop
     .pid(IntakeConstants.kIntakeAnglePValue, IntakeConstants.kIntakeAngleIValue, IntakeConstants.kIntakeAngleDValue);
-
+    
     intakeAngleConfig.closedLoop.maxMotion
-    .maxVelocity(IntakeConstants.kIntakeAngleMaxVelocityDegreesPerSecond / IntakeConstants.kIntakeGearRatio / 360 * 60)
-    .maxAcceleration(IntakeConstants.kIntakeAngleMaxAccelerationDegreesPerSecondSquared / IntakeConstants.kIntakeGearRatio / 360 * 60);
+    .maxVelocity(IntakeConstants.kIntakeAngleMaxVelocityDegreesPerSecond / IntakeConstants.kIntakeAngleGearRatio / 360 * 60)
+    .maxAcceleration(IntakeConstants.kIntakeAngleMaxAccelerationDegreesPerSecondSquared / IntakeConstants.kIntakeAngleGearRatio / 360 * 60);
 
     intakeAngleMotor.configure(intakeAngleConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -102,7 +109,8 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public double getIntakeAbsoluteAngle() {
-    return intakeAbsoluteEncoder.getPosition()-IntakeConstants.kIntakeAbsoluteEncoderOffsetDegrees;
+    double encoderAngle = accumAbsValue/accumAbsKeys;
+    return encoderAngle+IntakeConstants.kIntakeAbsoluteEncoderOffsetDegrees;
   }
 
   public void startIntake() {
@@ -136,5 +144,7 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    accumAbsValue += intakeAbsoluteEncoder.getAverageVoltage()/RobotController.getVoltage3V3() * 360;
+    accumAbsKeys += 1;
   }
 }

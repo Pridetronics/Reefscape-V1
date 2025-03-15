@@ -6,8 +6,15 @@ package frc.robot.subsystems.ManipulatorHelpers;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.revrobotics.spark.SparkBase.*;
 import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.RelativeEncoder;
@@ -27,57 +34,45 @@ import frc.robot.Constants.ManipulatorConstants;
 public class ShoulderHelper {
 
 // Set new SparkMax motor for the elevator
-  public final SparkMax shoulderMotor = new SparkMax(ManipulatorConstants.kShoulderMotorID, MotorType.kBrushless);
+  public final TalonFX shoulderMotor = new TalonFX(ManipulatorConstants.kShoulderMotorID);
 
   // CAN Encoder for shoulder motor
   public final CANcoder absoluteEncoder = new CANcoder(ManipulatorConstants.kShoulderEncoderID);
-
-// Relative encoder for the elevator motor
-  public final RelativeEncoder shoulderEncoder = shoulderMotor.getEncoder();
-
-// Set PID controller
-  public final SparkClosedLoopController shoulderPIDController = shoulderMotor.getClosedLoopController();
 
   private double targetAngle;
   private boolean targetAngleSet = false;
 
   public ShoulderHelper() {
 
-    // Configurating elevator
-    SparkMaxConfig shoulderConfig = new SparkMaxConfig();
-    
-    shoulderConfig
-    // Set what we are configurating
-    .inverted(ManipulatorConstants.kShoulderEncoderReversed)
-    .idleMode(IdleMode.kBrake)
-    // Set current limit
-    .smartCurrentLimit(80, 80);
-    // Conversion factors to convert from rotations to inches
-    shoulderConfig.encoder
-    // Conversion for elevator
-    .positionConversionFactor(ManipulatorConstants.kShoulderGearRatio * 360)
-    // Converts to degrees per second
-    .velocityConversionFactor(ManipulatorConstants.kShoulderGearRatio * 360 / 60 );
-    
-    shoulderConfig.closedLoop
-    .pid(ManipulatorConstants.kShoulderPValue, ManipulatorConstants.kShoulderIValue, ManipulatorConstants.kShoulderDValue);
-    shoulderConfig.closedLoop.maxMotion
-    .maxVelocity(ManipulatorConstants.kShoulderMaxVelocityDegreesPerSecond / ManipulatorConstants.kShoulderGearRatio / 360 * 60)
-    .maxAcceleration(ManipulatorConstants.kShoulderMaxAccelerationDegreesPerSecondSquared / ManipulatorConstants.kShoulderGearRatio / 360 * 60);
-    
+    // Configurating Elevator
+    TalonFXConfiguration talonFXElevatorConfig = new TalonFXConfiguration();
+    // enable stator current limit
+    talonFXElevatorConfig.CurrentLimits.StatorCurrentLimit = 120;
+    talonFXElevatorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
-    shoulderConfig.softLimit
-    // The limit itself
-    .forwardSoftLimit(ManipulatorConstants.kShoulderHigherLimitDegrees)
-    // Is the limit enabled
-    .forwardSoftLimitEnabled(true)
-    // The limit itself
-    .reverseSoftLimit(ManipulatorConstants.kShoulderLowerLimitDegrees)
-    // Is the limit enabled
-    .reverseSoftLimitEnabled(true);
-    
-    // Apply changes
-    shoulderMotor.configure(shoulderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // PID
+    talonFXElevatorConfig.Slot0.kP = ManipulatorConstants.kShoulderPValue;
+    talonFXElevatorConfig.Slot0.kI = ManipulatorConstants.kShoulderIValue;
+    talonFXElevatorConfig.Slot0.kD = ManipulatorConstants.kShoulderDValue;
+    talonFXElevatorConfig.Slot0.kG = ManipulatorConstants.kShoulderGValue;
+    talonFXElevatorConfig.Slot0.kS = ManipulatorConstants.kShoulderSValue;
+    talonFXElevatorConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
+
+    //More PID Configs for max velocity & Acceleration
+    talonFXElevatorConfig.MotionMagic.MotionMagicCruiseVelocity = ManipulatorConstants.kShoulderMaxVelocityDegreesPerSecond/ManipulatorConstants.kShoulderGearRatio/360;
+    talonFXElevatorConfig.MotionMagic.MotionMagicAcceleration = ManipulatorConstants.kShoulderMaxAccelerationDegreesPerSecondSquared/ManipulatorConstants.kShoulderGearRatio/360;
+
+    talonFXElevatorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    talonFXElevatorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ManipulatorConstants.kShoulderHigherLimitDegrees/ManipulatorConstants.kShoulderGearRatio;
+    talonFXElevatorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    talonFXElevatorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ManipulatorConstants.kShoulderLowerLimitDegrees/ManipulatorConstants.kShoulderGearRatio;
+
+    talonFXElevatorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    talonFXElevatorConfig.MotorOutput.Inverted = ManipulatorConstants.kShoulderEncoderReversed ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+
+    // Finish Configurating Elevator
+    shoulderMotor.getConfigurator().apply(talonFXElevatorConfig);
+
     // Finish configurating elevator
 
     CANcoderConfiguration absoluteEncoderConfigs = new CANcoderConfiguration();
@@ -87,34 +82,22 @@ public class ShoulderHelper {
     absoluteEncoder.getConfigurator().apply(absoluteEncoderConfigs);
     
 
-    //Zeros the shoulder encoder
-    shoulderEncoder.setPosition(getAbsolutePosition());
-  }
 
-  public void periodic() {
-    if (targetAngleSet) {
-      System.out.println(getAbsolutePosition());
-      shoulderPIDController.setReference(
-        targetAngle, 
-        ControlType.kMAXMotionPositionControl, 
-        ClosedLoopSlot.kSlot0, 
-        ManipulatorConstants.kShoulderFFValue*Math.cos(Math.toRadians(getAbsolutePosition())), 
-        ArbFFUnits.kPercentOut
-      );
-    }
+    //Zeros the shoulder encoder
+    shoulderMotor.setPosition(getAbsolutePosition()/360/ManipulatorConstants.kShoulderGearRatio);
   }
 
     // Gets current position
   public double getPosition() {
-    return shoulderEncoder.getPosition();
+    StatusSignal<Angle> angleSignal = shoulderMotor.getPosition();
+    return angleSignal.getValueAsDouble() * ManipulatorConstants.kShoulderGearRatio * 360;
   }
 
     // Sets target position
   public void setPosition(double position) {
-    targetAngleSet = true;
-    // Set our goal for PID
-    targetAngle = position;
-    //shoulderPIDController.setReference(position, ControlType.kMAXMotionPositionControl);
+    MotionMagicDutyCycle positionTargetRequest = new MotionMagicDutyCycle(position/360/ManipulatorConstants.kShoulderGearRatio);
+    
+    shoulderMotor.setControl(positionTargetRequest);
   }
 
   public double getAbsolutePosition() {

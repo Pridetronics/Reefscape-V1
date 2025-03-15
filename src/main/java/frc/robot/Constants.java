@@ -181,7 +181,7 @@ public final class Constants {
     public static final int kIntakeAngleMotorCanID = 15; 
 
     public static final int kIntakeRPM = 50;
-    public static final double kIntakeGearRatio = 1/9;
+    public static final double kIntakeGearRatio = 1.0/9;
     public static final boolean kIntakeReversed = false;
 
 
@@ -232,9 +232,9 @@ public final class Constants {
     // Value for position and velocity conversion for elevator
     public static final double kElevatorGearRatio = 1.0/25 * 0.375*13 * 2;
 
-    public static final boolean kElevatorMotorReversed = true;
+    public static final boolean kElevatorMotorReversed = false;
 
-    public static final double kClawGearRatio = 1.0/12;
+    public static final double kClawGearRatio = 1.0/16;
 
     public static final double kClawSpeedRPM = 5;
 
@@ -251,12 +251,13 @@ public final class Constants {
     public static final double kElevatorGValue = 0.027;
     public static final double kElevatorSValue = 0.05;
     // Proportional, Integral, and Derivitive values for the velocity PID controller
-    public static final double kShoulderPValue = 0.03;
-    public static final double kShoulderIValue = 0.0;
-    public static final double kShoulderDValue = 0;
-    public static final double kShoulderFFValue = 0.005;
-    public static final double kShoulderMaxVelocityDegreesPerSecond = 90;
-    public static final double kShoulderMaxAccelerationDegreesPerSecondSquared = 180;
+    public static final double kShoulderPValue = 0.04;
+    public static final double kShoulderIValue = 0.00;
+    public static final double kShoulderDValue = 0.00;
+    public static final double kShoulderGValue = 0.03;
+    public static final double kShoulderSValue = 0.00;
+    public static final double kShoulderMaxVelocityDegreesPerSecond = 180;
+    public static final double kShoulderMaxAccelerationDegreesPerSecondSquared = 360;
 
     //The threshold/region that the elevator will be considered at its target height
     public static final double kElevatorFuzzyEqInches = 2;

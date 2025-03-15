@@ -10,6 +10,15 @@ import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants.ManipulatorConstants;
@@ -18,47 +27,41 @@ import frc.robot.Constants.ManipulatorConstants;
 public class ClawHelper {
 
     // Setting new TalonFX motor for the claw
-  public final TalonFX clawMotor = new TalonFX(ManipulatorConstants.kClawMotorID);
+  public final SparkMax clawMotor = new SparkMax(ManipulatorConstants.kClawMotorID, MotorType.kBrushless);
+  
+  public final RelativeEncoder clawEncoder = clawMotor.getEncoder();
+  
+  public final SparkClosedLoopController clawPIDController = clawMotor.getClosedLoopController();
 
   public ClawHelper() {
 
-// Configurating Claw
-    TalonFXConfiguration talonFXClawConfiguration = new TalonFXConfiguration();
+    // Configurating Claw
+    SparkMaxConfig clawConfig = new SparkMaxConfig();
 
-    talonFXClawConfiguration.MotorOutput.Inverted = ManipulatorConstants.kClawMotorReversed ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
-    talonFXClawConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    clawConfig.encoder
+    .positionConversionFactor(ManipulatorConstants.kClawGearRatio)
+    .velocityConversionFactor(ManipulatorConstants.kClawGearRatio / 60);
+    clawConfig.closedLoop
+    .pid(ManipulatorConstants.kClawPValue, ManipulatorConstants.kClawIValue, ManipulatorConstants.kClawDValue);
+    clawConfig
+    .inverted(ManipulatorConstants.kClawMotorReversed)
+    .smartCurrentLimit(50, 50);
 
-    // enable stator current limit
-    talonFXClawConfiguration.CurrentLimits.StatorCurrentLimit = 120;
-    talonFXClawConfiguration.CurrentLimits.StatorCurrentLimitEnable = true;
-
-    // PID
-    talonFXClawConfiguration.Slot0.kP = ManipulatorConstants.kClawPValue;
-    talonFXClawConfiguration.Slot0.kI = ManipulatorConstants.kClawIValue;
-    talonFXClawConfiguration.Slot0.kD = ManipulatorConstants.kClawDValue;
-
-    // Finish configuring claw
-    clawMotor.getConfigurator().apply(talonFXClawConfiguration);
+    clawMotor.configure(clawConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
   }
 
   // Gets current velocity
   public double getVelocity() {
-    StatusSignal<AngularVelocity> velocitySignal = clawMotor.getVelocity();
-    double velocity = velocitySignal.getValueAsDouble();
-    return velocity * ManipulatorConstants.kClawGearRatio;
+    return clawEncoder.getVelocity();
   }
 
   // Sets target velocity
   public void setVelocity(double velocityRPM) {
-    VelocityDutyCycle velocityTargetRequest = new VelocityDutyCycle(velocityRPM/ManipulatorConstants.kClawGearRatio);
-    
-    //clawMotor.setControl(velocityTargetRequest);
+    clawPIDController.setReference(velocityRPM, ControlType.kVelocity);
   }
 
   public void stop() {
-    VelocityDutyCycle velocityTargetRequest = new VelocityDutyCycle(0);
-    
-    //clawMotor.setControl(velocityTargetRequest);
+    clawPIDController.setReference(0, ControlType.kVelocity);
   }
 }
