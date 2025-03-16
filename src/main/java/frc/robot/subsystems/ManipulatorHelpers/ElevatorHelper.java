@@ -12,6 +12,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants.ManipulatorConstants;
 
 /** Add your docs here. */
@@ -43,7 +44,7 @@ public class ElevatorHelper {
     talonFXElevatorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
     talonFXElevatorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ManipulatorConstants.kElevatorMaxHeightInches/ManipulatorConstants.kElevatorGearRatio;
     talonFXElevatorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-    talonFXElevatorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ManipulatorConstants.kElevatorHomingHeightInches/ManipulatorConstants.kElevatorGearRatio;
+    talonFXElevatorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ManipulatorConstants.kElevatorMinimumHeightInches/ManipulatorConstants.kElevatorGearRatio;
 
     talonFXElevatorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     talonFXElevatorConfig.MotorOutput.Inverted = ManipulatorConstants.kElevatorMotorReversed ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
@@ -60,6 +61,12 @@ public class ElevatorHelper {
     StatusSignal<Angle> angleSignal = elevatorMotor.getPosition();
     double angleRotations = angleSignal.getValueAsDouble();
     return angleRotations * ManipulatorConstants.kElevatorGearRatio;
+  }
+
+  public double getVelocity() {
+    StatusSignal<AngularVelocity> angleSignal = elevatorMotor.getVelocity();
+    double rpm = angleSignal.getValueAsDouble();
+    return rpm * ManipulatorConstants.kElevatorGearRatio;
   }
 
   // Sets current position

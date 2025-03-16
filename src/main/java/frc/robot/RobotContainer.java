@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.WheelConstants;
+import frc.robot.commands.IntakeAngleCmd;
 import frc.robot.commands.IntakeJoystickControl;
 import frc.robot.commands.ManipulatorJoystickControl;
 import frc.robot.commands.SwerveAutoPaths;
@@ -79,18 +80,22 @@ public class RobotContainer {
       )
     );
 
+    // intakeSubsystem.setDefaultCommand(
+    //   new IntakeJoystickControl(
+    //     intakeSubsystem, 
+    //     () -> manipulatorJoystick.getRawAxis(2) - manipulatorJoystick.getRawAxis(3)
+    //   )
+    // );
+
     intakeSubsystem.setDefaultCommand(
-      new IntakeJoystickControl(
-        intakeSubsystem, 
-        () -> manipulatorJoystick.getRawAxis(2) - manipulatorJoystick.getRawAxis(3)
-      )
+      new IntakeAngleCmd(intakeSubsystem)
     );
 
     manipulatorSubsystem.setDefaultCommand(
       new ManipulatorJoystickControl(
         manipulatorSubsystem, 
-        () -> manipulatorJoystick.getRawAxis(1),
-        () -> manipulatorJoystick.getRawAxis(5)
+        () -> -manipulatorJoystick.getRawAxis(1),
+        () -> -manipulatorJoystick.getRawAxis(5)
       )
     );
 

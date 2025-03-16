@@ -42,8 +42,6 @@ public class IntakeJoystickControl extends Command {
     //intakeSubsystem.setIntakeAngle(intakeSubsystem.getIntakeAngle() + intakeTargetIncrement);
 
     ShuffleboardRateLimiter.queueDataForShuffleboard(intakeRelativeEntry, intakeSubsystem.getIntakeAngle());
-    ShuffleboardRateLimiter.queueDataForShuffleboard(intakeAbsoluteEntry, intakeSubsystem.getIntakeAbsoluteAngle());
-    System.out.println("INTAKE ANGLE: " + intakeSubsystem.getIntakeAbsoluteAngle());
   }
 
   // Called once the command ends or is interrupted.

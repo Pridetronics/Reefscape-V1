@@ -19,6 +19,9 @@ public class ManipulatorJoystickControl extends Command {
   Supplier<Double> elevatorJoystickSupplier;
   Supplier<Double> shoulderJoystickSupplier;
 
+  boolean wasElevatorJoystickDeadBandActive = true;
+  boolean wasShoulderJoystickDeadBandActive = true;
+
   GenericEntry elevatorHeightEntry = Shuffleboard.getTab("Test Data").add("Elevator Height", 0).getEntry();
   GenericEntry shoulderAngleEntry = Shuffleboard.getTab("Test Data").add("Shoulder Angle", 0).getEntry();
   GenericEntry shoulderAbsoluteAngleEntry = Shuffleboard.getTab("Test Data").add("Shoulder Absolute Angle", 0).getEntry();
@@ -40,14 +43,35 @@ public class ManipulatorJoystickControl extends Command {
   @Override
   public void execute() {
     double elevatorJoystickValue = elevatorJoystickSupplier.get();
-    if (Math.abs(elevatorJoystickValue) <= 0.01) elevatorJoystickValue = 0.000;
-    double elevatorTargetIncrement = elevatorJoystickValue * 12;
-    manipulatorSubsystem.elevatorHelper.setPosition(manipulatorSubsystem.elevatorHelper.getPosition() + elevatorTargetIncrement);
+    if (Math.abs(elevatorJoystickValue) <= 0.05) {
+      if (!wasElevatorJoystickDeadBandActive) {
+        wasElevatorJoystickDeadBandActive = true;
+        manipulatorSubsystem.elevatorHelper.setPosition(
+          manipulatorSubsystem.elevatorHelper.getPosition() + manipulatorSubsystem.elevatorHelper.getVelocity()*0.5
+        );
+      }
+    } else {
+      wasElevatorJoystickDeadBandActive = false;
+      double elevatorTargetIncrement = elevatorJoystickValue * 12;
+      System.out.println(elevatorTargetIncrement);
+      manipulatorSubsystem.elevatorHelper.setPosition(manipulatorSubsystem.elevatorHelper.getPosition() + elevatorTargetIncrement);  
+    }
 
     double shoulderJoystickValue = shoulderJoystickSupplier.get();
-    if (Math.abs(shoulderJoystickValue) < 0.01) shoulderJoystickValue = 0.000;
-    double shoulderTargetIncrement = shoulderJoystickValue * 30;
-    manipulatorSubsystem.shoulderHelper.setPosition(manipulatorSubsystem.shoulderHelper.getPosition() + shoulderTargetIncrement);
+    if (Math.abs(shoulderJoystickValue) < 0.05) {
+      if (!wasShoulderJoystickDeadBandActive) {
+        wasShoulderJoystickDeadBandActive = true;
+        manipulatorSubsystem.shoulderHelper.setPosition(
+          manipulatorSubsystem.shoulderHelper.getPosition() + manipulatorSubsystem.shoulderHelper.getVelocity() * 0.5
+        );
+
+      }
+    } else {
+      wasShoulderJoystickDeadBandActive = false;
+      double shoulderTargetIncrement = shoulderJoystickValue * 30;
+      manipulatorSubsystem.shoulderHelper.setPosition(manipulatorSubsystem.shoulderHelper.getPosition() + shoulderTargetIncrement);
+  
+    };
 
     ShuffleboardRateLimiter.queueDataForShuffleboard(elevatorHeightEntry, manipulatorSubsystem.elevatorHelper.getPosition());
     ShuffleboardRateLimiter.queueDataForShuffleboard(shoulderAngleEntry, manipulatorSubsystem.shoulderHelper.getPosition());

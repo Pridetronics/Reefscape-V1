@@ -186,11 +186,11 @@ public final class Constants {
 
 
     public static final double kIntakeAngleGearRatio = 1.0/36;
-    public static final boolean kIntakeAngleMotorReversed = true;
-    public static final double kIntakeAbsoluteEncoderOffsetDegrees = 0.00;
+    public static final boolean kIntakeAngleMotorReversed = false;
+    public static final double kIntakeAbsoluteEncoderOffsetDegrees = 3;
 
     // Proportional, Integral, and Derivitive values for the angle PID controller
-    public static final double kIntakeAnglePValue = .001;
+    public static final double kIntakeAnglePValue = 0.03;
     public static final double kIntakeAngleIValue = 0;
     public static final double kIntakeAngleDValue = 0;
 
@@ -199,8 +199,8 @@ public final class Constants {
     public static final double kIntakeIValue = 0;
     public static final double kIntakeDValue = 0;
 
-    public static final double kIntakeAngleMaxVelocityDegreesPerSecond = 90;
-    public static final double kIntakeAngleMaxAccelerationDegreesPerSecondSquared = 180;
+    public static final double kIntakeAngleMaxVelocityDegreesPerSecond = 45;
+    public static final double kIntakeAngleMaxAccelerationDegreesPerSecondSquared = 90;
 
     public static final double kIntakeUnStowAngle = -30;
     public static final double kIntakeUsageAngle = -60;
@@ -230,7 +230,7 @@ public final class Constants {
 
 
     // Value for position and velocity conversion for elevator
-    public static final double kElevatorGearRatio = 1.0/25 * 0.375*13 * 2;
+    public static final double kElevatorGearRatio = 1.0/25.0 * 0.375*13.0 * 2.0;
 
     public static final boolean kElevatorMotorReversed = false;
 
@@ -281,9 +281,11 @@ public final class Constants {
     public static final int kShoulderAngleL4Degrees = 0;
     // Max Height
     public static final int kElevatorMaxHeightInches = 60;
-    public static final int kShoulderHigherLimitDegrees = 55;
+    public static final int kShoulderHigherLimitDegrees = 35;
     // Homing Height
-    public static final int kElevatorHomingHeightInches = 0;
+    public static final double kElevatorHomingHeightInches = 6.5;
+    
+    public static final double kElevatorMinimumHeightInches = 7.5;
     public static final int kShoulderLowerLimitDegrees = -90;
 
     public static final int kElevatorStowHeightInches = 0;

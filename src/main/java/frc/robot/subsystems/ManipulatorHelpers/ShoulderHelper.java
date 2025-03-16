@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -28,6 +29,7 @@ import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants.ManipulatorConstants;
 
 /** Add your docs here. */
@@ -39,10 +41,15 @@ public class ShoulderHelper {
   // CAN Encoder for shoulder motor
   public final CANcoder absoluteEncoder = new CANcoder(ManipulatorConstants.kShoulderEncoderID);
 
-  private double targetAngle;
-  private boolean targetAngleSet = false;
-
   public ShoulderHelper() {
+
+    // Finish configurating elevator
+
+    CANcoderConfiguration absoluteEncoderConfigs = new CANcoderConfiguration();
+    absoluteEncoderConfigs.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+    absoluteEncoderConfigs.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
+    absoluteEncoderConfigs.MagnetSensor.MagnetOffset = ManipulatorConstants.kShoulderEncoderOffsetDegrees/360;
+    absoluteEncoder.getConfigurator().apply(absoluteEncoderConfigs);
 
     // Configurating Elevator
     TalonFXConfiguration talonFXElevatorConfig = new TalonFXConfiguration();
@@ -70,18 +77,11 @@ public class ShoulderHelper {
     talonFXElevatorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     talonFXElevatorConfig.MotorOutput.Inverted = ManipulatorConstants.kShoulderEncoderReversed ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
 
+    talonFXElevatorConfig.Feedback.FeedbackRemoteSensorID = absoluteEncoder.getDeviceID();
+    talonFXElevatorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+
     // Finish Configurating Elevator
     shoulderMotor.getConfigurator().apply(talonFXElevatorConfig);
-
-    // Finish configurating elevator
-
-    CANcoderConfiguration absoluteEncoderConfigs = new CANcoderConfiguration();
-    absoluteEncoderConfigs.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-    absoluteEncoderConfigs.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
-    absoluteEncoderConfigs.MagnetSensor.MagnetOffset = ManipulatorConstants.kShoulderEncoderOffsetDegrees/360;
-    absoluteEncoder.getConfigurator().apply(absoluteEncoderConfigs);
-    
-
 
     //Zeros the shoulder encoder
     shoulderMotor.setPosition(getAbsolutePosition()/360/ManipulatorConstants.kShoulderGearRatio);
@@ -91,6 +91,12 @@ public class ShoulderHelper {
   public double getPosition() {
     StatusSignal<Angle> angleSignal = shoulderMotor.getPosition();
     return angleSignal.getValueAsDouble() * ManipulatorConstants.kShoulderGearRatio * 360;
+  }
+
+  public double getVelocity() {
+    StatusSignal<AngularVelocity> angleSignal = shoulderMotor.getVelocity();
+    double rpm = angleSignal.getValueAsDouble();
+    return rpm * ManipulatorConstants.kShoulderGearRatio * 360;
   }
 
     // Sets target position
@@ -104,5 +110,9 @@ public class ShoulderHelper {
     StatusSignal<Angle> absolutePos = absoluteEncoder.getAbsolutePosition();
     double absolutePosDegrees = absolutePos.getValueAsDouble()*360;
     return absolutePosDegrees;
+  }
+
+  public void periodic() {
+    shoulderMotor.setPosition(getAbsolutePosition()/360/ManipulatorConstants.kShoulderGearRatio);
   }
 }
