@@ -4,12 +4,19 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.utils.ShuffleboardRateLimiter;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeAngleCmd extends Command {
   IntakeSubsystem intakeSubsystem;
+
+  GenericEntry intakeRelativeEntry = Shuffleboard.getTab("Test Data").add("Intake Relative Angle", 0).getEntry();
+  GenericEntry intakeAbsoluteEntry = Shuffleboard.getTab("Test Data").add("Intake Absolute Angle", 0).getEntry();
+
   /** Creates a new IntakeAngleCmd. */
   public IntakeAngleCmd(IntakeSubsystem intakeSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -25,7 +32,10 @@ public class IntakeAngleCmd extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    ShuffleboardRateLimiter.queueDataForShuffleboard(intakeRelativeEntry, intakeSubsystem.getIntakeAngle());
+    ShuffleboardRateLimiter.queueDataForShuffleboard(intakeAbsoluteEntry, intakeSubsystem.getAbsoluteAngle());
+  }
 
   // Called once the command ends or is interrupted.
   @Override

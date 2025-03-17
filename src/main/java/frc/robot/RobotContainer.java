@@ -43,7 +43,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ManipulatorSubsystem manipulatorSubsystem = new ManipulatorSubsystem();
 
   private final SendableChooser<Trajectory> autoCommandChooser = new SendableChooser<>();
@@ -88,8 +88,8 @@ public class RobotContainer {
     // );
 
     intakeSubsystem.setDefaultCommand(
-      new IntakeAngleCmd(intakeSubsystem)
-    );
+       new IntakeAngleCmd(intakeSubsystem)
+     );
 
     manipulatorSubsystem.setDefaultCommand(
       new ManipulatorJoystickControl(

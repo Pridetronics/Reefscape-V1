@@ -42,13 +42,10 @@ public class IntakeSubsystem extends SubsystemBase {
   // Set new SparkMax motor
   private final SparkMax intakeAngleMotor = new SparkMax(IntakeConstants.kIntakeAngleMotorCanID, MotorType.kBrushless);
   private double targetAngle = 0;
-  private boolean zeroed = false;
 
   // Encoder for our new motor
-  private final AnalogInput intakeAbsoluteEncoder = new AnalogInput(1);
-  private double accumAbsValue = 0;
-  private int accumAbsKeys = 0;
-  double currentAverageIntakeAngleAbsoluteValue = 0;
+  private final SparkAbsoluteEncoder intakeAbsoluteEncoder = intakeAngleMotor.getAbsoluteEncoder();
+
   // Relative encoder for our motor
   private final RelativeEncoder intakeAngleEncoder = intakeAngleMotor.getEncoder();
 
@@ -101,39 +98,34 @@ public class IntakeSubsystem extends SubsystemBase {
 
     intakeMotor.getConfigurator().apply(talonFXIntakeConfiguration);
 
-    zeroIntake();
     intakeAnglePIDController.setTolerance(1);
+
+    resetEncoder();
+  }
+
+  public void resetEncoder() {
+    intakeAngleEncoder.setPosition(getAbsoluteAngle());
+    intakeAnglePIDController.reset(getAbsoluteAngle());
+  }
+
+  public double boundAngle(double num) {
+    return ((num + 180) % 360 + 360) % 360 - 180;
+  }
+
+  public double getAbsoluteAngle() {
+    return boundAngle(-intakeAbsoluteEncoder.getPosition()*360);
   }
 
   public void setIntakeAngle(double angleDegrees) {
-    targetAngle = angleDegrees;
+    targetAngle = boundAngle(angleDegrees);
   }
 
   public double getIntakeAngle() {
-    return intakeAngleEncoder.getPosition();
+    return boundAngle(intakeAngleEncoder.getPosition());
   }
 
   public boolean isIntakeAtAngle(double targetAngle) {
     return Math.abs(getIntakeAngle() - targetAngle) <= IntakeConstants.kIntakeAngleFuzzyEqDegrees;
-  }
-
-  public void zeroIntake() {
-    accumAbsKeys = 0;
-    accumAbsValue = 0;
-
-    //Collects 2 seoncds of averaged values for the encoder position
-    //Non-yielding code
-    new Thread(() -> {
-      try {
-        Thread.sleep(6000);
-        double encoderAngle = accumAbsValue/accumAbsKeys;
-        intakeAngleEncoder.setPosition(encoderAngle % 360);
-        targetAngle = encoderAngle % 360;
-        intakeAnglePIDController.reset(encoderAngle % 360);
-        zeroed = true;
-        SmartDashboard.putNumber("Angle averaged values", accumAbsKeys);
-      } catch(Exception e) {}
-    }).start();
   }
 
   public void startIntake() {
@@ -167,16 +159,10 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
-    if (zeroed) {
-      double newAngleSetPoint = intakeAnglePIDController.calculate(getIntakeAngle(), targetAngle);
-      intakeAngleMotor.set(newAngleSetPoint);
-    } else {
-      intakeAngleMotor.set(0);
-    }
-
-    //Values for averaging the absolute encoder position
-    accumAbsValue += -intakeAbsoluteEncoder.getAverageVoltage()/RobotController.getVoltage3V3() * 360;
-    accumAbsKeys += 1;
+    System.out.println("ANGLE "+getIntakeAngle());
+    System.out.println("TARGET "+targetAngle);
+    double newAngleSetPoint = intakeAnglePIDController.calculate(getAbsoluteAngle(), targetAngle);
+    intakeAngleMotor.set(newAngleSetPoint);
+    
   }
 }

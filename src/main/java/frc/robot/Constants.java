@@ -199,8 +199,8 @@ public final class Constants {
     public static final double kIntakeIValue = 0;
     public static final double kIntakeDValue = 0;
 
-    public static final double kIntakeAngleMaxVelocityDegreesPerSecond = 45;
-    public static final double kIntakeAngleMaxAccelerationDegreesPerSecondSquared = 90;
+    public static final double kIntakeAngleMaxVelocityDegreesPerSecond = 15;
+    public static final double kIntakeAngleMaxAccelerationDegreesPerSecondSquared = 30;
 
     public static final double kIntakeUnStowAngle = -30;
     public static final double kIntakeUsageAngle = -60;
