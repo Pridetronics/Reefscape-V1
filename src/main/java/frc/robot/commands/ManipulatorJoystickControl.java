@@ -47,13 +47,12 @@ public class ManipulatorJoystickControl extends Command {
       if (!wasElevatorJoystickDeadBandActive) {
         wasElevatorJoystickDeadBandActive = true;
         manipulatorSubsystem.elevatorHelper.setPosition(
-          manipulatorSubsystem.elevatorHelper.getPosition() + manipulatorSubsystem.elevatorHelper.getVelocity()*0.5
+          manipulatorSubsystem.elevatorHelper.getPosition() + manipulatorSubsystem.elevatorHelper.getVelocity()*0.25
         );
       }
     } else {
       wasElevatorJoystickDeadBandActive = false;
       double elevatorTargetIncrement = elevatorJoystickValue * 12;
-      System.out.println(elevatorTargetIncrement);
       manipulatorSubsystem.elevatorHelper.setPosition(manipulatorSubsystem.elevatorHelper.getPosition() + elevatorTargetIncrement);  
     }
 
@@ -62,15 +61,16 @@ public class ManipulatorJoystickControl extends Command {
       if (!wasShoulderJoystickDeadBandActive) {
         wasShoulderJoystickDeadBandActive = true;
         manipulatorSubsystem.shoulderHelper.setPosition(
-          manipulatorSubsystem.shoulderHelper.getPosition() + manipulatorSubsystem.shoulderHelper.getVelocity() * 0.5
+          manipulatorSubsystem.shoulderHelper.getPosition() + manipulatorSubsystem.shoulderHelper.getVelocity() * 0.25
         );
 
       }
     } else {
       wasShoulderJoystickDeadBandActive = false;
-      double shoulderTargetIncrement = shoulderJoystickValue * 30;
+      double shoulderTargetIncrement = shoulderJoystickValue * 300;
       manipulatorSubsystem.shoulderHelper.setPosition(manipulatorSubsystem.shoulderHelper.getPosition() + shoulderTargetIncrement);
-  
+      System.out.println(manipulatorSubsystem.shoulderHelper.getPosition());
+      System.out.println(manipulatorSubsystem.shoulderHelper.getVelocity());
     };
 
     ShuffleboardRateLimiter.queueDataForShuffleboard(elevatorHeightEntry, manipulatorSubsystem.elevatorHelper.getPosition());

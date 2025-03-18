@@ -104,8 +104,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void resetEncoder() {
-    intakeAngleEncoder.setPosition(getAbsoluteAngle());
-    intakeAnglePIDController.reset(getAbsoluteAngle());
+    //TODO add back
+    // intakeAngleEncoder.setPosition(getAbsoluteAngle());
+    // intakeAnglePIDController.reset(getAbsoluteAngle());
+    intakeAngleEncoder.setPosition(65);
+    intakeAnglePIDController.reset(65);
   }
 
   public double boundAngle(double num) {
@@ -113,7 +116,9 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public double getAbsoluteAngle() {
-    return boundAngle(-intakeAbsoluteEncoder.getPosition()*360);
+    return getIntakeAngle();
+    //TODO add back later
+    //return boundAngle(-intakeAbsoluteEncoder.getPosition()*360);
   }
 
   public void setIntakeAngle(double angleDegrees) {
@@ -159,10 +164,8 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    System.out.println("ANGLE "+getIntakeAngle());
-    System.out.println("TARGET "+targetAngle);
     double newAngleSetPoint = intakeAnglePIDController.calculate(getAbsoluteAngle(), targetAngle);
     intakeAngleMotor.set(newAngleSetPoint);
-    
+
   }
 }

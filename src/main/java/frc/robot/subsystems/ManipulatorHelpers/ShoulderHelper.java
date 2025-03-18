@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.ManipulatorHelpers;
 
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -70,21 +71,20 @@ public class ShoulderHelper {
     talonFXElevatorConfig.MotionMagic.MotionMagicAcceleration = ManipulatorConstants.kShoulderMaxAccelerationDegreesPerSecondSquared/ManipulatorConstants.kShoulderGearRatio/360;
 
     talonFXElevatorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    talonFXElevatorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ManipulatorConstants.kShoulderHigherLimitDegrees/ManipulatorConstants.kShoulderGearRatio;
+    talonFXElevatorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ManipulatorConstants.kShoulderHigherLimitDegrees/ManipulatorConstants.kShoulderGearRatio/360;
     talonFXElevatorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-    talonFXElevatorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ManipulatorConstants.kShoulderLowerLimitDegrees/ManipulatorConstants.kShoulderGearRatio;
+    talonFXElevatorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ManipulatorConstants.kShoulderLowerLimitDegrees/ManipulatorConstants.kShoulderGearRatio/360;
 
     talonFXElevatorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     talonFXElevatorConfig.MotorOutput.Inverted = ManipulatorConstants.kShoulderEncoderReversed ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
 
-    talonFXElevatorConfig.Feedback.FeedbackRemoteSensorID = absoluteEncoder.getDeviceID();
-    talonFXElevatorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+    // talonFXElevatorConfig.Feedback.FeedbackRemoteSensorID = absoluteEncoder.getDeviceID();
+    // talonFXElevatorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
 
     // Finish Configurating Elevator
     shoulderMotor.getConfigurator().apply(talonFXElevatorConfig);
 
-    //Zeros the shoulder encoder
-    shoulderMotor.setPosition(getAbsolutePosition()/360/ManipulatorConstants.kShoulderGearRatio);
+    shoulderMotor.setPosition(getAbsolutePosition()/ManipulatorConstants.kShoulderGearRatio/360);
   }
 
     // Gets current position
@@ -101,7 +101,9 @@ public class ShoulderHelper {
 
     // Sets target position
   public void setPosition(double position) {
-    MotionMagicDutyCycle positionTargetRequest = new MotionMagicDutyCycle(position/360/ManipulatorConstants.kShoulderGearRatio);
+    shoulderMotor.setPosition(getAbsolutePosition()/ManipulatorConstants.kShoulderGearRatio/360);
+
+    MotionMagicDutyCycle positionTargetRequest = new MotionMagicDutyCycle(position/ManipulatorConstants.kShoulderGearRatio/360);
     
     shoulderMotor.setControl(positionTargetRequest);
   }
@@ -113,6 +115,6 @@ public class ShoulderHelper {
   }
 
   public void periodic() {
-    shoulderMotor.setPosition(getAbsolutePosition()/360/ManipulatorConstants.kShoulderGearRatio);
+    
   }
 }

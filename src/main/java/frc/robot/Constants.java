@@ -195,12 +195,12 @@ public final class Constants {
     public static final double kIntakeAngleDValue = 0;
 
     // Proportional, Integral, and Derivitive values for the velocity PID controller
-    public static final double kIntakePValue = 0.037;
+    public static final double kIntakePValue = 0.03;
     public static final double kIntakeIValue = 0;
-    public static final double kIntakeDValue = 0;
+    public static final double kIntakeDValue = 0.75;
 
-    public static final double kIntakeAngleMaxVelocityDegreesPerSecond = 15;
-    public static final double kIntakeAngleMaxAccelerationDegreesPerSecondSquared = 30;
+    public static final double kIntakeAngleMaxVelocityDegreesPerSecond = 45;
+    public static final double kIntakeAngleMaxAccelerationDegreesPerSecondSquared = 90;
 
     public static final double kIntakeUnStowAngle = -30;
     public static final double kIntakeUsageAngle = -60;
@@ -268,19 +268,19 @@ public final class Constants {
 
     // Elevator Heights
     // Trough (L1) Height
-    public static final int kElevatorHeightL1Inches = 12;
+    public static final int kElevatorHeightL1Inches = 10;
     public static final int kShoulderAngleL1Degrees = -45;
     // L2 Height
-    public static final int kElevatorHeightL2Inches = 12;
+    public static final int kElevatorHeightL2Inches = 20;
     public static final int kShoulderAngleL2Degrees = -10;
     // L3 Height
-    public static final int kElevatorHeightL3Inches = 36;
+    public static final int kElevatorHeightL3Inches = 30;
     public static final int kShoulderAngleL3Degrees = 0;
     // L4 Height
-    public static final int kElevatorHeightL4Inches = 60;
+    public static final int kElevatorHeightL4Inches = 40;
     public static final int kShoulderAngleL4Degrees = 0;
     // Max Height
-    public static final int kElevatorMaxHeightInches = 60;
+    public static final int kElevatorMaxHeightInches = 48;
     public static final int kShoulderHigherLimitDegrees = 35;
     // Homing Height
     public static final double kElevatorHomingHeightInches = 6.5;

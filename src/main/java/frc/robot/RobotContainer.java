@@ -87,9 +87,9 @@ public class RobotContainer {
     //   )
     // );
 
-    intakeSubsystem.setDefaultCommand(
-       new IntakeAngleCmd(intakeSubsystem)
-     );
+    // intakeSubsystem.setDefaultCommand(
+    //    new IntakeAngleCmd(intakeSubsystem)
+    //  );
 
     manipulatorSubsystem.setDefaultCommand(
       new ManipulatorJoystickControl(
