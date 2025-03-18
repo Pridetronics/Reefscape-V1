@@ -31,7 +31,8 @@ public class ManipulatorSubsystem extends SubsystemBase {
     Level4,
     Barge,
     ElevatorSafeHeight,
-    CoralExtract
+    CoralIntake,
+    CoralExtract,
   }
 
   //TODO make helpers private later
@@ -63,8 +64,10 @@ public class ManipulatorSubsystem extends SubsystemBase {
         return ManipulatorConstants.kElevatorStowHeightInches;
       case ElevatorSafeHeight:
         return ManipulatorConstants.kElevatorSafeFromIntakeHeightInches;
+      case CoralIntake:
+        return ManipulatorConstants.kElevatorIntakeHeightInches;
       case CoralExtract:
-        throw new RuntimeException("CoralExtract is not availiable for the elevator");
+        return ManipulatorConstants.kElevatorExtractHeightInches;
       default:
         return ManipulatorConstants.kElevatorHomingHeightInches;
     }
@@ -86,8 +89,10 @@ public class ManipulatorSubsystem extends SubsystemBase {
         return ManipulatorConstants.kShoulderStowAngleDegrees;
       case ElevatorSafeHeight:
         throw new RuntimeException("ElevatorSafeHeight is not availiable for the shoulder");
-      case CoralExtract:
+      case CoralIntake:
         return ManipulatorConstants.kShoulderIntakeAngleDegrees;
+      case CoralExtract:
+        return ManipulatorConstants.kShoulderExtractAngleDegrees;
       default:
         return ManipulatorConstants.kShoulderLowerLimitDegrees;
     }

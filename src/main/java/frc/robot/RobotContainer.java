@@ -24,8 +24,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.WheelConstants;
+import frc.robot.commands.CollectCoral;
+import frc.robot.commands.CollectCoralSequence;
 import frc.robot.commands.MoveElevatorToTargetPosition;
 import frc.robot.commands.MoveShoulderToTargetPosition;
+import frc.robot.commands.StopCollectCoral;
 import frc.robot.commands.StowManipulator;
 import frc.robot.commands.SwerveAutoPaths;
 import frc.robot.commands.SwerveJoystickCmd;
@@ -131,6 +134,12 @@ public class RobotContainer {
 
     new JoystickButton(manipulatorJoystick, 1).onTrue(
       new UnStowManipulator(manipulatorSubsystem, intakeSubsystem, ClawHeightLevel.Level4)
+    );
+
+    new JoystickButton(manipulatorJoystick, 7).whileTrue(
+      new CollectCoralSequence(manipulatorSubsystem, intakeSubsystem)
+    ).onFalse(
+      new StopCollectCoral(manipulatorSubsystem, intakeSubsystem)
     );
 
   }

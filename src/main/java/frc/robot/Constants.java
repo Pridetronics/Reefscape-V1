@@ -202,7 +202,7 @@ public final class Constants {
     public static final double kIntakeAngleMaxVelocityDegreesPerSecond = 45;
     public static final double kIntakeAngleMaxAccelerationDegreesPerSecondSquared = 90;
 
-    public static final double kIntakeUnStowAngle = 15;
+    public static final double kIntakeUnStowAngle = 10;
     public static final double kIntakeUsageAngle = -37;
     public static final double kIntakeStowAngle = 30;
 
@@ -292,7 +292,11 @@ public final class Constants {
     public static final double kElevatorSafeFromIntakeHeightInches = 23.6;
     public static final double kShoulderStowAngleDegrees = -90;
 
+    public static final double kElevatorIntakeHeightInches = 7.5;
     public static final double kShoulderIntakeAngleDegrees = -52;
+
+    public static final double kElevatorExtractHeightInches = 20;
+    public static final double kShoulderExtractAngleDegrees = -65;
   }
 
   //Constants related to the autonomous period
