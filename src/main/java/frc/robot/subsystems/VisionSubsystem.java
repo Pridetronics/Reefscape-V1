@@ -27,6 +27,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimeLightHelpers;
 import frc.robot.Constants.AutoConstants;
@@ -72,7 +74,7 @@ public class VisionSubsystem extends SubsystemBase {
       if (aprilTagPose.isPresent()) {
         Pose2d pose = aprilTagPose.get().toPose2d().transformBy(
           new Transform2d(
-            new Translation2d(20, 0), 
+            new Translation2d(Units.inchesToMeters(20), 0), 
             Rotation2d.k180deg
           )
         );
@@ -105,7 +107,7 @@ public class VisionSubsystem extends SubsystemBase {
       new Transform2d(
         new Translation2d(
           0,
-          side == ReefSide.Left ? AutoConstants.kReefPipeWidth/2 : -AutoConstants.kReefPipeWidth/2
+          Units.inchesToMeters(side == ReefSide.Left ? AutoConstants.kReefPipeWidth/2 : -AutoConstants.kReefPipeWidth/2)
         ),
         Rotation2d.kZero
       )

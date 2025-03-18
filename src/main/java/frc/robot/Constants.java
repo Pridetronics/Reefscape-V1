@@ -110,7 +110,7 @@ public final class Constants {
       new Translation2d(kWheelBaseLength/2, kTrackWidth/2), //Front Left
       new Translation2d(kWheelBaseLength/2, -kTrackWidth/2), //Front Right
       new Translation2d(-kWheelBaseLength/2, kTrackWidth/2), //Back Left
-      new Translation2d(-kWheelBaseLength/2, -kTrackWidth/2) //Back Right
+      new Translation2d(-kWheelBaseLength/2, -kTrackWidth/2) //Beck Right
     );
 
   }
@@ -211,12 +211,17 @@ public final class Constants {
   //Constants related to the autonomous period
   public static class AutoConstants {
 
-    public static final double kReefPipeWidth = 9.51;
-
+    public static final double kReefPipeWidth = 38.04;
+    
     //Max speed during autonomous
     public static final double kMaxSpeedMetersPerSecond = 4;
     //Acceleration during autonomous (note its in meters, not units)
     public static final double kMaxAccelerationMetersPerSecond = 4;
+
+        //Max speed during reef alignment
+        public static final double kMaxReefAlignmentSpeedMetersPerSecond = 1;
+        //Acceleration during reef alignment (note its in meters, not units)
+        public static final double kMaxReefAlignmentAccelerationMetersPerSecond = 1;
 
     //Max turning speed during autonomous
     public static final double kMaxTurningSpeedRadiansPerSecond = 270 * (Math.PI / 180);
@@ -239,6 +244,11 @@ public final class Constants {
   public static final TrajectoryConfig kTrajectoryConfig = new TrajectoryConfig(
     AutoConstants.kMaxSpeedMetersPerSecond,
     AutoConstants.kMaxAccelerationMetersPerSecond
+  ).setKinematics(WheelConstants.kDriveKinematics);
+
+  public static final TrajectoryConfig kReefAlignmentTrajectoryConfig = new TrajectoryConfig(
+    AutoConstants.kMaxReefAlignmentSpeedMetersPerSecond,
+    AutoConstants.kMaxReefAlignmentAccelerationMetersPerSecond
   ).setKinematics(WheelConstants.kDriveKinematics);
 
   //Class that can store swerve module data for the swerve module class

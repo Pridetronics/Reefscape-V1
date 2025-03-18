@@ -48,7 +48,7 @@ public class AlignWithReef extends Command {
         m_SwerveSubsystem.getPose(),
         m_VisionSubsystem.getClosestReefPose(m_SwerveSubsystem.getPose(), kSide)
       ), 
-      Constants.kTrajectoryConfig
+      Constants.kReefAlignmentTrajectoryConfig
     );
 
     PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
