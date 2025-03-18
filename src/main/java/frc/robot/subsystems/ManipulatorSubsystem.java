@@ -81,7 +81,7 @@ public class ManipulatorSubsystem extends SubsystemBase {
   }
 
   public Boolean getStowedState() {
-    return ( shoulderHelper.getPosition() < ManipulatorConstants.kShoulderStowAngleDegrees + 15 
+    return ( shoulderHelper.getPosition() < ManipulatorConstants.kShoulderStowAngleDegrees + 20 
     && elevatorHelper.getPosition() < ManipulatorConstants.kElevatorStowHeightInches + ManipulatorConstants.kElevatorFuzzyEqInches );
   }
 
