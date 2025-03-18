@@ -24,15 +24,17 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.WheelConstants;
-import frc.robot.commands.IntakeAngleCmd;
-import frc.robot.commands.IntakeJoystickControl;
-import frc.robot.commands.ManipulatorJoystickControl;
+import frc.robot.commands.MoveElevatorToTargetPosition;
+import frc.robot.commands.MoveShoulderToTargetPosition;
+import frc.robot.commands.StowManipulator;
 import frc.robot.commands.SwerveAutoPaths;
 import frc.robot.commands.SwerveJoystickCmd;
+import frc.robot.commands.UnStowManipulator;
 import frc.robot.commands.ZeroRobotHeading;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ManipulatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.ManipulatorSubsystem.ClawHeightLevel;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -80,25 +82,6 @@ public class RobotContainer {
       )
     );
 
-    // intakeSubsystem.setDefaultCommand(
-    //   new IntakeJoystickControl(
-    //     intakeSubsystem, 
-    //     () -> manipulatorJoystick.getRawAxis(2) - manipulatorJoystick.getRawAxis(3)
-    //   )
-    // );
-
-    // intakeSubsystem.setDefaultCommand(
-    //    new IntakeAngleCmd(intakeSubsystem)
-    //  );
-
-    manipulatorSubsystem.setDefaultCommand(
-      new ManipulatorJoystickControl(
-        manipulatorSubsystem, 
-        () -> -manipulatorJoystick.getRawAxis(1),
-        () -> -manipulatorJoystick.getRawAxis(5)
-      )
-    );
-
     // Configure the trigger bindings
     configureBindings();
   }
@@ -118,17 +101,37 @@ public class RobotContainer {
     new JoystickButton(driverJoystick, IOConstants.kZeroHeadingBtnID)
     .onTrue(new ZeroRobotHeading(swerveSubsystem));
 
-    new JoystickButton(manipulatorJoystick, 3)
-    .onTrue(new InstantCommand(manipulatorSubsystem::clawGrab))
-    .onFalse(new InstantCommand(manipulatorSubsystem::stopClaw));
+    // new JoystickButton(manipulatorJoystick, 3)
+    // .onTrue(new InstantCommand(manipulatorSubsystem::clawGrab))
+    // .onFalse(new InstantCommand(manipulatorSubsystem::stopClaw));
 
-    new JoystickButton(manipulatorJoystick, 1)
-    .onTrue(new InstantCommand(manipulatorSubsystem::clawRemove))
-    .onFalse(new InstantCommand(manipulatorSubsystem::stopClaw));
+    // new JoystickButton(manipulatorJoystick, 1)
+    // .onTrue(new InstantCommand(manipulatorSubsystem::clawRemove))
+    // .onFalse(new InstantCommand(manipulatorSubsystem::stopClaw));
 
-    new JoystickButton(manipulatorJoystick, 4)
-    .onTrue(new InstantCommand(intakeSubsystem::startIntake))
-    .onFalse(new InstantCommand(intakeSubsystem::stopIntake));
+    // new JoystickButton(manipulatorJoystick, 4)
+    // .onTrue(new InstantCommand(intakeSubsystem::startIntake))
+    // .onFalse(new InstantCommand(intakeSubsystem::stopIntake));
+
+    new JoystickButton(manipulatorJoystick, 8).onTrue(
+      new StowManipulator(manipulatorSubsystem, intakeSubsystem)
+    );
+
+    new JoystickButton(manipulatorJoystick, 3).onTrue(
+      new UnStowManipulator(manipulatorSubsystem, intakeSubsystem, ClawHeightLevel.Level1)
+    );
+
+    new JoystickButton(manipulatorJoystick, 4).onTrue(
+      new UnStowManipulator(manipulatorSubsystem, intakeSubsystem, ClawHeightLevel.Level2)
+    );
+
+    new JoystickButton(manipulatorJoystick, 2).onTrue(
+      new UnStowManipulator(manipulatorSubsystem, intakeSubsystem, ClawHeightLevel.Level3)
+    );
+
+    new JoystickButton(manipulatorJoystick, 1).onTrue(
+      new UnStowManipulator(manipulatorSubsystem, intakeSubsystem, ClawHeightLevel.Level4)
+    );
 
   }
 

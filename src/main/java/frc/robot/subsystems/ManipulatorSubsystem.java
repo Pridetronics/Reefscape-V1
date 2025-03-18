@@ -6,14 +6,22 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ManipulatorConstants;
 import frc.robot.subsystems.ManipulatorHelpers.ClawHelper;
 import frc.robot.subsystems.ManipulatorHelpers.ElevatorHelper;
 import frc.robot.subsystems.ManipulatorHelpers.ShoulderHelper;
+import frc.robot.utils.ShuffleboardRateLimiter;
 
 public class ManipulatorSubsystem extends SubsystemBase {
   /** Creates a new ManipulatorSubsystem. */
+
+  GenericEntry elevatorHeightEntry = Shuffleboard.getTab("Test Data").add("Elevator Height", 0).getEntry();
+  GenericEntry shoulderAngleEntry = Shuffleboard.getTab("Test Data").add("Shoulder Angle", 0).getEntry();
+  GenericEntry shoulderAbsoluteAngleEntry = Shuffleboard.getTab("Test Data").add("Shoulder Absolute Angle", 0).getEntry();
+
 
   public static enum ClawHeightLevel {
     Stow,
@@ -22,7 +30,8 @@ public class ManipulatorSubsystem extends SubsystemBase {
     Level3,
     Level4,
     Barge,
-    ElevatorSafeHeight
+    ElevatorSafeHeight,
+    CoralExtract
   }
 
   //TODO make helpers private later
@@ -54,6 +63,8 @@ public class ManipulatorSubsystem extends SubsystemBase {
         return ManipulatorConstants.kElevatorStowHeightInches;
       case ElevatorSafeHeight:
         return ManipulatorConstants.kElevatorSafeFromIntakeHeightInches;
+      case CoralExtract:
+        throw new RuntimeException("CoralExtract is not availiable for the elevator");
       default:
         return ManipulatorConstants.kElevatorHomingHeightInches;
     }
@@ -75,6 +86,8 @@ public class ManipulatorSubsystem extends SubsystemBase {
         return ManipulatorConstants.kShoulderStowAngleDegrees;
       case ElevatorSafeHeight:
         throw new RuntimeException("ElevatorSafeHeight is not availiable for the shoulder");
+      case CoralExtract:
+        return ManipulatorConstants.kShoulderIntakeAngleDegrees;
       default:
         return ManipulatorConstants.kShoulderLowerLimitDegrees;
     }
@@ -90,7 +103,7 @@ public class ManipulatorSubsystem extends SubsystemBase {
   }
 
   public Boolean isClawOutOfWay() {
-    return shoulderHelper.getPosition() > ManipulatorConstants.kElevatorSafeFromIntakeHeightInches - ManipulatorConstants.kElevatorFuzzyEqInches;
+    return elevatorHelper.getPosition() >= ManipulatorConstants.kElevatorSafeFromIntakeHeightInches - ManipulatorConstants.kElevatorFuzzyEqInches;
   }
 
   public Boolean isElevatorAtHeight(ClawHeightLevel heightLevel) {
@@ -122,9 +135,13 @@ public class ManipulatorSubsystem extends SubsystemBase {
   }
 
   // Note: When do the motors stop?
-
   @Override
   public void periodic() {
+    ShuffleboardRateLimiter.queueDataForShuffleboard(elevatorHeightEntry, elevatorHelper.getPosition());
+    ShuffleboardRateLimiter.queueDataForShuffleboard(shoulderAngleEntry, shoulderHelper.getPosition());
+    ShuffleboardRateLimiter.queueDataForShuffleboard(shoulderAbsoluteAngleEntry, shoulderHelper.getAbsolutePosition());
+
+
     // This method will be called once per scheduler run
     shoulderHelper.periodic();
   }

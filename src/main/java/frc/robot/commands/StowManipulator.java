@@ -46,6 +46,7 @@ public class StowManipulator extends SequentialCommandGroup {
           new MoveShoulderToTargetPosition(manipulatorSubsystem, ClawHeightLevel.Stow)
         )
       ).onlyIf(() -> !manipulatorSubsystem.getStowedState()),
+      new MoveShoulderToTargetPosition(manipulatorSubsystem, ClawHeightLevel.Stow),
       new MoveElevatorToTargetPosition(manipulatorSubsystem, ClawHeightLevel.Stow),
       new StowIntake(intakeSubsystem)
     );

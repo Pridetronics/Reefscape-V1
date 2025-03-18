@@ -114,7 +114,5 @@ public class ShoulderHelper {
     return absolutePosDegrees;
   }
 
-  public void periodic() {
-    
-  }
+  public void periodic() {}
 }

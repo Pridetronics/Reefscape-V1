@@ -24,6 +24,7 @@ public class MoveShoulderToTargetPosition extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("SET SHOULDER TO "+m_ManipulatorSubsystem.getShoulderAngleFromEnum(targetHeightLevel));
     m_ManipulatorSubsystem.setShoulderPositionalState(targetHeightLevel);
   }
 
@@ -33,7 +34,9 @@ public class MoveShoulderToTargetPosition extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    System.out.println("SHOULDER MOVED");
+  }
 
   // Returns true when the command should end.
   @Override

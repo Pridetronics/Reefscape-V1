@@ -26,15 +26,23 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.utils.ShuffleboardRateLimiter;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
+
+
+  GenericEntry intakeRelativeEntry = Shuffleboard.getTab("Test Data").add("Intake Relative Angle", 0).getEntry();
+  GenericEntry intakeAbsoluteEntry = Shuffleboard.getTab("Test Data").add("Intake Absolute Angle", 0).getEntry();
+
 
   // Setting new TalonFX motor
   private final TalonFX intakeMotor = new TalonFX(IntakeConstants.kIntakeMotorCanID);
@@ -107,8 +115,10 @@ public class IntakeSubsystem extends SubsystemBase {
     //TODO add back
     // intakeAngleEncoder.setPosition(getAbsoluteAngle());
     // intakeAnglePIDController.reset(getAbsoluteAngle());
+    //targetAngle = getAbsoluteAngle()
     intakeAngleEncoder.setPosition(65);
     intakeAnglePIDController.reset(65);
+    targetAngle = 65;
   }
 
   public double boundAngle(double num) {
@@ -163,6 +173,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    ShuffleboardRateLimiter.queueDataForShuffleboard(intakeRelativeEntry, getIntakeAngle());
+    ShuffleboardRateLimiter.queueDataForShuffleboard(intakeAbsoluteEntry, getAbsoluteAngle());
+
     // This method will be called once per scheduler run
     double newAngleSetPoint = intakeAnglePIDController.calculate(getAbsoluteAngle(), targetAngle);
     intakeAngleMotor.set(newAngleSetPoint);

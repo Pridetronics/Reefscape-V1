@@ -202,12 +202,12 @@ public final class Constants {
     public static final double kIntakeAngleMaxVelocityDegreesPerSecond = 45;
     public static final double kIntakeAngleMaxAccelerationDegreesPerSecondSquared = 90;
 
-    public static final double kIntakeUnStowAngle = -15;
-    public static final double kIntakeUsageAngle = -30;
+    public static final double kIntakeUnStowAngle = 15;
+    public static final double kIntakeUsageAngle = -37;
     public static final double kIntakeStowAngle = 30;
 
     
-    public static final double kIntakeAngleFuzzyEqDegrees = 5;
+    public static final double kIntakeAngleFuzzyEqDegrees = 3;
 
   }
 
@@ -251,7 +251,7 @@ public final class Constants {
     public static final double kElevatorGValue = 0.027;
     public static final double kElevatorSValue = 0.05;
     // Proportional, Integral, and Derivitive values for the velocity PID controller
-    public static final double kShoulderPValue = 0.04;
+    public static final double kShoulderPValue = 0.058;
     public static final double kShoulderIValue = 0.00;
     public static final double kShoulderDValue = 0.00;
     public static final double kShoulderGValue = 0.03;
@@ -261,15 +261,15 @@ public final class Constants {
 
     //The threshold/region that the elevator will be considered at its target height
     public static final double kElevatorFuzzyEqInches = 2;
-    public static final double kShoulderFuzzyEqDegrees = 5;
+    public static final double kShoulderFuzzyEqDegrees = 4;
 
     public static final double kElevatorSpeedInchesPerSecond = 42;
     public static final double kElevatorAccelerationInchesPerSecondSquared = 66;
 
     // Elevator Heights
     // Trough (L1) Height
-    public static final int kElevatorHeightL1Inches = 10;
-    public static final int kShoulderAngleL1Degrees = -45;
+    public static final int kElevatorHeightL1Inches = 15;
+    public static final int kShoulderAngleL1Degrees = -25;
     // L2 Height
     public static final int kElevatorHeightL2Inches = 20;
     public static final int kShoulderAngleL2Degrees = -10;
@@ -280,8 +280,8 @@ public final class Constants {
     public static final int kElevatorHeightL4Inches = 40;
     public static final int kShoulderAngleL4Degrees = 0;
     // Max Height
-    public static final int kElevatorMaxHeightInches = 48;
-    public static final int kShoulderHigherLimitDegrees = 35;
+    public static final int kElevatorMaxHeightInches = 45;
+    public static final int kShoulderHigherLimitDegrees = 25;
     // Homing Height
     public static final double kElevatorHomingHeightInches = 6.5;
     
@@ -289,8 +289,10 @@ public final class Constants {
     public static final int kShoulderLowerLimitDegrees = -90;
 
     public static final double kElevatorStowHeightInches = 7.5;
-    public static final int kElevatorSafeFromIntakeHeightInches = 12;
-    public static final int kShoulderStowAngleDegrees = -85;
+    public static final double kElevatorSafeFromIntakeHeightInches = 23.6;
+    public static final double kShoulderStowAngleDegrees = -90;
+
+    public static final double kShoulderIntakeAngleDegrees = -52;
   }
 
   //Constants related to the autonomous period
