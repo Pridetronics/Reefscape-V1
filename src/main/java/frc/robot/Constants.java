@@ -110,7 +110,7 @@ public final class Constants {
       new Translation2d(kWheelBaseLength/2, kTrackWidth/2), //Front Left
       new Translation2d(kWheelBaseLength/2, -kTrackWidth/2), //Front Right
       new Translation2d(-kWheelBaseLength/2, kTrackWidth/2), //Back Left
-      new Translation2d(-kWheelBaseLength/2, -kTrackWidth/2) //Beck Right
+      new Translation2d(-kWheelBaseLength/2, -kTrackWidth/2) //Back Right
     );
 
   }
@@ -210,6 +210,8 @@ public final class Constants {
 
   //Constants related to the autonomous period
   public static class AutoConstants {
+
+    public static final double kReefPipeWidth = 9.51;
 
     //Max speed during autonomous
     public static final double kMaxSpeedMetersPerSecond = 4;

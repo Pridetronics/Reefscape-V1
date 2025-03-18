@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 // import java.util.List;
 import java.util.Optional;
 
@@ -16,11 +17,19 @@ import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimeLightHelpers;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CameraConstants;
 import frc.robot.LimeLightHelpers.LimelightResults;
 import frc.robot.LimeLightHelpers.LimelightTarget_Detector;
@@ -28,7 +37,7 @@ import frc.robot.LimeLightHelpers.LimelightTarget_Detector;
 public class VisionSubsystem extends SubsystemBase {
 
   private PhotonCamera camera = new PhotonCamera(CameraConstants.kCameraName);
-  private AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+  private AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
   private PhotonPoseEstimator poseEstimator = new PhotonPoseEstimator(
     fieldLayout, 
     PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
@@ -43,11 +52,33 @@ public class VisionSubsystem extends SubsystemBase {
   private Optional<EstimatedRobotPose> currentRobotPose = Optional.empty();
   private boolean currentlyLookingAtAprilTag = false;
 
+  private ArrayList<Pose2d> reefTargetingPositions = new ArrayList<>();
+
+  public enum ReefSide {
+    Left,
+    Right
+  }
+
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem() {
     //Done so the camera and camera settings can be viewed at "<HOSTNAME>.local:5800" on google when tethered
     //            ^^^replace <HOSTNAME> with the constants variable for the hostname
     PortForwarder.add(5800, CameraConstants.kHostName + ".local", 5800);
+
+
+    int[] reefAprilTagIds = {6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22};
+    for (int id : reefAprilTagIds) {
+      Optional<Pose3d> aprilTagPose = fieldLayout.getTagPose(id);
+      if (aprilTagPose.isPresent()) {
+        Pose2d pose = aprilTagPose.get().toPose2d().transformBy(
+          new Transform2d(
+            new Translation2d(20, 0), 
+            Rotation2d.k180deg
+          )
+        );
+        reefTargetingPositions.add(pose);
+      }
+    }
   }
 
   @Override
@@ -57,8 +88,28 @@ public class VisionSubsystem extends SubsystemBase {
     Optional<EstimatedRobotPose> robotPose = poseEstimator.update(targetData);
     currentRobotPose = robotPose;
     currentlyLookingAtAprilTag = robotPose.isPresent();
-
     
+  }
+
+  public Pose2d getClosestReefPose(Pose2d robotPosition, ReefSide side) {
+    Pose2d closestPose = null;
+    double closestPoseDistance = 0;
+    for (Pose2d pose : reefTargetingPositions) {
+      double distance = robotPosition.getTranslation().getDistance(pose.getTranslation());
+      if (closestPose == null || distance < closestPoseDistance) {
+        closestPose = pose;
+        closestPoseDistance = distance;
+      }
+    }
+    return closestPose.transformBy(
+      new Transform2d(
+        new Translation2d(
+          0,
+          side == ReefSide.Left ? AutoConstants.kReefPipeWidth/2 : -AutoConstants.kReefPipeWidth/2
+        ),
+        Rotation2d.kZero
+      )
+    );
   }
 
   public Optional<EstimatedRobotPose> getEstimatedPose() {

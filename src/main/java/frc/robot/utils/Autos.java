@@ -35,11 +35,7 @@ import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.WheelConstants;
-import frc.robot.commands.UnstowIntake;
 import frc.robot.commands.AutoTrackCoralWithCamera;
-import frc.robot.commands.PlaceCoral;
-import frc.robot.commands.PositionClawAtHeight;
-import frc.robot.commands.RetrieveCoral;
 import frc.robot.subsystems.ManipulatorSubsystem;
 
 public final class Autos {
@@ -204,41 +200,11 @@ public final class Autos {
 
     return new SequentialCommandGroup(
       //Drive to reef,
-      new ParallelCommandGroup(
-        startToReef,
-        new PositionClawAtHeight(
-          ManipulatorSubsystem.ClawHeightLevel.Level3, 
-          robotContainer.intakeSubsystem, 
-          robotContainer.manipulatorSubsystem
-        )
-      ),
       //place coral
-      new PlaceCoral(robotContainer.manipulatorSubsystem),
       //drive to coral station
-      new ParallelCommandGroup(
-        firstReefToStation,
-        new SequentialCommandGroup(
-          new WaitCommand(1),
-          new UnstowIntake()
-        )
-      ),
       //pick up with AI
-      new ParallelDeadlineGroup(
-        new RetrieveCoral(),
-        new UnstowIntake(),
-        new AutoTrackCoralWithCamera(robotContainer.swerveSubsystem, robotContainer.visionSubsystem)
-      ),
       //drive to reef
-      new ParallelCommandGroup(
-        firstStationToReef,
-        new PositionClawAtHeight(
-          ManipulatorSubsystem.ClawHeightLevel.Level3, 
-          robotContainer.intakeSubsystem, 
-          robotContainer.manipulatorSubsystem
-        )
-      ),
       //place coral
-      new PlaceCoral(robotContainer.manipulatorSubsystem)
     );
   }
 
