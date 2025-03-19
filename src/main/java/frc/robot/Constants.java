@@ -4,7 +4,10 @@
  
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -24,6 +27,33 @@ public final class Constants {
 
   public static class shuffleboardConstants {
     public static final double kRateLimitTime = 1;
+  }
+
+  public static class CameraConstants {
+    //The name of the domain to view the webpage when tethered
+    public static final String kHostName = "robotcamera";
+    //The name of the camera for the robot to find and use
+    public static final String kCameraName = "Camera_Module_v1";
+    //3d offset from the robot's position to the camera
+    public static final Transform3d kRobotToCamera = new Transform3d(
+      new Translation3d(
+        Units.inchesToMeters(-3), 
+        Units.inchesToMeters(7.75), 
+        Units.inchesToMeters(31.5)
+      ), 
+      new Rotation3d(0, 0, Units.degreesToRadians(90))
+    );
+
+    public static final String kDetectorCameraName = "detectorcamera";
+    public static final Translation2d kDetectorCameraFOVDegrees = new Translation2d(62.5, 48.9);
+    public static final Translation3d kDetectorRobotToCamera = new Translation3d(
+      Units.inchesToMeters(-3), 
+      Units.inchesToMeters(10), 
+      Units.inchesToMeters(40)
+    );
+    public static final double kDetectorYawDegrees = 20;
+    public static final double kConfidenceThreshold = 0.5;
+    
   }
 
   //Constants for features related to user controller input
@@ -88,7 +118,8 @@ public final class Constants {
   //Constants for the movement of the robot
   public static class DriveConstants {
 
-    public static final double kFieldWidthMeters = Units.inchesToMeters(653.2);
+    public static final double kFieldWidthMeters = Units.inchesToMeters(649);
+    public static final double kFieldHeightMeters = Units.inchesToMeters(319);
 
 
     //The literal max speed each wheel is allowed to go
@@ -99,10 +130,10 @@ public final class Constants {
     these values influence the rate of change in a number in such a way that the number being influenced 
     is multiplied by the max speed of the robot so that the influeced number being 0 means no speed, 1 means 
     100% speed, and -1 mean -100% speed
-      -A value of 1 means the 0 to max time is 1 second
-      -A value of 3 means the 0 to max time is 0.333333 seconds
-      -A value of 0.5 means the 0 to max time is 2 seconds
-      -A value 0f 0.2 means the 0 to max time is 5 seconds
+      -A value of 1 means the 0 to max speed time is 1 second
+      -A value of 3 means the 0 to max speed time is 0.333333 seconds
+      -A value of 0.5 means the 0 to max speed time is 2 seconds
+      -A value 0f 0.2 means the 0 to max speed time is 5 seconds
     You get the idea, the number is the max change in velocity, as a percent of the robot's full speed
     That means that the number is inversley related t0 the 0 to max time
    */
@@ -113,6 +144,10 @@ public final class Constants {
     public static final double kTeleMaxDriveSpeedMetersPerSecond = 3;
     //Max turning speed of the robot specified in degrees but converted to radians (with the "(Math.PI/180)")
     public static final double kTeleMaxTurningSpeedRadiansPerSecond = 360 * (Math.PI/180);
+
+    //Max speed of the robot when tracking coral pieces
+    public static final double kCameraCoralTrackingDriveSpeedMetersPerMeter = 1;
+    public static final double kCameraCoralTrackingTurnignSpeedRadiansPerRadian = 1;
 
     //CAN ID for the gyro needed for swerve drive
     public static final int gyroCANID = 13;
@@ -302,11 +337,17 @@ public final class Constants {
   //Constants related to the autonomous period
   public static class AutoConstants {
 
-
+    public static final double kReefPipeWidth = 38.04;
+    
     //Max speed during autonomous
     public static final double kMaxSpeedMetersPerSecond = 4;
     //Acceleration during autonomous (note its in meters, not units)
     public static final double kMaxAccelerationMetersPerSecond = 4;
+
+        //Max speed during reef alignment
+        public static final double kMaxReefAlignmentSpeedMetersPerSecond = 1;
+        //Acceleration during reef alignment (note its in meters, not units)
+        public static final double kMaxReefAlignmentAccelerationMetersPerSecond = 1;
 
     //Max turning speed during autonomous
     public static final double kMaxTurningSpeedRadiansPerSecond = 270 * (Math.PI / 180);
@@ -329,6 +370,11 @@ public final class Constants {
   public static final TrajectoryConfig kTrajectoryConfig = new TrajectoryConfig(
     AutoConstants.kMaxSpeedMetersPerSecond,
     AutoConstants.kMaxAccelerationMetersPerSecond
+  ).setKinematics(WheelConstants.kDriveKinematics);
+
+  public static final TrajectoryConfig kReefAlignmentTrajectoryConfig = new TrajectoryConfig(
+    AutoConstants.kMaxReefAlignmentSpeedMetersPerSecond,
+    AutoConstants.kMaxReefAlignmentAccelerationMetersPerSecond
   ).setKinematics(WheelConstants.kDriveKinematics);
 
   //Class that can store swerve module data for the swerve module class

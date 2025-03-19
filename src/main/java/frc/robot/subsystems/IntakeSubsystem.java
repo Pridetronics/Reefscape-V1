@@ -29,6 +29,8 @@ import frc.robot.utils.ShuffleboardRateLimiter;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
+  public Boolean intakeStowed = true;
+
   /** Creates a new IntakeSubsystem. */
 
 
@@ -172,5 +174,13 @@ public class IntakeSubsystem extends SubsystemBase {
     double newAngleSetPoint = intakeAnglePIDController.calculate(getAbsoluteAngle(), targetAngle);
     intakeAngleMotor.set(newAngleSetPoint);
 
+  }
+
+  public Boolean getStowedState() {
+    return intakeStowed;
+  }
+
+  public Boolean isIntakeOutOfWay() {
+    return null;
   }
 }

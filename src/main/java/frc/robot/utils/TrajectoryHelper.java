@@ -21,6 +21,25 @@ import frc.robot.Constants.DriveConstants;
 /** Add your docs here. */
 public class TrajectoryHelper {
 
+    public static Translation2d setFieldSidePosition(Translation2d position, Boolean flipSide) {
+        if (flipSide) {
+            return new Translation2d(position.getX(), DriveConstants.kFieldHeightMeters - position.getY());
+        } else {
+            return position;
+        }
+    }
+
+    public static Pose2d setFieldSidePosition(Pose2d position, Boolean flipSide) {
+        Translation2d newPosition = setFieldSidePosition(position.getTranslation(), flipSide);
+        Rotation2d newRotation = new Rotation2d(
+            Math.atan2(
+                position.getRotation().getSin() * (flipSide ? -1 : 1),
+                position.getRotation().getCos()
+            )
+        );
+        return new Pose2d(newPosition, newRotation);
+    }
+
     public static Translation2d toAllianceRelativePosition(Translation2d position) {
         Optional<Alliance> allianceTeam = DriverStation.getAlliance();
         if (allianceTeam.isPresent() && allianceTeam.get() == Alliance.Red) {
@@ -47,10 +66,9 @@ public class TrajectoryHelper {
         return position;
     }
 
-    public static Trajectory createTrajectoryWithAllianceRelativePositioning(Pose2d init, List<Translation2d> points, Pose2d end) {
-        List<Translation2d> newPointList = new ArrayList<Translation2d>();
+    public static Trajectory createTrajectoryWithAllianceRelativePositioning(List<Pose2d> points) {
+        List<Pose2d> newPointList = new ArrayList<Pose2d>();
         for (int i = 0; i < points.size(); i++) {
-            
             newPointList.add( 
                 toAllianceRelativePosition(
                     points.get(i)
@@ -58,9 +76,7 @@ public class TrajectoryHelper {
             );
         }
         return TrajectoryGenerator.generateTrajectory(
-            toAllianceRelativePosition(init), 
             newPointList, 
-            toAllianceRelativePosition(end), 
             Constants.kTrajectoryConfig
         );
     }

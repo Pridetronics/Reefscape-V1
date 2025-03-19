@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.WheelConstants;
@@ -96,6 +97,9 @@ private final Timer deltaTime = new Timer();
     xSpeed = xLimiter.calculate(xSpeed) * robotSpeedPercent.getDouble(1)*DriveConstants.kTeleMaxDriveSpeedMetersPerSecond;
     ySpeed = yLimiter.calculate(ySpeed) * robotSpeedPercent.getDouble(1)*DriveConstants.kTeleMaxDriveSpeedMetersPerSecond;
     turningSpeed = turningLimiter.calculate(turningSpeed) * DriveConstants.kTeleMaxTurningSpeedRadiansPerSecond;
+
+    //Slow down turning in simulation
+    if (Robot.isSimulation()) turningSpeed *= 0.1;
 
     SmartDashboard.putBoolean("Field Oriented Drive", fieldOrientedFunction.get());
 
