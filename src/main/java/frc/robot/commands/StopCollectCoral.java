@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -22,6 +23,9 @@ public class StopCollectCoral extends SequentialCommandGroup {
     addRequirements(manipulatorSubsystem, intakeSubsystem);
 
     addCommands(
+      new InstantCommand(manipulatorSubsystem::clawGrab),
+      new InstantCommand(intakeSubsystem::startIntake),
+      new InstantCommand(),
       new ParallelCommandGroup(
         new MoveElevatorToTargetPosition(manipulatorSubsystem, ClawHeightLevel.CoralExtract),
         new MoveShoulderToTargetPosition(manipulatorSubsystem, ClawHeightLevel.CoralExtract)
@@ -30,7 +34,14 @@ public class StopCollectCoral extends SequentialCommandGroup {
         new MoveElevatorToTargetPosition(manipulatorSubsystem, ClawHeightLevel.Stow),
         new MoveShoulderToTargetPosition(manipulatorSubsystem, ClawHeightLevel.Stow)
       ),
+      new InstantCommand(manipulatorSubsystem::stopClaw),
+      new InstantCommand(intakeSubsystem::stopIntake),
       new StowIntake(intakeSubsystem)
     );
+  }
+  
+  @Override
+  public InterruptionBehavior getInterruptionBehavior() {
+    return InterruptionBehavior.kCancelIncoming;
   }
 }

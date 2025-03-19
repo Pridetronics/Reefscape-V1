@@ -137,28 +137,28 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void startIntake() {
 
-    VelocityDutyCycle velocityRequest = new VelocityDutyCycle(IntakeConstants.kIntakeRPM / IntakeConstants.kIntakeGearRatio);
+    // VelocityDutyCycle velocityRequest = new VelocityDutyCycle(IntakeConstants.kIntakeRPM / IntakeConstants.kIntakeGearRatio);
 
-    intakeMotor.setControl(velocityRequest);
+    // intakeMotor.setControl(velocityRequest);
+
+    intakeMotor.set(0.6);
   }
 
   public void startOuttake() {
 
-    VelocityDutyCycle velocityRequest = new VelocityDutyCycle(-IntakeConstants.kIntakeRPM / IntakeConstants.kIntakeGearRatio);
+    // VelocityDutyCycle velocityRequest = new VelocityDutyCycle(-IntakeConstants.kIntakeRPM / IntakeConstants.kIntakeGearRatio);
 
-    intakeMotor.setControl(velocityRequest);
+    // intakeMotor.setControl(velocityRequest);
+
+    intakeMotor.set(-0.6);
   }
 
   public void stopIntake() {
-    /* Steps
-     * 1. How does it stop?
-     * 2. Why does it stop?
-     * 3. When does it stop?
-     */
 
-     VelocityDutyCycle velocityRequest = new VelocityDutyCycle(0);
+    //  VelocityDutyCycle velocityRequest = new VelocityDutyCycle(0);
 
-     intakeMotor.setControl(velocityRequest);
+    //  intakeMotor.setControl(velocityRequest);
+    intakeMotor.set(0);
   }
 
   // Note: When do the motors stop?

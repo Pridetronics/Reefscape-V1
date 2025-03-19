@@ -182,7 +182,7 @@ public final class Constants {
 
     public static final int kIntakeRPM = 50;
     public static final double kIntakeGearRatio = 1.0/9;
-    public static final boolean kIntakeReversed = false;
+    public static final boolean kIntakeReversed = true;
 
 
     public static final double kIntakeAngleGearRatio = 1.0/36;
@@ -236,12 +236,12 @@ public final class Constants {
 
     public static final double kClawGearRatio = 1.0/16;
 
-    public static final double kClawSpeedRPM = 5;
+    public static final double kClawSpeedRPM = 20;
 
     public static final boolean kClawMotorReversed = false;
 
     // Proportional, Integral, and Derivitive values for the velocity PID controller
-    public static final double kClawPValue = 0.038;
+    public static final double kClawPValue = 0.03;
     public static final double kClawIValue = 0;
     public static final double kClawDValue = 0;
     // Proportional, Integral, and Derivitive values for the velocity PID controller
@@ -288,15 +288,15 @@ public final class Constants {
     public static final double kElevatorMinimumHeightInches = 7.5;
     public static final int kShoulderLowerLimitDegrees = -90;
 
-    public static final double kElevatorStowHeightInches = 7.5;
+    public static final double kElevatorStowHeightInches = 8;
     public static final double kElevatorSafeFromIntakeHeightInches = 23.6;
     public static final double kShoulderStowAngleDegrees = -90;
 
     public static final double kElevatorIntakeHeightInches = 7.5;
     public static final double kShoulderIntakeAngleDegrees = -52;
 
-    public static final double kElevatorExtractHeightInches = 20;
-    public static final double kShoulderExtractAngleDegrees = -65;
+    public static final double kElevatorExtractHeightInches = 15;
+    public static final double kShoulderExtractAngleDegrees = -75;
   }
 
   //Constants related to the autonomous period

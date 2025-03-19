@@ -14,6 +14,7 @@ public class ReverseIntakeUntilStopped extends Command {
   /** Creates a new ReverseIntake. */
   public ReverseIntakeUntilStopped(IntakeSubsystem intakeSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(intakeSubsystem);
     m_IntakeSubsystem = intakeSubsystem;
   }
 
@@ -37,5 +38,10 @@ public class ReverseIntakeUntilStopped extends Command {
   @Override
   public boolean isFinished() {
     return false;
+  }
+  
+  @Override
+  public InterruptionBehavior getInterruptionBehavior() {
+    return InterruptionBehavior.kCancelIncoming;
   }
 }

@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -15,6 +16,8 @@ import frc.robot.subsystems.ManipulatorSubsystem.ClawHeightLevel;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class CollectCoralSequence extends SequentialCommandGroup {
   /** Creates a new CollectCoralSequence. */
+  public boolean intakeCleared = false;
+
   public CollectCoralSequence(ManipulatorSubsystem manipulatorSubsystem, IntakeSubsystem intakeSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
@@ -23,11 +26,17 @@ public class CollectCoralSequence extends SequentialCommandGroup {
 
     addCommands(
       new IntakeReadyPosition(intakeSubsystem),
+      new InstantCommand(() -> intakeCleared = true),
       new ParallelCommandGroup(
         new MoveElevatorToTargetPosition(manipulatorSubsystem, ClawHeightLevel.CoralIntake),
         new MoveShoulderToTargetPosition(manipulatorSubsystem, ClawHeightLevel.CoralIntake)
       ),
       new CollectCoralUntilStopped(manipulatorSubsystem, intakeSubsystem)
     );
+  }
+
+  @Override
+  public InterruptionBehavior getInterruptionBehavior() {
+    return InterruptionBehavior.kCancelIncoming;
   }
 }

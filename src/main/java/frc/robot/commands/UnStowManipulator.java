@@ -61,4 +61,9 @@ public class UnStowManipulator extends SequentialCommandGroup {
       )
     );
   }
+  
+  @Override
+  public InterruptionBehavior getInterruptionBehavior() {
+    return InterruptionBehavior.kCancelIncoming;
+  }
 }

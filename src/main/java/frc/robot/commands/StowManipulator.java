@@ -50,4 +50,9 @@ public class StowManipulator extends SequentialCommandGroup {
       new StowIntake(intakeSubsystem)
     );
   }
+  
+  @Override
+  public InterruptionBehavior getInterruptionBehavior() {
+    return InterruptionBehavior.kCancelIncoming;
+  }
 }
