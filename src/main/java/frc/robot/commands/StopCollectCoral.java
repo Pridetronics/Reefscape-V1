@@ -34,7 +34,7 @@ public class StopCollectCoral extends SequentialCommandGroup {
         new MoveElevatorToTargetPosition(manipulatorSubsystem, ClawHeightLevel.Stow),
         new MoveShoulderToTargetPosition(manipulatorSubsystem, ClawHeightLevel.Stow)
       ),
-      new InstantCommand(manipulatorSubsystem::stopClaw),
+      new InstantCommand(manipulatorSubsystem::passiveClawHold),
       new InstantCommand(intakeSubsystem::stopIntake),
       new StowIntake(intakeSubsystem)
     );

@@ -55,6 +55,11 @@ public class ClawHelper {
     clawPIDController.setReference(velocityRPM, ControlType.kVelocity);
   }
 
+  // Sets target velocity
+  public void setDutyCycle(double percentSpeed) {
+    clawPIDController.setReference(percentSpeed, ControlType.kDutyCycle);
+  }
+
   public void stop() {
     clawPIDController.setReference(0, ControlType.kVelocity);
   }
