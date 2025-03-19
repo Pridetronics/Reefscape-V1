@@ -11,12 +11,9 @@ import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
-import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -25,14 +22,9 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
 import frc.robot.utils.ShuffleboardRateLimiter;
 import frc.robot.Constants.IntakeConstants;
 
@@ -147,14 +139,14 @@ public class IntakeSubsystem extends SubsystemBase {
 
     VelocityDutyCycle velocityRequest = new VelocityDutyCycle(IntakeConstants.kIntakeRPM / IntakeConstants.kIntakeGearRatio);
 
-    //intakeMotor.setControl(velocityRequest);
+    intakeMotor.setControl(velocityRequest);
   }
 
   public void startOuttake() {
 
     VelocityDutyCycle velocityRequest = new VelocityDutyCycle(-IntakeConstants.kIntakeRPM / IntakeConstants.kIntakeGearRatio);
 
-    //intakeMotor.setControl(velocityRequest);
+    intakeMotor.setControl(velocityRequest);
   }
 
   public void stopIntake() {
@@ -166,7 +158,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
      VelocityDutyCycle velocityRequest = new VelocityDutyCycle(0);
 
-     //intakeMotor.setControl(velocityRequest);
+     intakeMotor.setControl(velocityRequest);
   }
 
   // Note: When do the motors stop?
