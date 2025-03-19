@@ -6,8 +6,6 @@ package frc.robot.commands;
 
 import java.util.Optional;
 
-import org.opencv.core.Mat;
-
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
