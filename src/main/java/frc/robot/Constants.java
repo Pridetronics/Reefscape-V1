@@ -4,6 +4,8 @@
  
 package frc.robot;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -118,8 +120,8 @@ public final class Constants {
   //Constants for the movement of the robot
   public static class DriveConstants {
 
-    public static final double kFieldWidthMeters = Units.inchesToMeters(649);
-    public static final double kFieldHeightMeters = Units.inchesToMeters(319);
+    public static final double kFieldWidthMeters = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded).getFieldLength();
+    public static final double kFieldHeightMeters = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded).getFieldWidth();
 
 
     //The literal max speed each wheel is allowed to go
@@ -222,27 +224,28 @@ public final class Constants {
 
     public static final double kIntakeAngleGearRatio = 1.0/36;
     public static final boolean kIntakeAngleMotorReversed = false;
-    public static final double kIntakeAbsoluteEncoderOffsetDegrees = 3;
+    public static final double kIntakeAbsoluteEncoderOffsetDegrees = 5;
 
     // Proportional, Integral, and Derivitive values for the angle PID controller
-    public static final double kIntakeAnglePValue = 0.03;
+    public static final double kIntakeAnglePValue = 0.013;
     public static final double kIntakeAngleIValue = 0;
-    public static final double kIntakeAngleDValue = 0;
+    public static final double kIntakeAngleDValue = 0.0;
+    public static final double kIntakeAngleFFValue = 0.16;
 
     // Proportional, Integral, and Derivitive values for the velocity PID controller
     public static final double kIntakePValue = 0.03;
     public static final double kIntakeIValue = 0;
-    public static final double kIntakeDValue = 0.75;
+    public static final double kIntakeDValue = 0;
 
-    public static final double kIntakeAngleMaxVelocityDegreesPerSecond = 45;
-    public static final double kIntakeAngleMaxAccelerationDegreesPerSecondSquared = 90;
+    public static final double kIntakeAngleMaxVelocityDegreesPerSecond = 90;
+    public static final double kIntakeAngleMaxAccelerationDegreesPerSecondSquared = 180;
 
-    public static final double kIntakeUnStowAngle = 10;
-    public static final double kIntakeUsageAngle = -37;
-    public static final double kIntakeStowAngle = 30;
+    public static final double kIntakeUnStowAngle = -20;
+    public static final double kIntakeUsageAngle = -45;
+    public static final double kIntakeStowAngle = 20;
 
     
-    public static final double kIntakeAngleFuzzyEqDegrees = 3;
+    public static final double kIntakeAngleFuzzyEqDegrees = 6;
 
   }
 
@@ -295,8 +298,8 @@ public final class Constants {
     public static final double kShoulderMaxAccelerationDegreesPerSecondSquared = 360;
 
     //The threshold/region that the elevator will be considered at its target height
-    public static final double kElevatorFuzzyEqInches = 2;
-    public static final double kShoulderFuzzyEqDegrees = 4;
+    public static final double kElevatorFuzzyEqInches = 5;
+    public static final double kShoulderFuzzyEqDegrees = 6;
 
     public static final double kElevatorSpeedInchesPerSecond = 42;
     public static final double kElevatorAccelerationInchesPerSecondSquared = 66;
@@ -304,19 +307,19 @@ public final class Constants {
     // Elevator Heights
     // Trough (L1) Height
     public static final int kElevatorHeightL1Inches = 15;
-    public static final int kShoulderAngleL1Degrees = -25;
+    public static final int kShoulderAngleL1Degrees = -10;
     // L2 Height
-    public static final int kElevatorHeightL2Inches = 20;
-    public static final int kShoulderAngleL2Degrees = -10;
+    public static final int kElevatorHeightL2Inches = 25;
+    public static final int kShoulderAngleL2Degrees = -15;
     // L3 Height
-    public static final int kElevatorHeightL3Inches = 30;
+    public static final int kElevatorHeightL3Inches = 35;
     public static final int kShoulderAngleL3Degrees = 0;
     // L4 Height
-    public static final int kElevatorHeightL4Inches = 40;
-    public static final int kShoulderAngleL4Degrees = 0;
+    public static final int kElevatorHeightL4Inches = 45;
+    public static final int kShoulderAngleL4Degrees = 25;
     // Max Height
     public static final int kElevatorMaxHeightInches = 45;
-    public static final int kShoulderHigherLimitDegrees = 25;
+    public static final int kShoulderHigherLimitDegrees = 30;
     // Homing Height
     public static final double kElevatorHomingHeightInches = 6.5;
     
@@ -328,7 +331,7 @@ public final class Constants {
     public static final double kShoulderStowAngleDegrees = -90;
 
     public static final double kElevatorIntakeHeightInches = 7.5;
-    public static final double kShoulderIntakeAngleDegrees = -52;
+    public static final double kShoulderIntakeAngleDegrees = -50;
 
     public static final double kElevatorExtractHeightInches = 15;
     public static final double kShoulderExtractAngleDegrees = -75;

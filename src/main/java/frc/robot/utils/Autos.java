@@ -83,24 +83,24 @@ public final class Autos {
     Map.of(
       "Scoring side", new AutoPosePosition(
         new Pose2d(
-          0, 
-          0, 
+          7.761, 
+          1.907, 
           Rotation2d.fromDegrees(180)
         ),
         true
       ),
       "Center side", new AutoPosePosition(
         new Pose2d(
-          0, 
-          0, 
+          7.761, 
+          4, 
           Rotation2d.fromDegrees(180)
         ),
         true
       ),
       "Audience side", new AutoPosePosition(
         new Pose2d(
-          0, 
-          0, 
+          7.761, 
+          6.202, 
           Rotation2d.fromDegrees(180)
         ),
         true
@@ -118,6 +118,7 @@ public final class Autos {
 
 
   private static Command Coral1Auto(Pose2d initialPose, RobotContainer robotContainer) {
+    System.out.println("POSITION: " + initialPose.toString());
     // //Controllers to keep the robot on the main path since it will not follow it too well without it
     PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
     PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
@@ -173,7 +174,7 @@ public final class Autos {
     );
 
     SwerveControllerCommand firstStationToReef = new SwerveControllerCommand(
-      firstStationToReefTrajectory, 
+      firstStationToReefTrajectory,
       robotContainer.swerveSubsystem::getPose, 
       WheelConstants.kDriveKinematics,
       xController,
@@ -185,10 +186,13 @@ public final class Autos {
 
     return new SequentialCommandGroup(
       //Drive to reef,
+      startToReef,
       //place coral
       //drive to coral station
+      firstReefToStation,
       //pick up with AI
       //drive to reef
+      firstStationToReef
       //place coral
     );
   }

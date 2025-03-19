@@ -21,6 +21,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -61,7 +62,6 @@ public class IntakeSubsystem extends SubsystemBase {
   );
 
   public IntakeSubsystem() {
-
     // Configurating elevator
     SparkMaxConfig intakeAngleConfig = new SparkMaxConfig();
     
@@ -105,13 +105,9 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void resetEncoder() {
-    //TODO add back
-    // intakeAngleEncoder.setPosition(getAbsoluteAngle());
-    // intakeAnglePIDController.reset(getAbsoluteAngle());
-    //targetAngle = getAbsoluteAngle()
-    intakeAngleEncoder.setPosition(65);
-    intakeAnglePIDController.reset(65);
-    targetAngle = 65;
+    intakeAngleEncoder.setPosition(getAbsoluteAngle());
+    intakeAnglePIDController.reset(getAbsoluteAngle());
+    targetAngle = getAbsoluteAngle();
   }
 
   public double boundAngle(double num) {
@@ -119,17 +115,20 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public double getAbsoluteAngle() {
-    return getIntakeAngle();
-    //TODO add back later
-    //return boundAngle(-intakeAbsoluteEncoder.getPosition()*360);
+    return boundAngle(-intakeAbsoluteEncoder.getPosition()*360);
+  }
+
+  public double getAbsoluteAngleVelocity() {
+    return -intakeAbsoluteEncoder.getVelocity()*360;
   }
 
   public void setIntakeAngle(double angleDegrees) {
+    resetEncoder();
     targetAngle = boundAngle(angleDegrees);
   }
 
   public double getIntakeAngle() {
-    return boundAngle(intakeAngleEncoder.getPosition());
+    return intakeAngleEncoder.getPosition();
   }
 
   public boolean isIntakeAtAngle(double targetAngle) {
@@ -169,10 +168,28 @@ public class IntakeSubsystem extends SubsystemBase {
     ShuffleboardRateLimiter.queueDataForShuffleboard(intakeRelativeEntry, getIntakeAngle());
     ShuffleboardRateLimiter.queueDataForShuffleboard(intakeAbsoluteEntry, getAbsoluteAngle());
 
-    // This method will be called once per scheduler run
-    double newAngleSetPoint = intakeAnglePIDController.calculate(getAbsoluteAngle(), targetAngle);
-    intakeAngleMotor.set(newAngleSetPoint);
+    // if (getAbsoluteAngle() > 20) {
+    //   intakeAnglePIDController.setP(IntakeConstants.kIntakeHighAnglePValue);
+    // } else {
+    //   intakeAnglePIDController.setP(IntakeConstants.kIntakeAnglePValue);
+    // }
 
+    // This method will be called once per scheduler run
+    double newAngleSetPoint = intakeAnglePIDController.calculate(getIntakeAngle(), targetAngle);
+
+    double feedForward = IntakeConstants.kIntakeAngleFFValue*Math.sin(-Units.degreesToRadians(getAbsoluteAngle()-20));
+
+    // double maxSpeed = 1;
+    // if (Math.signum(getAbsoluteAngleVelocity()) == -1) {
+    //   maxSpeed = 0.05;
+    // }
+    //intakeAngleMotor.set();
+    // double maxOutput = Math.max(Math.min(1-((getAbsoluteAngle()+10)/360*6), 1), 0.1);
+    // double speed = newAngleSetPoint + feedForward;
+    // double finalSpeed = Math.max(-maxOutput, Math.min(maxOutput, speed));
+    // intakeAngleMotor.set(finalSpeed);
+    // System.out.println(finalSpeed);
+    intakeAngleMotor.set(newAngleSetPoint + feedForward);
   }
 
   public Boolean getStowedState() {

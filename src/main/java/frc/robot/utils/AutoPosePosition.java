@@ -32,6 +32,7 @@ public class AutoPosePosition {
     public Pose2d getPose() {
         Pose2d teamOrientedPose = TrajectoryHelper.toAllianceRelativePosition(position);
         if (ignoreFieldSideSwapValue) {
+            System.out.println("POSITION INIT "+teamOrientedPose.toString());
             return teamOrientedPose;
         }
         Pose2d fieldSideOrientedPose = TrajectoryHelper.setFieldSidePosition(teamOrientedPose, swapFieldSides);

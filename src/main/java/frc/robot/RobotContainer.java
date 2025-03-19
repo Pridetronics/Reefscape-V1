@@ -26,6 +26,7 @@ import frc.robot.Constants.IOConstants;
 import frc.robot.commands.AlignWithReef;
 import frc.robot.commands.CollectCoralSequence;
 import frc.robot.commands.FieldPositionUpdate;
+import frc.robot.commands.ReleaseCoral;
 import frc.robot.commands.ReverseIntakeUntilStopped;
 import frc.robot.commands.StopCollectCoral;
 import frc.robot.commands.StowManipulator;
@@ -97,27 +98,6 @@ public class RobotContainer {
         firstStartingPositionAdded = true;
       }
     }
-    emergencyStartingPoseChooser.setDefaultOption("Scoring side", new AutoPosePosition(
-      new Pose2d(
-        0, 
-        0, 
-        Rotation2d.fromDegrees(180)
-      )
-    ));
-    emergencyStartingPoseChooser.addOption("Center side", new AutoPosePosition(
-      new Pose2d(
-        0, 
-        0, 
-        Rotation2d.fromDegrees(180)
-      )
-    ));
-    emergencyStartingPoseChooser.addOption("Audience side", new AutoPosePosition(
-      new Pose2d(
-        0, 
-        0, 
-        Rotation2d.fromDegrees(180)
-      )
-    ));
     autoTab.add("Emergency Starting Pose", emergencyStartingPoseChooser)
       .withWidget(BuiltInWidgets.kComboBoxChooser);
 
@@ -221,8 +201,11 @@ public class RobotContainer {
       new ReverseIntakeUntilStopped(intakeSubsystem)
     );
 
-    new JoystickButton(driverJoystick, 3)
+    new JoystickButton(driverJoystick, 15)
     .onTrue(new AlignWithReef(swerveSubsystem, visionSubsystem, ReefSide.Right));
+
+    new JoystickButton(driverJoystick, 6)
+    .whileTrue(new ReleaseCoral(manipulatorSubsystem));
 
   }
 
@@ -253,13 +236,14 @@ public class RobotContainer {
     // swerveSubsystem);
 
     if (!visionSubsystem.lookingAtAprilTag()) {
+      System.out.println("NO CAMERA THINGY YAAAASSSSSSSSS");
       //If camera is not used
       swerveSubsystem.resetOdometry(emergencyStartingPoseChooser.getSelected().getPose());
       //Set robot position to emergency starting pose
-      if ( emergencyStartingPoseChooser.getSelected().getPose().equals(Autos.startingPositions.get("Scoring side").getPose()) ) {
+      if ( emergencyStartingPoseChooser.getSelected().getPose().getTranslation().getDistance(Autos.startingPositions.get("Scoring side").getPose().getTranslation()) < 0.25 ) {
         //Swap field side if on scoring side
         AutoPosePosition.setFieldSideSwap(true);
-      } else if ( emergencyStartingPoseChooser.getSelected().getPose().equals(Autos.startingPositions.get("Center side").getPose()) ) {
+      } else if ( emergencyStartingPoseChooser.getSelected().getPose().getTranslation().getDistance(Autos.startingPositions.get("Center side").getPose().getTranslation()) < 0.25 ) {
         //Use field side option if in center
         AutoPosePosition.setFieldSideSwap(sideOfFieldChooser.getSelected());
       }
