@@ -173,6 +173,132 @@ public final class Constants {
     public static final double kBackLeftDriveAbsoluteEncoderOffsetDeg = 163.65; 
   }
 
+  // Constants for our intake
+  public static class IntakeConstants {
+    // Set the motor ID for the motor that spins the Intake itself
+    public static final int kIntakeMotorCanID = 14; 
+    // Set the motor ID for the motor that controls the angle of the Intake
+    public static final int kIntakeAngleMotorCanID = 15; 
+
+    public static final int kIntakeRPM = 50;
+    public static final double kIntakeGearRatio = 1.0/9;
+    public static final boolean kIntakeReversed = true;
+
+
+    public static final double kIntakeAngleGearRatio = 1.0/36;
+    public static final boolean kIntakeAngleMotorReversed = false;
+    public static final double kIntakeAbsoluteEncoderOffsetDegrees = 3;
+
+    // Proportional, Integral, and Derivitive values for the angle PID controller
+    public static final double kIntakeAnglePValue = 0.03;
+    public static final double kIntakeAngleIValue = 0;
+    public static final double kIntakeAngleDValue = 0;
+
+    // Proportional, Integral, and Derivitive values for the velocity PID controller
+    public static final double kIntakePValue = 0.03;
+    public static final double kIntakeIValue = 0;
+    public static final double kIntakeDValue = 0.75;
+
+    public static final double kIntakeAngleMaxVelocityDegreesPerSecond = 45;
+    public static final double kIntakeAngleMaxAccelerationDegreesPerSecondSquared = 90;
+
+    public static final double kIntakeUnStowAngle = 10;
+    public static final double kIntakeUsageAngle = -37;
+    public static final double kIntakeStowAngle = 30;
+
+    
+    public static final double kIntakeAngleFuzzyEqDegrees = 3;
+
+  }
+
+  // Constants for manipulators (not including intake)
+  public static class ManipulatorConstants {
+    // Set the motor ID for the motor that shoots in the claw
+    public static final int kClawMotorID = 16; 
+    // Set the motor ID for the motor that controls the elevator
+    public static final int kElevatorMotorID = 17; 
+    // Set the motor ID for our shoulder motor
+    public static final int kShoulderMotorID = 18;
+    // Set the shoulder CAN encoder ID
+    public static final int kShoulderEncoderID = 19;
+
+    // Inverted elevator
+    public static final boolean kShoulderEncoderReversed = true;
+    // Value for position and velocity conversion for shoulder
+    public static final double kShoulderGearRatio = 1.0/25 * 15.00/54;
+    public static final double kShoulderEncoderOffsetDegrees = -0.260742*360 - 54.462;
+
+
+    // Value for position and velocity conversion for elevator
+    public static final double kElevatorGearRatio = 1.0/25.0 * 0.375*13.0 * 2.0;
+
+    public static final boolean kElevatorMotorReversed = false;
+
+    public static final double kClawGearRatio = 1.0/16;
+
+    public static final double kClawSpeedRPM = 20;
+
+    public static final boolean kClawMotorReversed = false;
+
+    // Proportional, Integral, and Derivitive values for the velocity PID controller
+    public static final double kClawPValue = 0.03;
+    public static final double kClawIValue = 0;
+    public static final double kClawDValue = 0;
+    // Proportional, Integral, and Derivitive values for the velocity PID controller
+    public static final double kElevatorPValue = 0.04;
+    public static final double kElevatorIValue = 0;
+    public static final double kElevatorDValue = 0;
+    public static final double kElevatorGValue = 0.027;
+    public static final double kElevatorSValue = 0.05;
+    // Proportional, Integral, and Derivitive values for the velocity PID controller
+    public static final double kShoulderPValue = 0.058;
+    public static final double kShoulderIValue = 0.00;
+    public static final double kShoulderDValue = 0.00;
+    public static final double kShoulderGValue = 0.03;
+    public static final double kShoulderSValue = 0.00;
+    public static final double kShoulderMaxVelocityDegreesPerSecond = 180;
+    public static final double kShoulderMaxAccelerationDegreesPerSecondSquared = 360;
+
+    //The threshold/region that the elevator will be considered at its target height
+    public static final double kElevatorFuzzyEqInches = 2;
+    public static final double kShoulderFuzzyEqDegrees = 4;
+
+    public static final double kElevatorSpeedInchesPerSecond = 42;
+    public static final double kElevatorAccelerationInchesPerSecondSquared = 66;
+
+    // Elevator Heights
+    // Trough (L1) Height
+    public static final int kElevatorHeightL1Inches = 15;
+    public static final int kShoulderAngleL1Degrees = -25;
+    // L2 Height
+    public static final int kElevatorHeightL2Inches = 20;
+    public static final int kShoulderAngleL2Degrees = -10;
+    // L3 Height
+    public static final int kElevatorHeightL3Inches = 30;
+    public static final int kShoulderAngleL3Degrees = 0;
+    // L4 Height
+    public static final int kElevatorHeightL4Inches = 40;
+    public static final int kShoulderAngleL4Degrees = 0;
+    // Max Height
+    public static final int kElevatorMaxHeightInches = 45;
+    public static final int kShoulderHigherLimitDegrees = 25;
+    // Homing Height
+    public static final double kElevatorHomingHeightInches = 6.5;
+    
+    public static final double kElevatorMinimumHeightInches = 7.5;
+    public static final int kShoulderLowerLimitDegrees = -90;
+
+    public static final double kElevatorStowHeightInches = 8;
+    public static final double kElevatorSafeFromIntakeHeightInches = 23.6;
+    public static final double kShoulderStowAngleDegrees = -90;
+
+    public static final double kElevatorIntakeHeightInches = 7.5;
+    public static final double kShoulderIntakeAngleDegrees = -52;
+
+    public static final double kElevatorExtractHeightInches = 15;
+    public static final double kShoulderExtractAngleDegrees = -75;
+  }
+
   //Constants related to the autonomous period
   public static class AutoConstants {
 

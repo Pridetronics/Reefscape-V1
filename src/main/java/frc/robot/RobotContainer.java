@@ -16,18 +16,28 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.WheelConstants;
+import frc.robot.commands.CollectCoralSequence;
+import frc.robot.commands.ReverseIntakeUntilStopped;
+import frc.robot.commands.StopCollectCoral;
+import frc.robot.commands.StowManipulator;
 import frc.robot.commands.SwerveAutoPaths;
 import frc.robot.commands.SwerveJoystickCmd;
+import frc.robot.commands.UnStowManipulator;
 import frc.robot.commands.ZeroRobotHeading;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ManipulatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.ManipulatorSubsystem.ClawHeightLevel;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -38,8 +48,13 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+  public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  private final ManipulatorSubsystem manipulatorSubsystem = new ManipulatorSubsystem();
+
   private final SendableChooser<Trajectory> autoCommandChooser = new SendableChooser<>();
+
   private final Joystick driverJoystick = new Joystick(IOConstants.kDriveJoystickID);
+  private final Joystick manipulatorJoystick = new Joystick(IOConstants.kManipulatorJoystickID);
 
   //Create a shuffleboard tab for the drivers to see all teleop info
   private static final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
@@ -88,6 +103,61 @@ public class RobotContainer {
     //Activates an Instant Command to reset field direction when button is pressed down
     new JoystickButton(driverJoystick, IOConstants.kZeroHeadingBtnID)
     .onTrue(new ZeroRobotHeading(swerveSubsystem));
+
+    // new JoystickButton(manipulatorJoystick, 3)
+    // .onTrue(new InstantCommand(manipulatorSubsystem::clawGrab))
+    // .onFalse(new InstantCommand(manipulatorSubsystem::stopClaw));
+
+    // new JoystickButton(manipulatorJoystick, 1)
+    // .onTrue(new InstantCommand(manipulatorSubsystem::clawRemove))
+    // .onFalse(new InstantCommand(manipulatorSubsystem::stopClaw));
+
+    // new JoystickButton(manipulatorJoystick, 4)
+    // .onTrue(new InstantCommand(intakeSubsystem::startIntake))
+    // .onFalse(new InstantCommand(intakeSubsystem::stopIntake));
+
+    new JoystickButton(manipulatorJoystick, 8).onTrue(
+      new StowManipulator(manipulatorSubsystem, intakeSubsystem)
+    );
+
+    new JoystickButton(manipulatorJoystick, 3).onTrue(
+      new UnStowManipulator(manipulatorSubsystem, intakeSubsystem, ClawHeightLevel.Level1)
+    );
+
+    new JoystickButton(manipulatorJoystick, 4).onTrue(
+      new UnStowManipulator(manipulatorSubsystem, intakeSubsystem, ClawHeightLevel.Level2)
+    );
+
+    new JoystickButton(manipulatorJoystick, 2).onTrue(
+      new UnStowManipulator(manipulatorSubsystem, intakeSubsystem, ClawHeightLevel.Level3)
+    );
+
+    new JoystickButton(manipulatorJoystick, 1).onTrue(
+      new UnStowManipulator(manipulatorSubsystem, intakeSubsystem, ClawHeightLevel.Level4)
+    );
+
+    CollectCoralSequence collectSequence = new CollectCoralSequence(manipulatorSubsystem, intakeSubsystem);
+    StopCollectCoral stopCollectSequence = new StopCollectCoral(manipulatorSubsystem, intakeSubsystem);
+    SequentialCommandGroup stopCollectFullSequence = new SequentialCommandGroup(
+      new WaitUntilCommand(() -> collectSequence.intakeCleared == true),
+      new InstantCommand(() -> collectSequence.intakeCleared = false),
+      new InstantCommand(() -> collectSequence.cancel()),
+      new InstantCommand(() -> {
+        stopCollectSequence.schedule();
+      })
+    );
+
+    new JoystickButton(manipulatorJoystick, 7).onTrue(
+      collectSequence
+    ).onFalse(
+      stopCollectFullSequence.onlyIf(
+        () -> collectSequence.isScheduled() && !stopCollectFullSequence.isScheduled()
+      )
+    );
+
+    new JoystickButton(manipulatorJoystick, 5).whileTrue(
+      new ReverseIntakeUntilStopped(intakeSubsystem)
+    );
 
   }
 
