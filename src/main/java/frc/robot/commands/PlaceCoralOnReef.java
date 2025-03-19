@@ -16,7 +16,7 @@ import frc.robot.subsystems.ManipulatorSubsystem.ClawHeightLevel;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PlaceCoralOnReef extends SequentialCommandGroup {
   /** Creates a new PlaceCoralOnReef. */
-  public PlaceCoralOnReef(ManipulatorSubsystem manipulatorSubsystem, IntakeSubsystem intakeSubsystem, ClawHeightLevel targetHeight) {
+  public PlaceCoralOnReef(ManipulatorSubsystem manipulatorSubsystem, IntakeSubsystem intakeSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements(manipulatorSubsystem, intakeSubsystem);
@@ -30,5 +30,10 @@ public class PlaceCoralOnReef extends SequentialCommandGroup {
         new StowManipulator(manipulatorSubsystem, intakeSubsystem)
       ).onlyIf(() -> !manipulatorSubsystem.getStowedState())
     );
+  }
+
+  @Override
+  public InterruptionBehavior getInterruptionBehavior() {
+    return InterruptionBehavior.kCancelIncoming;
   }
 }

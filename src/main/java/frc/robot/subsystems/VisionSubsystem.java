@@ -69,7 +69,7 @@ public class VisionSubsystem extends SubsystemBase {
       if (aprilTagPose.isPresent()) {
         Pose2d pose = aprilTagPose.get().toPose2d().transformBy(
           new Transform2d(
-            new Translation2d(Units.inchesToMeters(20), 0), 
+            new Translation2d(Units.inchesToMeters(30), 0), 
             Rotation2d.k180deg
           )
         );

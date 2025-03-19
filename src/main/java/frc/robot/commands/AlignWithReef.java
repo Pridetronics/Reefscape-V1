@@ -84,6 +84,6 @@ public class AlignWithReef extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return controllerCommand.isFinished();
+    return controllerCommand == null || controllerCommand.isFinished();
   }
 }
