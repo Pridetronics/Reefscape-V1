@@ -316,10 +316,10 @@ public final class Constants {
     public static final int kShoulderAngleL3Degrees = 0;
     // L4 Height
     public static final int kElevatorHeightL4Inches = 45;
-    public static final int kShoulderAngleL4Degrees = 25;
+    public static final int kShoulderAngleL4Degrees = 35;
     // Max Height
     public static final int kElevatorMaxHeightInches = 45;
-    public static final int kShoulderHigherLimitDegrees = 30;
+    public static final int kShoulderHigherLimitDegrees = 35;
     // Homing Height
     public static final double kElevatorHomingHeightInches = 6.5;
     

@@ -102,6 +102,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeAnglePIDController.setTolerance(1);
 
     resetEncoder();
+    setIntakeAngle(IntakeConstants.kIntakeStowAngle);
   }
 
   public void resetEncoder() {
