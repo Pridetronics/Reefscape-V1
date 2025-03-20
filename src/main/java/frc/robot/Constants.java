@@ -39,11 +39,11 @@ public final class Constants {
     //3d offset from the robot's position to the camera
     public static final Transform3d kRobotToCamera = new Transform3d(
       new Translation3d(
-        Units.inchesToMeters(-3), 
-        Units.inchesToMeters(7.75), 
+        Units.inchesToMeters(-3.5), 
+        Units.inchesToMeters(8.5), 
         Units.inchesToMeters(31.5)
       ), 
-      new Rotation3d(0, 0, Units.degreesToRadians(90))
+      new Rotation3d(0, 0, 0)
     );
 
     public static final String kDetectorCameraName = "detectorcamera";
