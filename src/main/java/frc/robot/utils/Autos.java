@@ -15,13 +15,22 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.WheelConstants;
+import frc.robot.commands.AlignAndScore;
+import frc.robot.commands.CollectCoralSequence;
+import frc.robot.commands.StopCollectCoral;
+import frc.robot.subsystems.ManipulatorSubsystem.ClawHeightLevel;
+import frc.robot.subsystems.VisionSubsystem.ReefSide;
 
 public final class Autos {
   /** Example static factory for an autonomous command. */
@@ -35,9 +44,9 @@ public final class Autos {
   }
 
   public static final AutoPosePosition coralStationPosition = new AutoPosePosition(new Pose2d(
-    2.71,
-    6.59,
-    Rotation2d.fromDegrees(156)
+    1.65,
+    6.96,
+    Rotation2d.fromDegrees(153)
   ));
 
   public static final AutoPosePosition aroundReefManuverPosition = new AutoPosePosition(new Pose2d(
@@ -184,16 +193,51 @@ public final class Autos {
       robotContainer.swerveSubsystem
     );
 
+    CollectCoralSequence collectSequence = new CollectCoralSequence(robotContainer.manipulatorSubsystem, robotContainer.intakeSubsystem);
+    StopCollectCoral stopCollectSequence = new StopCollectCoral(robotContainer.manipulatorSubsystem, robotContainer.intakeSubsystem);
+    SequentialCommandGroup stopCollectFullSequence = new SequentialCommandGroup(
+      new WaitUntilCommand(() -> collectSequence.intakeCleared == true),
+      new InstantCommand(() -> collectSequence.intakeCleared = false),
+      new InstantCommand(() -> collectSequence.cancel()),
+      new InstantCommand(() -> {
+        stopCollectSequence.schedule();
+      })
+    );
+
     return new SequentialCommandGroup(
       //Drive to reef,
       startToReef,
       //place coral
+      new AlignAndScore(
+        robotContainer.swerveSubsystem, 
+        robotContainer.visionSubsystem, 
+        robotContainer.manipulatorSubsystem, 
+        robotContainer.intakeSubsystem, 
+        AutoPosePosition.setReefSideInverted(ReefSide.Right),
+        ClawHeightLevel.Level1
+      ),
       //drive to coral station
-      firstReefToStation,
-      //pick up with AI
+      new ParallelCommandGroup(
+        collectSequence,
+        firstReefToStation
+      ),
       //drive to reef
-      firstStationToReef
+      new ParallelCommandGroup(
+        firstStationToReef,
+        new SequentialCommandGroup(
+          new WaitCommand(1),
+          stopCollectFullSequence
+        )
+      ),
       //place coral
+      new AlignAndScore(
+        robotContainer.swerveSubsystem, 
+        robotContainer.visionSubsystem, 
+        robotContainer.manipulatorSubsystem, 
+        robotContainer.intakeSubsystem, 
+        AutoPosePosition.setReefSideInverted(ReefSide.Right),
+        ClawHeightLevel.Level1
+      )
     );
   }
 
