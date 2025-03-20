@@ -288,7 +288,7 @@ public final class Constants {
     public static final double kElevatorPValue = 0.04;
     public static final double kElevatorIValue = 0;
     public static final double kElevatorDValue = 0;
-    public static final double kElevatorGValue = 0.032;
+    public static final double kElevatorGValue = 0.038;
     public static final double kElevatorSValue = 0.05;
     // Proportional, Integral, and Derivitive values for the velocity PID controller
     public static final double kShoulderPValue = 0.058;
