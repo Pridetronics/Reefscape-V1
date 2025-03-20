@@ -241,11 +241,13 @@ public final class Constants {
     public static final double kIntakeAngleMaxAccelerationDegreesPerSecondSquared = 180;
 
     public static final double kIntakeUnStowAngle = -20;
-    public static final double kIntakeUsageAngle = -45;
+    public static final double kIntakeUsageAngle = -40;
     public static final double kIntakeStowAngle = 20;
 
     
     public static final double kIntakeAngleFuzzyEqDegrees = 6;
+
+    public static final double kInitialIntakeAngle = 10;
 
   }
 
@@ -286,7 +288,7 @@ public final class Constants {
     public static final double kElevatorPValue = 0.04;
     public static final double kElevatorIValue = 0;
     public static final double kElevatorDValue = 0;
-    public static final double kElevatorGValue = 0.027;
+    public static final double kElevatorGValue = 0.032;
     public static final double kElevatorSValue = 0.05;
     // Proportional, Integral, and Derivitive values for the velocity PID controller
     public static final double kShoulderPValue = 0.058;
@@ -315,11 +317,11 @@ public final class Constants {
     public static final int kElevatorHeightL3Inches = 35;
     public static final int kShoulderAngleL3Degrees = 0;
     // L4 Height
-    public static final int kElevatorHeightL4Inches = 45;
-    public static final int kShoulderAngleL4Degrees = 35;
+    public static final double kElevatorHeightL4Inches = 46.5;
+    public static final int kShoulderAngleL4Degrees = 38;
     // Max Height
-    public static final int kElevatorMaxHeightInches = 45;
-    public static final int kShoulderHigherLimitDegrees = 35;
+    public static final double kElevatorMaxHeightInches = 46.5;
+    public static final int kShoulderHigherLimitDegrees = 39;
     // Homing Height
     public static final double kElevatorHomingHeightInches = 6.5;
     
@@ -333,8 +335,8 @@ public final class Constants {
     public static final double kElevatorIntakeHeightInches = 7.5;
     public static final double kShoulderIntakeAngleDegrees = -50;
 
-    public static final double kElevatorExtractHeightInches = 15;
-    public static final double kShoulderExtractAngleDegrees = -75;
+    public static final double kElevatorExtractHeightInches = 18;
+    public static final double kShoulderExtractAngleDegrees = -77;
   }
 
   //Constants related to the autonomous period

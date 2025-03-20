@@ -102,7 +102,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeAnglePIDController.setTolerance(1);
 
     resetEncoder();
-    setIntakeAngle(IntakeConstants.kIntakeStowAngle);
+    setIntakeAngle(IntakeConstants.kInitialIntakeAngle);
   }
 
   public void resetEncoder() {
@@ -180,16 +180,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
     double feedForward = IntakeConstants.kIntakeAngleFFValue*Math.sin(-Units.degreesToRadians(getAbsoluteAngle()-20));
 
-    // double maxSpeed = 1;
-    // if (Math.signum(getAbsoluteAngleVelocity()) == -1) {
-    //   maxSpeed = 0.05;
-    // }
-    //intakeAngleMotor.set();
-    // double maxOutput = Math.max(Math.min(1-((getAbsoluteAngle()+10)/360*6), 1), 0.1);
-    // double speed = newAngleSetPoint + feedForward;
-    // double finalSpeed = Math.max(-maxOutput, Math.min(maxOutput, speed));
-    // intakeAngleMotor.set(finalSpeed);
-    // System.out.println(finalSpeed);
     intakeAngleMotor.set(newAngleSetPoint + feedForward);
   }
 
