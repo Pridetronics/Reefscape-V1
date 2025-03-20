@@ -132,7 +132,7 @@ public class ManipulatorSubsystem extends SubsystemBase {
   }
 
   public void passiveClawHold() {
-    clawHelper.setDutyCycle(0.4);
+    clawHelper.setVelocity(ManipulatorConstants.kClawPassiveHoldSpeedRPM);
   }
 
   public void clawRemove() {

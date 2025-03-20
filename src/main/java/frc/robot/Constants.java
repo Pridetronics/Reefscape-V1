@@ -277,6 +277,7 @@ public final class Constants {
     public static final double kClawGearRatio = 1.0/16;
 
     public static final double kClawSpeedRPM = 20;
+    public static final double kClawPassiveHoldSpeedRPM = 10;
 
     public static final boolean kClawMotorReversed = false;
 
