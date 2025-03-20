@@ -25,10 +25,13 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.IOConstants;
 import frc.robot.commands.AlignAndScore;
 import frc.robot.commands.AlignWithReef;
+import frc.robot.commands.CollectAlgaeHigh;
+import frc.robot.commands.CollectAlgaeLow;
 import frc.robot.commands.CollectCoralSequence;
 import frc.robot.commands.FieldPositionUpdate;
 import frc.robot.commands.ReleaseCoral;
 import frc.robot.commands.ReverseIntakeUntilStopped;
+import frc.robot.commands.StopCollectAlgae;
 import frc.robot.commands.StopCollectCoral;
 import frc.robot.commands.StowManipulator;
 import frc.robot.commands.SwerveJoystickCmd;
@@ -143,29 +146,29 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    //Activates an Instant Command to reset field direction when button is pressed down
-    new JoystickButton(driverJoystick, IOConstants.kZeroHeadingBtnID)
-    .onTrue(new ZeroRobotHeading(swerveSubsystem));
+    // //Activates an Instant Command to reset field direction when button is pressed down
+    // new JoystickButton(driverJoystick, IOConstants.kZeroHeadingBtnID)
+    // .onTrue(new ZeroRobotHeading(swerveSubsystem));
 
-    // new JoystickButton(manipulatorJoystick, 8).onTrue(
-    //   new StowManipulator(manipulatorSubsystem, intakeSubsystem)
-    // );
+    new JoystickButton(manipulatorJoystick, 2).onTrue(
+      new StowManipulator(manipulatorSubsystem, intakeSubsystem)
+    );
 
-    // new JoystickButton(manipulatorJoystick, 3).onTrue(
-    //   new UnStowManipulator(manipulatorSubsystem, intakeSubsystem, ClawHeightLevel.Level1)
-    // );
+    new JoystickButton(manipulatorJoystick, 7).onTrue(
+      new UnStowManipulator(manipulatorSubsystem, intakeSubsystem, ClawHeightLevel.Level1)
+    );
 
-    // new JoystickButton(manipulatorJoystick, 4).onTrue(
-    //   new UnStowManipulator(manipulatorSubsystem, intakeSubsystem, ClawHeightLevel.Level2)
-    // );
+    new JoystickButton(manipulatorJoystick, 5).onTrue(
+      new UnStowManipulator(manipulatorSubsystem, intakeSubsystem, ClawHeightLevel.Level2)
+    );
 
-    // new JoystickButton(manipulatorJoystick, 2).onTrue(
-    //   new UnStowManipulator(manipulatorSubsystem, intakeSubsystem, ClawHeightLevel.Level3)
-    // );
+    new JoystickButton(manipulatorJoystick, 3).onTrue(
+      new UnStowManipulator(manipulatorSubsystem, intakeSubsystem, ClawHeightLevel.Level3)
+    );
 
-    // new JoystickButton(manipulatorJoystick, 1).onTrue(
-    //   new UnStowManipulator(manipulatorSubsystem, intakeSubsystem, ClawHeightLevel.Level4)
-    // );
+    new JoystickButton(manipulatorJoystick, 1).onTrue(
+      new UnStowManipulator(manipulatorSubsystem, intakeSubsystem, ClawHeightLevel.Level4)
+    );
 
     // CollectCoralSequence collectSequence = new CollectCoralSequence(manipulatorSubsystem, intakeSubsystem);
     // StopCollectCoral stopCollectSequence = new StopCollectCoral(manipulatorSubsystem, intakeSubsystem);
@@ -190,33 +193,36 @@ public class RobotContainer {
     //   new ReverseIntakeUntilStopped(intakeSubsystem)
     // );
 
-    // new JoystickButton(driverJoystick, 6)
+    // new JoystickButton(manipulatorJoystick, 6)
     // .whileTrue(new ReleaseCoral(manipulatorSubsystem));
 
-    new JoystickButton(manipulatorJoystick, 1).onTrue(
-      new AlignAndScore(swerveSubsystem, visionSubsystem, manipulatorSubsystem, intakeSubsystem, ReefSide.Left, ClawHeightLevel.Level4)
-    );
-    new JoystickButton(manipulatorJoystick, 2).onTrue(
-      new AlignAndScore(swerveSubsystem, visionSubsystem, manipulatorSubsystem, intakeSubsystem, ReefSide.Right, ClawHeightLevel.Level4)
-    );
-    new JoystickButton(manipulatorJoystick, 3).onTrue(
-      new AlignAndScore(swerveSubsystem, visionSubsystem, manipulatorSubsystem, intakeSubsystem, ReefSide.Left, ClawHeightLevel.Level3)
-    );
-    new JoystickButton(manipulatorJoystick, 4).onTrue(
-      new AlignAndScore(swerveSubsystem, visionSubsystem, manipulatorSubsystem, intakeSubsystem, ReefSide.Right, ClawHeightLevel.Level3)
-    );
-    new JoystickButton(manipulatorJoystick, 5).onTrue(
-      new AlignAndScore(swerveSubsystem, visionSubsystem, manipulatorSubsystem, intakeSubsystem, ReefSide.Left, ClawHeightLevel.Level2)
-    );
-    new JoystickButton(manipulatorJoystick, 6).onTrue(
-      new AlignAndScore(swerveSubsystem, visionSubsystem, manipulatorSubsystem, intakeSubsystem, ReefSide.Right, ClawHeightLevel.Level2)
-    );
-    new JoystickButton(manipulatorJoystick, 7).onTrue(
-      new AlignAndScore(swerveSubsystem, visionSubsystem, manipulatorSubsystem, intakeSubsystem, ReefSide.Left, ClawHeightLevel.Level1)
-    );
-    new JoystickButton(manipulatorJoystick, 8).onTrue(
-      new AlignAndScore(swerveSubsystem, visionSubsystem, manipulatorSubsystem, intakeSubsystem, ReefSide.Right, ClawHeightLevel.Level1)
-    );
+
+
+
+    // new JoystickButton(manipulatorJoystick, 1).onTrue(
+    //   new AlignAndScore(swerveSubsystem, visionSubsystem, manipulatorSubsystem, intakeSubsystem, ReefSide.Left, ClawHeightLevel.Level4)
+    // );
+    // new JoystickButton(manipulatorJoystick, 2).onTrue(
+    //   new AlignAndScore(swerveSubsystem, visionSubsystem, manipulatorSubsystem, intakeSubsystem, ReefSide.Right, ClawHeightLevel.Level4)
+    // );
+    // new JoystickButton(manipulatorJoystick, 3).onTrue(
+    //   new AlignAndScore(swerveSubsystem, visionSubsystem, manipulatorSubsystem, intakeSubsystem, ReefSide.Left, ClawHeightLevel.Level3)
+    // );
+    // new JoystickButton(manipulatorJoystick, 4).onTrue(
+    //   new AlignAndScore(swerveSubsystem, visionSubsystem, manipulatorSubsystem, intakeSubsystem, ReefSide.Right, ClawHeightLevel.Level3)
+    // );
+    // new JoystickButton(manipulatorJoystick, 5).onTrue(
+    //   new AlignAndScore(swerveSubsystem, visionSubsystem, manipulatorSubsystem, intakeSubsystem, ReefSide.Left, ClawHeightLevel.Level2)
+    // );
+    // new JoystickButton(manipulatorJoystick, 6).onTrue(
+    //   new AlignAndScore(swerveSubsystem, visionSubsystem, manipulatorSubsystem, intakeSubsystem, ReefSide.Right, ClawHeightLevel.Level2)
+    // );
+    // new JoystickButton(manipulatorJoystick, 7).onTrue(
+    //   new AlignAndScore(swerveSubsystem, visionSubsystem, manipulatorSubsystem, intakeSubsystem, ReefSide.Left, ClawHeightLevel.Level1)
+    // );
+    // new JoystickButton(manipulatorJoystick, 8).onTrue(
+    //   new AlignAndScore(swerveSubsystem, visionSubsystem, manipulatorSubsystem, intakeSubsystem, ReefSide.Right, ClawHeightLevel.Level1)
+    // );
 
     CollectCoralSequence collectSequence = new CollectCoralSequence(manipulatorSubsystem, intakeSubsystem);
     StopCollectCoral stopCollectSequence = new StopCollectCoral(manipulatorSubsystem, intakeSubsystem);
@@ -229,19 +235,33 @@ public class RobotContainer {
       })
     );
 
-    new JoystickButton(driverJoystick, 6).onTrue(
+    new JoystickButton(driverJoystick, 5).onTrue(
       collectSequence
     ).onFalse(
       stopCollectFullSequence.onlyIf(
         () -> collectSequence.isScheduled() && !stopCollectFullSequence.isScheduled()
       )
     );
+
+    new JoystickButton(manipulatorJoystick, 11)
+    .onTrue(
+      new CollectAlgaeLow(manipulatorSubsystem, intakeSubsystem)
+    ).onFalse(
+      new StopCollectAlgae(manipulatorSubsystem, intakeSubsystem)
+    );
+
+    new JoystickButton(manipulatorJoystick, 12)
+    .onTrue(
+      new CollectAlgaeHigh(manipulatorSubsystem, intakeSubsystem)
+    ).onFalse(
+      new StopCollectAlgae(manipulatorSubsystem, intakeSubsystem)
+    );
     
-    new JoystickButton(manipulatorJoystick, 5).whileTrue(
+    new JoystickButton(driverJoystick, 6).whileTrue(
       new ReverseIntakeUntilStopped(intakeSubsystem)
     );
 
-    new JoystickButton(driverJoystick, 7)
+    new JoystickButton(driverJoystick, 5)
     .whileTrue(new ReleaseCoral(manipulatorSubsystem));
 
   }

@@ -46,7 +46,7 @@ public class AlignAndScore extends SequentialCommandGroup {
           new WaitUntilCommand(() -> !alignmentCommand.isScheduled())
         )
       ),
-      new PlaceCoralOnReef(manipulatorSubsystem, intakeSubsystem)
+      new PlaceCoralOnReef(manipulatorSubsystem, intakeSubsystem, swerveSubsystem)
     );
   }
 

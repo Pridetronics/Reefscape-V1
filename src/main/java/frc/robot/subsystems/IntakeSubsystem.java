@@ -142,7 +142,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // intakeMotor.setControl(velocityRequest);
 
-    intakeMotor.set(0.6);
+    intakeMotor.set(0.75);
   }
 
   public void startOuttake() {
@@ -151,7 +151,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // intakeMotor.setControl(velocityRequest);
 
-    intakeMotor.set(-0.6);
+    intakeMotor.set(-0.75);
   }
 
   public void stopIntake() {

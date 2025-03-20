@@ -24,6 +24,7 @@ import frc.robot.utils.ShuffleboardRateLimiter;
 
 public class FieldPositionUpdate extends Command {
   /** Creates a new FieldPositionUpdate. */
+  
   VisionSubsystem m_VisionSubsystem;
   SwerveSubsystem m_SwerveSubsystem;
   private Field2d m_fieldTele = new Field2d();
@@ -76,7 +77,8 @@ public class FieldPositionUpdate extends Command {
 
     fieldPositionPublisher.set(new Pose3d(m_SwerveSubsystem.getPose()));
 
-    ShuffleboardRateLimiter.queueDataForShuffleboard(lookingAtAprilTag, robotPose.isPresent());
+    lookingAtAprilTag.setBoolean(robotPose.isPresent());
+    //ShuffleboardRateLimiter.queueDataForShuffleboard(lookingAtAprilTag, robotPose.isPresent());
     
     m_fieldTele.setRobotPose(m_SwerveSubsystem.getPose());
     m_fieldAuto.setRobotPose(m_SwerveSubsystem.getPose());

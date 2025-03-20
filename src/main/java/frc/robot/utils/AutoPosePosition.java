@@ -4,9 +4,13 @@
 
 package frc.robot.utils;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.VisionSubsystem.ReefSide;
 
 /** Add your docs here. */
@@ -17,15 +21,24 @@ public class AutoPosePosition {
       swapFieldSides = value;
     }
     public static ReefSide setReefSideInverted(ReefSide side) {
+        ReefSide firstInvert = side;
         if (swapFieldSides) {
             if (side == ReefSide.Left) {
-                return ReefSide.Right;
-            } else {
-                return ReefSide.Left;
+                firstInvert = ReefSide.Right;
+            } else if (side == ReefSide.Right) {
+                firstInvert = ReefSide.Left;
             }
-        } else {
-            return side;
         }
+        ReefSide secondInvert = firstInvert;
+        Optional<Alliance> alliance = DriverStation.getAlliance();
+        if (alliance.isPresent() && alliance.get() == Alliance.Red) {
+            if (firstInvert == ReefSide.Left) {
+                secondInvert = ReefSide.Right;
+            } else if (firstInvert == ReefSide.Right) {
+                secondInvert = ReefSide.Left;
+            }
+        }
+        return secondInvert;
     } 
 
     private final Pose2d position;

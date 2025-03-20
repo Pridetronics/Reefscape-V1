@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 // import java.util.List;
 import java.util.Optional;
+import java.util.Timer;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -24,6 +25,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimeLightHelpers;
 import frc.robot.Constants.AutoConstants;
@@ -48,6 +51,7 @@ public class VisionSubsystem extends SubsystemBase {
   // );
   private Optional<EstimatedRobotPose> currentRobotPose = Optional.empty();
   private boolean currentlyLookingAtAprilTag = false;
+  private double lastDetectionTime = -1;
 
   private ArrayList<Pose2d> reefTargetingPositions = new ArrayList<>();
 
@@ -69,7 +73,7 @@ public class VisionSubsystem extends SubsystemBase {
       if (aprilTagPose.isPresent()) {
         Pose2d pose = aprilTagPose.get().toPose2d().transformBy(
           new Transform2d(
-            new Translation2d(Units.inchesToMeters(30), 0), 
+            new Translation2d(Units.inchesToMeters(20), 0), 
             Rotation2d.k180deg
           )
         );
@@ -85,7 +89,9 @@ public class VisionSubsystem extends SubsystemBase {
     Optional<EstimatedRobotPose> robotPose = poseEstimator.update(targetData);
     currentRobotPose = robotPose;
     currentlyLookingAtAprilTag = robotPose.isPresent();
-    
+    if (currentlyLookingAtAprilTag) {
+      lastDetectionTime = RobotController.getFPGATime() / 1000000.0;
+    }
   }
 
   public Pose2d getClosestReefPose(Pose2d robotPosition, ReefSide side) {
@@ -114,7 +120,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
   
   public boolean lookingAtAprilTag() {
-    return currentlyLookingAtAprilTag;
+    return RobotController.getFPGATime() / 1000000.0 - lastDetectionTime < 1 && lastDetectionTime != -1;
   }
 
   private Optional<LimelightTarget_Detector[]> getDetectedCoralTargets() {

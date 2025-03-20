@@ -205,6 +205,7 @@ public final class Autos {
     );
 
     return new SequentialCommandGroup(
+      new InstantCommand(robotContainer.manipulatorSubsystem::passiveClawHold),
       //Drive to reef,
       startToReef,
       //place coral

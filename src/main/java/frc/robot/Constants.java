@@ -227,21 +227,21 @@ public final class Constants {
     public static final double kIntakeAbsoluteEncoderOffsetDegrees = 5;
 
     // Proportional, Integral, and Derivitive values for the angle PID controller
-    public static final double kIntakeAnglePValue = 0.013;
+    public static final double kIntakeAnglePValue = 0.016;
     public static final double kIntakeAngleIValue = 0;
     public static final double kIntakeAngleDValue = 0.0;
-    public static final double kIntakeAngleFFValue = 0.16;
+    public static final double kIntakeAngleFFValue = 0.1825;
 
     // Proportional, Integral, and Derivitive values for the velocity PID controller
     public static final double kIntakePValue = 0.03;
     public static final double kIntakeIValue = 0;
     public static final double kIntakeDValue = 0;
 
-    public static final double kIntakeAngleMaxVelocityDegreesPerSecond = 90;
-    public static final double kIntakeAngleMaxAccelerationDegreesPerSecondSquared = 180;
+    public static final double kIntakeAngleMaxVelocityDegreesPerSecond = 120;
+    public static final double kIntakeAngleMaxAccelerationDegreesPerSecondSquared = 220;
 
-    public static final double kIntakeUnStowAngle = -20;
-    public static final double kIntakeUsageAngle = -40;
+    public static final double kIntakeUnStowAngle = 0;
+    public static final double kIntakeUsageAngle = -42;
     public static final double kIntakeStowAngle = 20;
 
     
@@ -289,7 +289,7 @@ public final class Constants {
     public static final double kElevatorPValue = 0.04;
     public static final double kElevatorIValue = 0;
     public static final double kElevatorDValue = 0;
-    public static final double kElevatorGValue = 0.038;
+    public static final double kElevatorGValue = 0.04;
     public static final double kElevatorSValue = 0.05;
     // Proportional, Integral, and Derivitive values for the velocity PID controller
     public static final double kShoulderPValue = 0.058;
@@ -312,43 +312,43 @@ public final class Constants {
     public static final int kElevatorHeightL1Inches = 15;
     public static final int kShoulderAngleL1Degrees = -10;
     // L2 Height
-    public static final int kElevatorHeightL2Inches = 25;
-    public static final int kShoulderAngleL2Degrees = -15;
+    public static final int kElevatorHeightL2Inches = 28;
+    public static final double kShoulderAngleL2Degrees = -7.5;
     // L3 Height
-    public static final int kElevatorHeightL3Inches = 35;
-    public static final int kShoulderAngleL3Degrees = 0;
+    public static final int kElevatorHeightL3Inches = 38;
+    public static final int kShoulderAngleL3Degrees = 15;
     // L4 Height
-    public static final double kElevatorHeightL4Inches = 46.5;
-    public static final int kShoulderAngleL4Degrees = 38;
+    public static final double kElevatorHeightL4Inches = 47;
+    public static final int kShoulderAngleL4Degrees = 50;
     // Max Height
-    public static final double kElevatorMaxHeightInches = 46.5;
-    public static final int kShoulderHigherLimitDegrees = 39;
+    public static final double kElevatorMaxHeightInches = 47;
+    public static final int kShoulderHigherLimitDegrees = 50;
     // Homing Height
     public static final double kElevatorHomingHeightInches = 6.5;
     
     public static final double kElevatorMinimumHeightInches = 7.5;
     public static final int kShoulderLowerLimitDegrees = -90;
 
-    public static final double kElevatorStowHeightInches = 8;
+    public static final double kElevatorStowHeightInches = 11;
     public static final double kElevatorSafeFromIntakeHeightInches = 23.6;
     public static final double kShoulderStowAngleDegrees = -90;
 
     public static final double kElevatorIntakeHeightInches = 7.5;
-    public static final double kShoulderIntakeAngleDegrees = -50;
+    public static final double kShoulderIntakeAngleDegrees = -46.5;
 
-    public static final double kElevatorExtractHeightInches = 18;
-    public static final double kShoulderExtractAngleDegrees = -77;
+    public static final double kElevatorExtractHeightInches = 22;
+    public static final double kShoulderExtractAngleDegrees = -73;
   }
 
   //Constants related to the autonomous period
   public static class AutoConstants {
 
-    public static final double kReefPipeWidth = 38.04;
+    public static final double kReefPipeWidth = 13;
     
     //Max speed during autonomous
-    public static final double kMaxSpeedMetersPerSecond = 4;
+    public static final double kMaxSpeedMetersPerSecond = 3;
     //Acceleration during autonomous (note its in meters, not units)
-    public static final double kMaxAccelerationMetersPerSecond = 4;
+    public static final double kMaxAccelerationMetersPerSecond = 3;
 
         //Max speed during reef alignment
         public static final double kMaxReefAlignmentSpeedMetersPerSecond = 1;
@@ -361,8 +361,8 @@ public final class Constants {
     public static final double kMaxTurningAccelerationRadiansPerSecond = 360 * (Math.PI / 180);
 
     //Power Controllers for the robot to keep it on course
-    public static final double kPXController = 1.5;
-    public static final double kPYController = 1.5;
+    public static final double kPXController = 2.25;
+    public static final double kPYController = 2.25;
     public static final double kPThetaController = 3;
 
     //This is for the Profiled PID Controller that controls the robot direction
@@ -382,6 +382,11 @@ public final class Constants {
     AutoConstants.kMaxReefAlignmentSpeedMetersPerSecond,
     AutoConstants.kMaxReefAlignmentAccelerationMetersPerSecond
   ).setKinematics(WheelConstants.kDriveKinematics);
+
+  public static final TrajectoryConfig kBackUpTrajectoryConfig = new TrajectoryConfig(
+    AutoConstants.kMaxReefAlignmentSpeedMetersPerSecond,
+    AutoConstants.kMaxReefAlignmentAccelerationMetersPerSecond
+  ).setKinematics(WheelConstants.kDriveKinematics).setReversed(true);
 
   //Class that can store swerve module data for the swerve module class
   public static class SwerveModuleConstants {
