@@ -241,7 +241,7 @@ public final class Constants {
     public static final double kIntakeAngleMaxAccelerationDegreesPerSecondSquared = 220;
 
     public static final double kIntakeUnStowAngle = 0;
-    public static final double kIntakeUsageAngle = -42;
+    public static final double kIntakeUsageAngle = -45;
     public static final double kIntakeStowAngle = 20;
 
     
@@ -266,7 +266,7 @@ public final class Constants {
     public static final boolean kShoulderEncoderReversed = true;
     // Value for position and velocity conversion for shoulder
     public static final double kShoulderGearRatio = 1.0/25 * 15.00/54;
-    public static final double kShoulderEncoderOffsetDegrees = -0.260742*360 - 54.462;
+    public static final double kShoulderEncoderOffsetDegrees = -0.411865234375*360+22.5;
 
 
     // Value for position and velocity conversion for elevator
@@ -330,11 +330,11 @@ public final class Constants {
     public static final int kShoulderLowerLimitDegrees = -90;
 
     public static final double kElevatorStowHeightInches = 11;
-    public static final double kElevatorSafeFromIntakeHeightInches = 23.6;
+    public static final double kElevatorSafeFromIntakeHeightInches = 27;
     public static final double kShoulderStowAngleDegrees = -90;
 
     public static final double kElevatorIntakeHeightInches = 7.5;
-    public static final double kShoulderIntakeAngleDegrees = -46.5;
+    public static final double kShoulderIntakeAngleDegrees = -49;
 
     public static final double kElevatorExtractHeightInches = 22;
     public static final double kShoulderExtractAngleDegrees = -73;

@@ -257,11 +257,11 @@ public class RobotContainer {
       new StopCollectAlgae(manipulatorSubsystem, intakeSubsystem)
     );
     
-    new JoystickButton(driverJoystick, 6).whileTrue(
+    new JoystickButton(driverJoystick, 4).whileTrue(
       new ReverseIntakeUntilStopped(intakeSubsystem)
     );
 
-    new JoystickButton(driverJoystick, 5)
+    new JoystickButton(driverJoystick, 6)
     .whileTrue(new ReleaseCoral(manipulatorSubsystem));
 
   }
