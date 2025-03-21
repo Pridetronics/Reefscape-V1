@@ -30,7 +30,7 @@ import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
   public Boolean intakeStowed = true;
-
+  private Boolean reverseFix = false;
   /** Creates a new IntakeSubsystem. */
 
 
@@ -105,9 +105,22 @@ public class IntakeSubsystem extends SubsystemBase {
     setIntakeAngle(IntakeConstants.kInitialIntakeAngle);
   }
 
+  public void setReverseFix(boolean state) {
+    reverseFix = state;
+    if (state = false) {
+      resetEncoder();
+    }
+  }
+
   public void resetEncoder() {
     intakeAngleEncoder.setPosition(getAbsoluteAngle());
-    intakeAnglePIDController.reset(getAbsoluteAngle());
+    intakeAnglePIDController.reset(getAbsoluteAngle(), getIntakeAngleVelocity());
+    targetAngle = getAbsoluteAngle();
+  }
+
+  public void recalibrate() {
+    intakeAngleEncoder.setPosition(getAbsoluteAngle());
+    //intakeAnglePIDController.reset(getAbsoluteAngle());
     targetAngle = getAbsoluteAngle();
   }
 
@@ -130,6 +143,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public double getIntakeAngle() {
     return intakeAngleEncoder.getPosition();
+  }
+
+  public double getIntakeAngleVelocity() {
+    return intakeAngleEncoder.getVelocity();
   }
 
   public boolean isIntakeAtAngle(double targetAngle) {
@@ -176,6 +193,11 @@ public class IntakeSubsystem extends SubsystemBase {
     // }
 
     // This method will be called once per scheduler run
+    if (reverseFix) {
+      intakeAngleMotor.set(0.2);
+      return;
+    }
+
     double newAngleSetPoint = intakeAnglePIDController.calculate(getIntakeAngle(), targetAngle);
 
     double feedForward = IntakeConstants.kIntakeAngleFFValue*Math.sin(-Units.degreesToRadians(getAbsoluteAngle()-20));

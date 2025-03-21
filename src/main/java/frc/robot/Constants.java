@@ -139,11 +139,11 @@ public final class Constants {
     You get the idea, the number is the max change in velocity, as a percent of the robot's full speed
     That means that the number is inversley related t0 the 0 to max time
    */
-    public static final double kTeleMaxDriveAccelerationUnitsPerSecond = 5;
-    public static final double kTeleMaxTurningAccelerationUnitsPerSecond = 5;
+    public static final double kTeleMaxDriveAccelerationUnitsPerSecond = 2;
+    public static final double kTeleMaxTurningAccelerationUnitsPerSecond = 2;
 
     //Max speed of the robot itself
-    public static final double kTeleMaxDriveSpeedMetersPerSecond = 3;
+    public static final double kTeleMaxDriveSpeedMetersPerSecond = 2.5;
     //Max turning speed of the robot specified in degrees but converted to radians (with the "(Math.PI/180)")
     public static final double kTeleMaxTurningSpeedRadiansPerSecond = 360 * (Math.PI/180);
 
@@ -312,10 +312,10 @@ public final class Constants {
     public static final int kElevatorHeightL1Inches = 15;
     public static final int kShoulderAngleL1Degrees = -10;
     // L2 Height
-    public static final int kElevatorHeightL2Inches = 28;
+    public static final int kElevatorHeightL2Inches = 25;
     public static final double kShoulderAngleL2Degrees = -7.5;
     // L3 Height
-    public static final int kElevatorHeightL3Inches = 38;
+    public static final int kElevatorHeightL3Inches = 34;
     public static final int kShoulderAngleL3Degrees = 15;
     // L4 Height
     public static final double kElevatorHeightL4Inches = 47;

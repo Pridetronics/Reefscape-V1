@@ -17,7 +17,9 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -263,6 +265,17 @@ public class RobotContainer {
 
     new JoystickButton(driverJoystick, 6)
     .whileTrue(new ReleaseCoral(manipulatorSubsystem));
+
+    new JoystickButton(manipulatorJoystick, 8)
+    .onTrue(
+      new SequentialCommandGroup(
+        new ParallelDeadlineGroup(
+          new WaitCommand(0.6), 
+          new InstantCommand(() -> {intakeSubsystem.setReverseFix(true);})
+        ),
+        new InstantCommand(() -> {intakeSubsystem.setReverseFix(false);})
+      )
+    );
 
   }
 
